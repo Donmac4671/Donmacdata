@@ -1,163 +1,405 @@
-import AdminLayout from "../layouts/AdminLayout";
+import {
+  Link,
+  useLocation,
+} from "react-router-dom";
 
-export default function AdminDashboard() {
-  const cards = [
+import {
+  useEffect,
+  useState,
+} from "react";
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const location =
+    useLocation();
+
+  const [open, setOpen] =
+    useState(false);
+
+  const [
+    isMobile,
+    setIsMobile,
+  ] = useState(false);
+
+  useEffect(() => {
+    const checkMobile =
+      () => {
+        setIsMobile(
+          window.innerWidth <
+            900
+        );
+      };
+
+    checkMobile();
+
+    window.addEventListener(
+      "resize",
+      checkMobile
+    );
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        checkMobile
+      );
+  }, []);
+
+  const menus = [
     {
-      title: "Resellers",
-      value: "0",
+      name: "Dashboard",
+      path: "/admin",
     },
 
     {
-      title: "Customers",
-      value: "0",
+      name: "Resellers",
+      path:
+        "/admin/resellers",
     },
 
     {
-      title: "Orders",
-      value: "0",
+      name: "Customers",
+      path:
+        "/admin/customers",
     },
 
     {
-      title: "Revenue",
-      value: "GH₵ 0.00",
+      name: "Orders",
+      path:
+        "/admin/orders",
     },
 
     {
-      title: "Top Ups",
-      value: "0",
+      name: "Top Ups",
+      path:
+        "/admin/topups",
     },
 
     {
-      title: "Complaints",
-      value: "0",
+      name:
+        "Complaints",
+      path:
+        "/admin/complaints",
     },
 
     {
-      title:
-        "Wallet Balance",
-      value: "GH₵ 0.00",
+      name:
+        "Announcements",
+      path:
+        "/admin/announcements",
     },
 
     {
-      title: "Profit",
-      value: "GH₵ 0.00",
+      name:
+        "Packages",
+      path:
+        "/admin/packages",
+    },
+
+    {
+      name:
+        "Rankings",
+      path:
+        "/admin/rankings",
     },
   ];
 
   return (
-    <AdminLayout>
-      <div>
-        {/* HEADER */}
+    <div
+      style={{
+        minHeight:
+          "100vh",
+
+        background:
+          "#050816",
+
+        color: "white",
+      }}
+    >
+      {/* MOBILE TOPBAR */}
+      {isMobile && (
         <div
           style={{
+            height: "70px",
+
             background:
-              "linear-gradient(135deg,#2563eb,#7c3aed)",
+              "#0B1120",
 
-            padding: "32px",
+            display: "flex",
 
-            borderRadius:
-              "24px",
+            alignItems:
+              "center",
 
-            marginBottom:
-              "30px",
+            justifyContent:
+              "space-between",
+
+            padding:
+              "0 20px",
+
+            position:
+              "sticky" as const,
+
+            top: 0,
+
+            zIndex: 1000,
+
+            borderBottom:
+              "1px solid rgba(255,255,255,0.08)",
           }}
         >
           <h1
             style={{
               fontSize:
-                "42px",
+                "28px",
 
               fontWeight:
                 "900",
-
-              marginBottom:
-                "10px",
-            }}
-          >
-            Admin Dashboard
-          </h1>
-
-          <p
-            style={{
-              color:
-                "rgba(255,255,255,0.85)",
-
-              fontSize:
-                "18px",
             }}
           >
             DonmacData
-            Management
-            Platform
-          </p>
+          </h1>
+
+          <button
+            onClick={() =>
+              setOpen(
+                true
+              )
+            }
+            style={{
+              width:
+                "48px",
+
+              height:
+                "48px",
+
+              border:
+                "none",
+
+              borderRadius:
+                "12px",
+
+              background:
+                "#111827",
+
+              color:
+                "white",
+
+              fontSize:
+                "24px",
+
+              cursor:
+                "pointer",
+            }}
+          >
+            ☰
+          </button>
         </div>
+      )}
 
-        {/* GRID */}
-        <div
+      {/* OVERLAY */}
+      {isMobile &&
+        open && (
+          <div
+            onClick={() =>
+              setOpen(
+                false
+              )
+            }
+            style={{
+              position:
+                "fixed" as const,
+
+              inset: 0,
+
+              background:
+                "rgba(0,0,0,0.6)",
+
+              zIndex: 999,
+            }}
+          />
+        )}
+
+      {/* SIDEBAR */}
+      <div
+        style={{
+          width: "280px",
+
+          background:
+            "#0B1120",
+
+          position:
+            "fixed" as const,
+
+          top: 0,
+
+          left: 0,
+
+          bottom: 0,
+
+          padding:
+            "24px",
+
+          borderRight:
+            "1px solid rgba(255,255,255,0.08)",
+
+          overflowY:
+            "auto" as const,
+
+          zIndex: 1000,
+
+          transition:
+            "0.3s ease",
+
+          transform:
+            isMobile
+              ? open
+                ? "translateX(0)"
+                : "translateX(-100%)"
+              : "translateX(0)",
+        }}
+      >
+        <h1
           style={{
-            display: "grid",
+            fontSize:
+              "38px",
 
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(240px,1fr))",
+            fontWeight:
+              "900",
 
-            gap: "24px",
+            marginBottom:
+              "8px",
           }}
         >
-          {cards.map(
-            (card) => (
-              <div
+          DonmacData
+        </h1>
+
+        <p
+          style={{
+            color:
+              "#94a3b8",
+
+            marginBottom:
+              "40px",
+          }}
+        >
+          Admin Panel
+        </p>
+
+        <div
+          style={{
+            display:
+              "flex",
+
+            flexDirection:
+              "column" as const,
+
+            gap: "12px",
+          }}
+        >
+          {menus.map(
+            (menu) => (
+              <Link
                 key={
-                  card.title
+                  menu.path
+                }
+                to={
+                  menu.path
+                }
+                onClick={() =>
+                  setOpen(
+                    false
+                  )
                 }
                 style={{
-                  background:
-                    "#0f172a",
-
-                  border:
-                    "1px solid rgba(255,255,255,0.08)",
+                  padding:
+                    "16px",
 
                   borderRadius:
-                    "22px",
+                    "14px",
 
-                  padding:
-                    "28px",
+                  textDecoration:
+                    "none",
+
+                  color:
+                    "white",
+
+                  fontWeight:
+                    "600",
+
+                  background:
+                    location.pathname ===
+                    menu.path
+                      ? "linear-gradient(135deg,#2563eb,#7c3aed)"
+                      : "#111827",
                 }}
               >
-                <p
-                  style={{
-                    color:
-                      "#94a3b8",
-
-                    marginBottom:
-                      "14px",
-
-                    fontSize:
-                      "16px",
-                  }}
-                >
-                  {
-                    card.title
-                  }
-                </p>
-
-                <h2
-                  style={{
-                    fontSize:
-                      "34px",
-
-                    fontWeight:
-                      "900",
-                  }}
-                >
-                  {
-                    card.value
-                  }
-                </h2>
-              </div>
+                {
+                  menu.name
+                }
+              </Link>
             )
           )}
         </div>
+
+        <button
+          style={{
+            marginTop:
+              "40px",
+
+            width: "100%",
+
+            padding:
+              "16px",
+
+            border:
+              "none",
+
+            borderRadius:
+              "14px",
+
+            background:
+              "#dc2626",
+
+            color:
+              "white",
+
+            fontWeight:
+              "700",
+
+            cursor:
+              "pointer",
+          }}
+        >
+          Logout
+        </button>
       </div>
-    </AdminLayout>
+
+      {/* MAIN CONTENT */}
+      <div
+        style={{
+          marginLeft:
+            isMobile
+              ? "0"
+              : "280px",
+
+          padding:
+            isMobile
+              ? "20px"
+              : "40px",
+
+          width:
+            isMobile
+              ? "100%"
+              : "calc(100% - 280px)",
+
+          boxSizing:
+            "border-box" as const,
+        }}
+      >
+        {children}
+      </div>
+    </div>
   );
 }
