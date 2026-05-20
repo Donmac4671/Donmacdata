@@ -6,6 +6,17 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+/*
+CHANGE THIS IMPORT
+TO MATCH YOUR FILE LOCATION
+
+EXAMPLES:
+
+../supabase
+../lib/supabase
+../utils/supabase
+*/
+
 import { supabase } from "../supabase";
 
 export default function LoginPage() {
@@ -31,8 +42,9 @@ export default function LoginPage() {
   ) {
     e.preventDefault();
 
-    setError("");
     setLoading(true);
+
+    setError("");
 
     const { error } =
       await supabase.auth.signInWithPassword(
@@ -48,6 +60,7 @@ export default function LoginPage() {
       setError(
         error.message
       );
+
       return;
     }
 
@@ -56,27 +69,31 @@ export default function LoginPage() {
 
   return (
     <div style={wrapper}>
-      {/* LEFT SIDE */}
-      <div style={leftSide}>
+      {/* LEFT */}
+      <div style={left}>
         <div>
-          <h1 style={brand}>
+          <h1 style={logo}>
             DonmacData
           </h1>
 
           <p style={tagline}>
-            Smart VTU Platform
-            for Resellers &
-            Customers
+            Smart VTU &
+            Reseller
+            Management
+            Platform
           </p>
 
           <div
             style={{
               marginTop:
                 "40px",
+
               display: "flex",
+
               flexDirection:
                 "column",
-              gap: "18px",
+
+              gap: "20px",
             }}
           >
             <Feature
@@ -84,22 +101,22 @@ export default function LoginPage() {
             />
 
             <Feature
-              text="Automated Top Ups"
+              text="Wallet Top Ups"
             />
 
             <Feature
-              text="Wallet & Profit Tracking"
+              text="Reseller Analytics"
             />
 
             <Feature
-              text="Advanced Admin Dashboard"
+              text="Advanced Dashboard"
             />
           </div>
         </div>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div style={rightSide}>
+      {/* RIGHT */}
+      <div style={right}>
         <form
           onSubmit={
             handleLogin
@@ -116,8 +133,13 @@ export default function LoginPage() {
               Welcome Back
             </h2>
 
-            <p style={subtitle}>
-              Login to continue
+            <p
+              style={
+                subtitle
+              }
+            >
+              Login to
+              continue
             </p>
           </div>
 
@@ -135,8 +157,10 @@ export default function LoginPage() {
             style={{
               display:
                 "flex",
+
               flexDirection:
                 "column",
+
               gap: "20px",
             }}
           >
@@ -151,7 +175,6 @@ export default function LoginPage() {
 
               <input
                 type="email"
-                placeholder="Enter email"
                 value={email}
                 onChange={(
                   e
@@ -162,6 +185,7 @@ export default function LoginPage() {
                       .value
                   )
                 }
+                placeholder="Enter email"
                 style={
                   input
                 }
@@ -179,7 +203,6 @@ export default function LoginPage() {
 
               <input
                 type="password"
-                placeholder="Enter password"
                 value={
                   password
                 }
@@ -192,6 +215,7 @@ export default function LoginPage() {
                       .value
                   )
                 }
+                placeholder="Enter password"
                 style={
                   input
                 }
@@ -217,10 +241,13 @@ export default function LoginPage() {
             style={{
               marginTop:
                 "30px",
+
               textAlign:
                 "center",
+
               color:
                 "#94a3b8",
+
               fontSize:
                 "14px",
             }}
@@ -250,43 +277,61 @@ function Feature({
 
 const wrapper = {
   minHeight: "100vh",
+
   display: "flex",
+
   flexWrap: "wrap" as const,
+
   background:
     "linear-gradient(135deg,#050816,#0f172a)",
 };
 
-const leftSide = {
+const left = {
   flex: 1,
+
   minWidth: "320px",
+
   display: "flex",
+
   alignItems: "center",
-  justifyContent: "center",
+
+  justifyContent:
+    "center",
+
   padding: "60px",
 };
 
-const rightSide = {
+const right = {
   flex: 1,
+
   minWidth: "320px",
+
   display: "flex",
+
   alignItems: "center",
-  justifyContent: "center",
-  padding: "40px",
+
+  justifyContent:
+    "center",
+
+  padding: "30px",
 };
 
 const card = {
   width: "100%",
-  maxWidth: "480px",
-  background:
-    "rgba(15,23,42,0.9)",
 
-  backdropFilter:
-    "blur(14px)",
+  maxWidth: "480px",
+
+  background:
+    "rgba(15,23,42,0.92)",
 
   border:
     "1px solid rgba(255,255,255,0.08)",
 
-  borderRadius: "30px",
+  backdropFilter:
+    "blur(14px)",
+
+  borderRadius:
+    "30px",
 
   padding: "40px",
 
@@ -294,42 +339,55 @@ const card = {
     "border-box" as const,
 };
 
-const brand = {
+const logo = {
   fontSize: "72px",
+
   fontWeight: "900",
+
   color: "white",
-  lineHeight: 1,
 };
 
 const tagline = {
   color: "#94a3b8",
+
   fontSize: "22px",
+
   marginTop: "20px",
+
   maxWidth: "500px",
+
   lineHeight: 1.6,
 };
 
 const title = {
   fontSize: "42px",
+
   fontWeight: "900",
+
   color: "white",
 };
 
 const subtitle = {
   color: "#94a3b8",
+
   marginTop: "10px",
 };
 
 const label = {
   display: "block",
-  color: "#cbd5e1",
+
   marginBottom: "10px",
+
+  color: "#cbd5e1",
+
   fontWeight: "600",
 };
 
 const input = {
   width: "100%",
+
   background: "#111827",
+
   border:
     "1px solid #374151",
 
@@ -342,14 +400,15 @@ const input = {
 
   fontSize: "16px",
 
+  outline: "none",
+
   boxSizing:
     "border-box" as const,
-
-  outline: "none",
 };
 
 const button = {
   width: "100%",
+
   background:
     "linear-gradient(135deg,#2563eb,#7c3aed)",
 
@@ -373,16 +432,23 @@ const button = {
 
 const feature = {
   display: "flex",
+
   alignItems: "center",
+
   gap: "14px",
+
   color: "white",
+
   fontSize: "18px",
 };
 
 const dot = {
   width: "14px",
+
   height: "14px",
+
   borderRadius: "50%",
+
   background:
     "linear-gradient(135deg,#2563eb,#7c3aed)",
 };
