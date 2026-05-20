@@ -34,3 +34,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 select {
   color-scheme: dark;
 }
+@media (max-width: 900px) {
+  aside {
+    width: 280px !important;
+  }
+
+  main {
+    margin-left: 0 !important;
+  }
+
+  .mobile-top {
+    display: flex !important;
+  }
+}
+
+table {
+  min-width: 900px;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #050816;
+}
