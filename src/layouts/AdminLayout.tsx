@@ -53,7 +53,7 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#050816] text-white">
+    <div className="min-h-screen bg-[#050816] text-white flex">
       <aside className="w-72 bg-[#0B1120] border-r border-slate-800 p-6 flex flex-col">
         <div>
           <h1 className="text-4xl font-black">
@@ -65,37 +65,37 @@ export default function AdminLayout({
           </p>
         </div>
 
-        <nav className="space-y-3 mt-10">
+        <nav className="mt-10 space-y-3 flex-1">
           {menus.map((menu) => (
             <Link
               key={menu.path}
               to={menu.path}
-              className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ${
+              className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${
                 location.pathname ===
                 menu.path
                   ? "gradient"
                   : "hover:bg-slate-800"
               }`}
             >
-              <span className="text-xl">
+              <span className="text-2xl">
                 {menu.icon}
               </span>
 
-              {menu.name}
+              <span className="text-lg">
+                {menu.name}
+              </span>
             </Link>
           ))}
         </nav>
 
-        <div className="mt-auto">
-          <button
-            onClick={logout}
-            className="w-full flex items-center justify-center gap-3 bg-red-600 hover:bg-red-700 transition p-4 rounded-2xl"
-          >
-            <FiLogOut />
+        <button
+          onClick={logout}
+          className="bg-red-600 hover:bg-red-700 transition p-4 rounded-2xl flex items-center justify-center gap-3"
+        >
+          <FiLogOut />
 
-            Logout
-          </button>
-        </div>
+          Logout
+        </button>
       </aside>
 
       <main className="flex-1 p-8 overflow-auto">
