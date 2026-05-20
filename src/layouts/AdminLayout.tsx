@@ -25,24 +25,25 @@ export default function AdminLayout({
   ] = useState(false);
 
   useEffect(() => {
-    function checkSize() {
-      setIsMobile(
-        window.innerWidth <
-          900
-      );
-    }
+    const checkMobile =
+      () => {
+        setIsMobile(
+          window.innerWidth <
+            900
+        );
+      };
 
-    checkSize();
+    checkMobile();
 
     window.addEventListener(
       "resize",
-      checkSize
+      checkMobile
     );
 
     return () =>
       window.removeEventListener(
         "resize",
-        checkSize
+        checkMobile
       );
   }, []);
 
@@ -106,18 +107,57 @@ export default function AdminLayout({
   ];
 
   return (
-    <div style={wrapper}>
-      {/* MOBILE HEADER */}
+    <div
+      style={{
+        background:
+          "#050816",
+
+        minHeight:
+          "100vh",
+
+        color: "white",
+      }}
+    >
+      {/* MOBILE TOPBAR */}
       {isMobile && (
         <div
-          style={
-            mobileHeader
-          }
+          style={{
+            height: "70px",
+
+            display:
+              "flex",
+
+            alignItems:
+              "center",
+
+            justifyContent:
+              "space-between",
+
+            padding:
+              "0 20px",
+
+            background:
+              "#0B1120",
+
+            borderBottom:
+              "1px solid rgba(255,255,255,0.08)",
+
+            position:
+              "sticky",
+
+            top: 0,
+
+            zIndex: 999,
+          }}
         >
           <h1
-            style={
-              mobileLogo
-            }
+            style={{
+              fontSize:
+                "28px",
+
+              fontWeight:
+                "900",
+            }}
           >
             DonmacData
           </h1>
@@ -128,9 +168,31 @@ export default function AdminLayout({
                 true
               )
             }
-            style={
-              menuButton
-            }
+            style={{
+              width:
+                "48px",
+
+              height:
+                "48px",
+
+              border:
+                "none",
+
+              borderRadius:
+                "12px",
+
+              background:
+                "#111827",
+
+              color:
+                "white",
+
+              fontSize:
+                "24px",
+
+              cursor:
+                "pointer",
+            }}
           >
             ☰
           </button>
@@ -146,16 +208,50 @@ export default function AdminLayout({
                 false
               )
             }
-            style={
-              overlay
-            }
+            style={{
+              position:
+                "fixed",
+
+              inset: 0,
+
+              background:
+                "rgba(0,0,0,0.6)",
+
+              zIndex: 998,
+            }}
           />
         )}
 
       {/* SIDEBAR */}
       <aside
         style={{
-          ...sidebar,
+          width: "280px",
+
+          background:
+            "#0B1120",
+
+          borderRight:
+            "1px solid rgba(255,255,255,0.08)",
+
+          position:
+            "fixed",
+
+          top: 0,
+
+          left: 0,
+
+          bottom: 0,
+
+          padding:
+            "24px",
+
+          zIndex: 999,
+
+          overflowY:
+            "auto",
+
+          transition:
+            "0.3s ease",
 
           transform:
             isMobile
@@ -165,313 +261,146 @@ export default function AdminLayout({
               : "translateX(0)",
         }}
       >
-        <div>
-          <div
-            style={
-              topSection
-            }
-          >
-            <div>
-              <h1
-                style={
-                  logo
-                }
-              >
-                DonmacData
-              </h1>
+        <h1
+          style={{
+            fontSize:
+              "38px",
 
-              <p
-                style={
-                  sub
-                }
-              >
-                Admin Panel
-              </p>
-            </div>
+            fontWeight:
+              "900",
 
-            {isMobile && (
-              <button
+            marginBottom:
+              "8px",
+          }}
+        >
+          DonmacData
+        </h1>
+
+        <p
+          style={{
+            color:
+              "#94a3b8",
+
+            marginBottom:
+              "40px",
+          }}
+        >
+          Admin Panel
+        </p>
+
+        <div
+          style={{
+            display:
+              "flex",
+
+            flexDirection:
+              "column",
+
+            gap: "12px",
+          }}
+        >
+          {menus.map(
+            (menu) => (
+              <Link
+                key={
+                  menu.path
+                }
+                to={
+                  menu.path
+                }
                 onClick={() =>
                   setOpen(
                     false
                   )
                 }
-                style={
-                  closeBtn
-                }
+                style={{
+                  padding:
+                    "16px",
+
+                  borderRadius:
+                    "14px",
+
+                  textDecoration:
+                    "none",
+
+                  color:
+                    "white",
+
+                  fontWeight:
+                    "600",
+
+                  background:
+                    location.pathname ===
+                    menu.path
+                      ? "linear-gradient(135deg,#2563eb,#7c3aed)"
+                      : "#111827",
+                }}
               >
-                ✕
-              </button>
-            )}
-          </div>
-
-          <div
-            style={
-              menuWrap
-            }
-          >
-            {menus.map(
-              (menu) => (
-                <Link
-                  key={
-                    menu.path
-                  }
-                  to={
-                    menu.path
-                  }
-                  onClick={() =>
-                    setOpen(
-                      false
-                    )
-                  }
-                  style={{
-                    ...menuStyle,
-
-                    background:
-                      location.pathname ===
-                      menu.path
-                        ? "linear-gradient(135deg,#2563eb,#7c3aed)"
-                        : "transparent",
-                  }}
-                >
-                  {
-                    menu.name
-                  }
-                </Link>
-              )
-            )}
-          </div>
+                {
+                  menu.name
+                }
+              </Link>
+            )
+          )}
         </div>
 
         <button
-          style={
-            logoutBtn
-          }
+          style={{
+            marginTop:
+              "40px",
+
+            width: "100%",
+
+            background:
+              "#dc2626",
+
+            border:
+              "none",
+
+            color:
+              "white",
+
+            padding:
+              "16px",
+
+            borderRadius:
+              "14px",
+
+            fontWeight:
+              "700",
+
+            cursor:
+              "pointer",
+          }}
         >
           Logout
         </button>
       </aside>
 
-      {/* MAIN */}
+      {/* PAGE CONTENT */}
       <main
         style={{
-          ...main,
-
           marginLeft:
             isMobile
               ? "0"
-              : "300px",
+              : "280px",
+
+          padding:
+            isMobile
+              ? "20px"
+              : "40px",
+
+          width:
+            isMobile
+              ? "100%"
+              : "calc(100% - 280px)",
+
+          boxSizing:
+            "border-box",
         }}
       >
-        <div style={content}>
-          {children}
-        </div>
+        {children}
       </main>
     </div>
   );
 }
-
-const wrapper = {
-  minHeight: "100vh",
-  background: "#050816",
-  color: "white",
-};
-
-const sidebar = {
-  width: "300px",
-
-  background:
-    "linear-gradient(180deg,#0B1120,#111827)",
-
-  borderRight:
-    "1px solid rgba(255,255,255,0.08)",
-
-  position: "fixed" as const,
-
-  top: 0,
-
-  left: 0,
-
-  bottom: 0,
-
-  padding: "30px 22px",
-
-  display: "flex",
-
-  flexDirection:
-    "column" as const,
-
-  justifyContent:
-    "space-between",
-
-  zIndex: 1000,
-
-  transition:
-    "0.3s ease",
-};
-
-const topSection = {
-  display: "flex",
-
-  justifyContent:
-    "space-between",
-
-  alignItems: "center",
-};
-
-const logo = {
-  fontSize: "34px",
-
-  fontWeight: "900",
-
-  margin: 0,
-};
-
-const sub = {
-  color: "#94a3b8",
-
-  marginTop: "8px",
-};
-
-const menuWrap = {
-  marginTop: "40px",
-
-  display: "flex",
-
-  flexDirection:
-    "column" as const,
-
-  gap: "12px",
-};
-
-const menuStyle = {
-  color: "white",
-
-  textDecoration:
-    "none",
-
-  padding:
-    "16px 18px",
-
-  borderRadius:
-    "16px",
-
-  fontWeight: "600",
-
-  transition:
-    "0.2s ease",
-
-  border:
-    "1px solid rgba(255,255,255,0.05)",
-};
-
-const logoutBtn = {
-  width: "100%",
-
-  background:
-    "linear-gradient(135deg,#dc2626,#ef4444)",
-
-  border: "none",
-
-  color: "white",
-
-  padding: "18px",
-
-  borderRadius:
-    "18px",
-
-  fontWeight: "700",
-
-  cursor: "pointer",
-
-  fontSize: "15px",
-};
-
-const main = {
-  minHeight: "100vh",
-
-  transition:
-    "0.3s ease",
-};
-
-const content = {
-  padding: "40px",
-
-  maxWidth: "1700px",
-};
-
-const mobileHeader = {
-  height: "72px",
-
-  background:
-    "rgba(11,17,32,0.95)",
-
-  backdropFilter:
-    "blur(10px)",
-
-  display: "flex",
-
-  alignItems: "center",
-
-  justifyContent:
-    "space-between",
-
-  padding: "0 20px",
-
-  position: "sticky" as const,
-
-  top: 0,
-
-  zIndex: 100,
-};
-
-const mobileLogo = {
-  fontSize: "28px",
-
-  fontWeight: "900",
-};
-
-const menuButton = {
-  background: "#111827",
-
-  border: "none",
-
-  color: "white",
-
-  width: "48px",
-
-  height: "48px",
-
-  borderRadius: "14px",
-
-  fontSize: "24px",
-
-  cursor: "pointer",
-};
-
-const closeBtn = {
-  background: "#111827",
-
-  border: "none",
-
-  color: "white",
-
-  width: "40px",
-
-  height: "40px",
-
-  borderRadius: "12px",
-
-  cursor: "pointer",
-};
-
-const overlay = {
-  position: "fixed" as const,
-
-  inset: 0,
-
-  background:
-    "rgba(0,0,0,0.6)",
-
-  zIndex: 999,
-};
