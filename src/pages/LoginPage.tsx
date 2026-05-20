@@ -19,7 +19,7 @@ export default function LoginPage() {
       return;
     }
 
-    navigate("/dashboard");
+    navigate("/admin");
   }
 
   return (
