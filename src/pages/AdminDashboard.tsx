@@ -3,106 +3,102 @@ import AdminLayout from "../layouts/AdminLayout";
 export default function AdminDashboard() {
   return (
     <AdminLayout>
-      {/* HEADER */}
       <div
         style={{
-          background:
-            "linear-gradient(135deg,#2563eb,#7c3aed)",
-          borderRadius: "28px",
-          padding: "40px",
-          marginBottom: "32px",
-          boxShadow:
-            "0 10px 40px rgba(0,0,0,0.4)",
+          display: "flex",
+          justifyContent:
+            "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "20px",
+          marginBottom: "30px",
         }}
       >
-        <h1
-          style={{
-            fontSize: "52px",
-            fontWeight: "900",
-            marginBottom: "10px",
-          }}
-        >
-          Admin Dashboard
-        </h1>
+        <div>
+          <h1
+            style={{
+              fontSize: "48px",
+              fontWeight: "900",
+            }}
+          >
+            Dashboard
+          </h1>
 
-        <p
-          style={{
-            color: "rgba(255,255,255,0.8)",
-            fontSize: "18px",
-          }}
-        >
-          Welcome to DonmacData Management
-          Platform
-        </p>
-      </div>
-
-      {/* STATS */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit,minmax(240px,1fr))",
-          gap: "24px",
-        }}
-      >
-        <StatCard
-          title="Resellers"
-          value="0"
-        />
-
-        <StatCard
-          title="Customers"
-          value="0"
-        />
-
-        <StatCard
-          title="Orders"
-          value="0"
-        />
-
-        <StatCard
-          title="Revenue"
-          value="₵0.00"
-        />
-      </div>
-
-      {/* RECENT ACTIVITY */}
-      <div
-        style={{
-          marginTop: "40px",
-          background: "#0B1120",
-          borderRadius: "28px",
-          padding: "30px",
-          border:
-            "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "28px",
-            fontWeight: "800",
-            marginBottom: "20px",
-          }}
-        >
-          Recent Activity
-        </h2>
+          <p
+            style={{
+              color: "#94a3b8",
+            }}
+          >
+            DonmacData Admin
+            Analytics
+          </p>
+        </div>
 
         <div
           style={{
-            color: "#94a3b8",
-            padding: "20px",
-            background: "#111827",
-            borderRadius: "20px",
+            display: "flex",
+            gap: "12px",
+            flexWrap: "wrap",
           }}
         >
-          No recent activity yet
+          <input
+            type="date"
+            style={dateInput}
+          />
+
+          <input
+            type="date"
+            style={dateInput}
+          />
         </div>
+      </div>
+
+      <div style={grid}>
+        <Card
+          title="Revenue"
+          value="₵0.00"
+        />
+
+        <Card
+          title="Profit"
+          value="₵0.00"
+        />
+
+        <Card
+          title="Total Capacity"
+          value="0"
+        />
+
+        <Card
+          title="Total Top Ups"
+          value="0"
+        />
+
+        <Card
+          title="Wallet Balance"
+          value="₵0.00"
+        />
+
+        <Card
+          title="Delivered Orders"
+          value="0"
+        />
+
+        <Card
+          title="Complaints"
+          value="0"
+        />
+
+        <Card
+          title="Customers"
+          value="0"
+        />
       </div>
     </AdminLayout>
   );
 }
 
-function StatCard({
+function Card({
   title,
   value,
 }: {
@@ -110,35 +106,45 @@ function StatCard({
   value: string;
 }) {
   return (
-    <div
-      style={{
-        background: "#0B1120",
-        borderRadius: "28px",
-        padding: "30px",
-        border:
-          "1px solid rgba(255,255,255,0.08)",
-        boxShadow:
-          "0 10px 30px rgba(0,0,0,0.3)",
-      }}
-    >
-      <p
-        style={{
-          color: "#94a3b8",
-          fontSize: "18px",
-          marginBottom: "12px",
-        }}
-      >
+    <div style={card}>
+      <p style={small}>
         {title}
       </p>
 
-      <h2
-        style={{
-          fontSize: "46px",
-          fontWeight: "900",
-        }}
-      >
+      <h2 style={big}>
         {value}
       </h2>
     </div>
   );
 }
+
+const grid = {
+  display: "grid",
+  gridTemplateColumns:
+    "repeat(auto-fit,minmax(240px,1fr))",
+  gap: "20px",
+};
+
+const card = {
+  background: "#0B1120",
+  borderRadius: "24px",
+  padding: "28px",
+};
+
+const small = {
+  color: "#94a3b8",
+  marginBottom: "12px",
+};
+
+const big = {
+  fontSize: "42px",
+  fontWeight: "900",
+};
+
+const dateInput = {
+  background: "#111827",
+  border: "1px solid #374151",
+  color: "white",
+  padding: "14px",
+  borderRadius: "14px",
+};
