@@ -1,10 +1,20 @@
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+} from "react-router-dom";
+
+import { useState } from "react";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const location = useLocation();
+
+  const [open, setOpen] =
+    useState(false);
+
   const menus = [
     {
       name: "Dashboard",
@@ -59,29 +69,66 @@ export default function AdminLayout({
         minHeight: "100vh",
         background: "#050816",
         color: "white",
-        fontFamily: "Inter, sans-serif",
       }}
     >
+      {/* MOBILE MENU BUTTON */}
+      <button
+        onClick={() =>
+          setOpen(!open)
+        }
+        style={{
+          position: "fixed",
+          top: "15px",
+          left: "15px",
+          zIndex: 2000,
+          background: "#2563eb",
+          border: "none",
+          color: "white",
+          padding: "12px 16px",
+          borderRadius: "12px",
+          cursor: "pointer",
+          display: window.innerWidth <=
+            768
+            ? "block"
+            : "none",
+        }}
+      >
+        ☰
+      </button>
+
       {/* SIDEBAR */}
       <aside
         style={{
-          width: "300px",
+          width: "280px",
           background: "#0B1120",
           padding: "24px",
           borderRight:
             "1px solid rgba(255,255,255,0.08)",
           display: "flex",
           flexDirection: "column",
-          gap: "24px",
+          position:
+            window.innerWidth <= 768
+              ? "fixed"
+              : "relative",
+          left:
+            window.innerWidth <= 768
+              ? open
+                ? "0"
+                : "-320px"
+              : "0",
+          top: 0,
+          bottom: 0,
+          zIndex: 1500,
+          transition: "0.3s",
+          overflowY: "auto",
         }}
       >
-        {/* LOGO */}
         <div>
           <h1
             style={{
-              fontSize: "42px",
+              fontSize: "40px",
               fontWeight: "900",
-              margin: 0,
+              marginBottom: "8px",
             }}
           >
             DonmacData
@@ -90,35 +137,39 @@ export default function AdminLayout({
           <p
             style={{
               color: "#94a3b8",
-              marginTop: "10px",
-              fontSize: "15px",
+              marginBottom: "40px",
             }}
           >
             Admin Panel
           </p>
         </div>
 
-        {/* MENU */}
+        {/* MENUS */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "14px",
+            gap: "12px",
           }}
         >
           {menus.map((menu) => (
             <Link
               key={menu.path}
               to={menu.path}
+              onClick={() =>
+                setOpen(false)
+              }
               style={{
-                background: "#111827",
+                background:
+                  location.pathname ===
+                  menu.path
+                    ? "linear-gradient(135deg,#2563eb,#7c3aed)"
+                    : "#111827",
                 color: "white",
                 textDecoration: "none",
-                padding: "18px 20px",
+                padding: "18px",
                 borderRadius: "18px",
                 fontWeight: "700",
-                fontSize: "16px",
-                transition: "0.3s",
               }}
             >
               {menu.name}
@@ -127,7 +178,11 @@ export default function AdminLayout({
         </div>
 
         {/* LOGOUT */}
-        <div style={{ marginTop: "auto" }}>
+        <div
+          style={{
+            marginTop: "auto",
+          }}
+        >
           <button
             style={{
               width: "100%",
@@ -137,9 +192,8 @@ export default function AdminLayout({
               color: "white",
               padding: "18px",
               borderRadius: "18px",
-              fontWeight: "800",
+              fontWeight: "700",
               cursor: "pointer",
-              fontSize: "16px",
             }}
           >
             Logout
@@ -147,12 +201,15 @@ export default function AdminLayout({
         </div>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* CONTENT */}
       <main
         style={{
           flex: 1,
-          padding: "40px",
-          overflowY: "auto",
+          padding:
+            window.innerWidth <= 768
+              ? "80px 20px 20px"
+              : "40px",
+          width: "100%",
         }}
       >
         {children}
