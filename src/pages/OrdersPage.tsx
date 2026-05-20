@@ -1,48 +1,93 @@
-import { useState } from "react";
+import {
+  useState,
+} from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
+
+function generateRef() {
+  return Math.random()
+    .toString(36)
+    .substring(2, 10)
+    .toUpperCase();
+}
 
 export default function OrdersPage() {
   const [orders, setOrders] =
     useState([
       {
         id: 1,
-        customer: "Kwame",
+        ref: generateRef(),
+        phone: "0240000000",
         network: "MTN",
         package:
-          "10GB Data Bundle",
+          "10GB Bundle",
         amount: "₵120",
         status: "pending",
-        date: "20 May 2026",
-      },
-
-      {
-        id: 2,
-        customer: "Ama",
-        network: "Telecel",
-        package:
-          "5GB Bundle",
-        amount: "₵50",
-        status: "delivered",
-        date: "20 May 2026",
+        autoTime: "15 mins",
+        date: "2026-05-20",
       },
     ]);
+
+  const [
+    search,
+    setSearch,
+  ] = useState("");
+
+  const [
+    network,
+    setNetwork,
+  ] = useState("");
+
+  const filtered =
+    orders.filter((o) => {
+      return (
+        (o.ref
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          ) ||
+          o.phone.includes(
+            search
+          )) &&
+        (network
+          ? o.network ===
+            network
+          : true)
+      );
+    });
 
   function updateStatus(
     id: number,
     status: string
   ) {
-    const updated =
-      orders.map((order) =>
-        order.id === id
+    setOrders(
+      orders.map((o) =>
+        o.id === id
           ? {
-              ...order,
+              ...o,
               status,
             }
-          : order
+          : o
+      )
+    );
+  }
+
+  function deleteOrder(
+    id: number
+  ) {
+    const confirmDelete =
+      confirm(
+        "Delete order?"
       );
 
-    setOrders(updated);
+    if (!confirmDelete)
+      return;
+
+    setOrders(
+      orders.filter(
+        (o) => o.id !== id
+      )
+    );
   }
 
   return (
@@ -51,12 +96,83 @@ export default function OrdersPage() {
         Orders
       </h1>
 
+      {/* FILTERS */}
+      <div style={filterWrap}>
+        <input
+          placeholder="Search ref or phone"
+          value={search}
+          onChange={(e) =>
+            setSearch(
+              e.target.value
+            )
+          }
+          style={input}
+        />
+
+        <select
+          value={network}
+          onChange={(e) =>
+            setNetwork(
+              e.target.value
+            )
+          }
+          style={input}
+        >
+          <option value="">
+            All Networks
+          </option>
+
+          <option>
+            MTN
+          </option>
+
+          <option>
+            Telecel
+          </option>
+
+          <option>
+            AirtelTigo
+          </option>
+
+          <option>
+            Mashup
+          </option>
+
+          <option>
+            Airtime
+          </option>
+
+          <option>
+            Telecel Voice + SMS
+          </option>
+
+          <option>
+            Telecel Voice + Data + SMS
+          </option>
+        </select>
+
+        <input
+          type="date"
+          style={input}
+        />
+
+        <input
+          type="date"
+          style={input}
+        />
+      </div>
+
+      {/* TABLE */}
       <div style={card}>
         <table style={table}>
           <thead>
             <tr>
               <th style={th}>
-                Customer
+                Ref Code
+              </th>
+
+              <th style={th}>
+                Phone
               </th>
 
               <th style={th}>
@@ -76,107 +192,186 @@ export default function OrdersPage() {
               </th>
 
               <th style={th}>
-                Date
+                Auto Deliver
               </th>
 
               <th style={th}>
-                Update
+                Actions
               </th>
             </tr>
           </thead>
 
           <tbody>
-            {orders.map((order) => (
-              <tr
-                key={order.id}
-                style={{
-                  borderTop:
-                    "1px solid rgba(255,255,255,0.08)",
-                }}
-              >
-                <td style={td}>
-                  {
-                    order.customer
+            {filtered.map(
+              (order) => (
+                <tr
+                  key={
+                    order.id
                   }
-                </td>
+                  style={{
+                    borderTop:
+                      "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  <td style={td}>
+                    {order.ref}
+                  </td>
 
-                <td style={td}>
-                  {
-                    order.network
-                  }
-                </td>
-
-                <td style={td}>
-                  {
-                    order.package
-                  }
-                </td>
-
-                <td style={td}>
-                  {
-                    order.amount
-                  }
-                </td>
-
-                <td style={td}>
-                  <span
-                    style={{
-                      ...statusStyle(
-                        order.status
-                      ),
-                    }}
-                  >
+                  <td style={td}>
                     {
-                      order.status
+                      order.phone
                     }
-                  </span>
-                </td>
+                  </td>
 
-                <td style={td}>
-                  {order.date}
-                </td>
-
-                <td style={td}>
-                  <select
-                    value={
-                      order.status
+                  <td style={td}>
+                    {
+                      order.network
                     }
-                    onChange={(
-                      e
-                    ) =>
-                      updateStatus(
-                        order.id,
-                        e.target
-                          .value
-                      )
+                  </td>
+
+                  <td style={td}>
+                    {
+                      order.package
                     }
-                    style={
-                      selectStyle
+                  </td>
+
+                  <td style={td}>
+                    {
+                      order.amount
                     }
-                  >
-                    <option value="failed">
-                      Failed
-                    </option>
+                  </td>
 
-                    <option value="waiting">
-                      Waiting
-                    </option>
+                  <td style={td}>
+                    <span
+                      style={{
+                        color:
+                          getStatusColor(
+                            order.status
+                          ),
+                        fontWeight:
+                          "700",
+                      }}
+                    >
+                      {
+                        order.status
+                      }
+                    </span>
+                  </td>
 
-                    <option value="pending">
-                      Pending
-                    </option>
+                  <td style={td}>
+                    <select
+                      style={
+                        input
+                      }
+                    >
+                      <option>
+                        5 mins
+                      </option>
 
-                    <option value="processing">
-                      Processing
-                    </option>
+                      <option>
+                        10 mins
+                      </option>
 
-                    <option value="delivered">
-                      Delivered
-                    </option>
-                  </select>
-                </td>
-              </tr>
-            ))}
+                      <option>
+                        15 mins
+                      </option>
+
+                      <option>
+                        20 mins
+                      </option>
+
+                      <option>
+                        25 mins
+                      </option>
+
+                      <option>
+                        30 mins
+                      </option>
+
+                      <option>
+                        45 mins
+                      </option>
+
+                      <option>
+                        1 hour
+                      </option>
+
+                      <option>
+                        1 hour 30 mins
+                      </option>
+
+                      <option>
+                        2 hours
+                      </option>
+                    </select>
+                  </td>
+
+                  <td style={td}>
+                    <div
+                      style={{
+                        display:
+                          "flex",
+                        gap: "10px",
+                        flexWrap:
+                          "wrap",
+                      }}
+                    >
+                      <select
+                        value={
+                          order.status
+                        }
+                        onChange={(
+                          e
+                        ) =>
+                          updateStatus(
+                            order.id,
+                            e
+                              .target
+                              .value
+                          )
+                        }
+                        style={
+                          input
+                        }
+                      >
+                        <option value="failed">
+                          Failed
+                        </option>
+
+                        <option value="waiting">
+                          Waiting
+                        </option>
+
+                        <option value="pending">
+                          Pending
+                        </option>
+
+                        <option value="processing">
+                          Processing
+                        </option>
+
+                        <option value="delivered">
+                          Delivered
+                        </option>
+                      </select>
+
+                      <button
+                        onClick={() =>
+                          deleteOrder(
+                            order.id
+                          )
+                        }
+                        style={
+                          deleteBtn
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>
@@ -184,47 +379,27 @@ export default function OrdersPage() {
   );
 }
 
-function statusStyle(
+function getStatusColor(
   status: string
 ) {
   switch (status) {
     case "failed":
-      return {
-        background:
-          "#7f1d1d",
-        color: "#fca5a5",
-      };
+      return "#ef4444";
 
     case "waiting":
-      return {
-        background:
-          "#374151",
-        color: "#d1d5db",
-      };
+      return "#9ca3af";
 
     case "pending":
-      return {
-        background:
-          "#78350f",
-        color: "#fde68a",
-      };
+      return "#facc15";
 
     case "processing":
-      return {
-        background:
-          "#1e3a8a",
-        color: "#93c5fd",
-      };
+      return "#3b82f6";
 
     case "delivered":
-      return {
-        background:
-          "#052e16",
-        color: "#86efac",
-      };
+      return "#22c55e";
 
     default:
-      return {};
+      return "white";
   }
 }
 
@@ -232,6 +407,21 @@ const title = {
   fontSize: "42px",
   fontWeight: "900",
   marginBottom: "24px",
+};
+
+const filterWrap = {
+  display: "flex",
+  gap: "14px",
+  flexWrap: "wrap" as const,
+  marginBottom: "24px",
+};
+
+const input = {
+  background: "#111827",
+  border: "none",
+  padding: "14px",
+  borderRadius: "14px",
+  color: "white",
 };
 
 const card = {
@@ -255,10 +445,11 @@ const td = {
   padding: "16px",
 };
 
-const selectStyle = {
-  background: "#111827",
-  color: "white",
+const deleteBtn = {
+  background: "#dc2626",
   border: "none",
-  padding: "10px",
+  color: "white",
+  padding: "12px 16px",
   borderRadius: "12px",
+  cursor: "pointer",
 };
