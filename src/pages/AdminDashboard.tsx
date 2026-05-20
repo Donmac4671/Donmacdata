@@ -29,7 +29,7 @@ export default function AdminDashboard() {
 
         <div className="glass p-6 rounded-3xl">
           <h2>Revenue</h2>
-          <p className="text-4xl font-bold mt-4">₦0</p>
+          <p className="text-4xl font-bold mt-4">₵0.00</p>
         </div>
       </div>
     </div>
