@@ -9,19 +9,24 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-  const { data, error } =
+  console.log("LOGIN START");
+
+  const response =
     await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-  console.log(data);
-  console.log(error);
+  console.log("FULL RESPONSE:", response);
 
-  if (error) {
-    alert(error.message);
+  if (response.error) {
+    console.log("LOGIN ERROR:", response.error);
+
+    alert(response.error.message);
     return;
   }
+
+  console.log("LOGIN SUCCESS");
 
   window.location.href = "/admin";
 }
