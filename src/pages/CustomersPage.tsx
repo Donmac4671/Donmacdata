@@ -1,91 +1,62 @@
-import { useEffect, useState } from "react";
-
 import AdminLayout from "../layouts/AdminLayout";
 
-import { supabase } from "../lib/supabase";
-
 export default function CustomersPage() {
-  const [customers, setCustomers] =
-    useState<any[]>([]);
-
-  async function fetchCustomers() {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("role", "customer");
-
-    setCustomers(data || []);
-  }
-
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
-
   return (
     <AdminLayout>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold">
-          Customers
-        </h1>
+      <h1 style={title}>
+        Customers
+      </h1>
 
-        <p className="text-gray-400 mt-2">
-          View all customers
-        </p>
-      </div>
-
-      <div className="glass rounded-3xl overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-slate-900">
+      <div style={card}>
+        <table style={table}>
+          <thead>
             <tr>
-              <th className="p-5 text-left">
-                Email
-              </th>
-
-              <th className="p-5 text-left">
-                Wallet
-              </th>
-
-              <th className="p-5 text-left">
-                Status
-              </th>
-
-              <th className="p-5 text-left">
-                Created
-              </th>
+              <th style={th}>Name</th>
+              <th style={th}>Email</th>
+              <th style={th}>Phone</th>
+              <th style={th}>Reseller</th>
+              <th style={th}>Wallet</th>
+              <th style={th}>Status</th>
+              <th style={th}>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            {customers.map((customer) => (
-              <tr
-                key={customer.id}
-                className="border-t border-slate-800"
-              >
-                <td className="p-5">
-                  {customer.email}
-                </td>
-
-                <td className="p-5">
-                  ₵
-                  {Number(
-                    customer.wallet_balance || 0
-                  ).toFixed(2)}
-                </td>
-
-                <td className="p-5">
-                  {customer.status}
-                </td>
-
-                <td className="p-5">
-                  {new Date(
-                    customer.created_at
-                  ).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
+            <tr>
+              <td style={td}>
+                No customers yet
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
     </AdminLayout>
   );
 }
+
+const title = {
+  fontSize: "42px",
+  fontWeight: "900",
+  marginBottom: "24px",
+};
+
+const card = {
+  background: "#0B1120",
+  padding: "24px",
+  borderRadius: "24px",
+  overflowX: "auto",
+};
+
+const table = {
+  width: "100%",
+};
+
+const th = {
+  textAlign: "left" as const,
+  padding: "14px",
+  color: "#94a3b8",
+};
+
+const td = {
+  padding: "16px",
+};
