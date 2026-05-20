@@ -9,18 +9,22 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-    const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } =
+    await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
+  console.log(data);
+  console.log(error);
 
-    navigate("/admin");
+  if (error) {
+    alert(error.message);
+    return;
   }
+
+  window.location.href = "/admin";
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050816]">
