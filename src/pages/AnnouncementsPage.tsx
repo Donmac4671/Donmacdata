@@ -6,35 +6,35 @@ import AdminLayout from "../layouts/AdminLayout";
 
 export default function AnnouncementsPage() {
   const [
-    message,
-    setMessage,
-  ] = useState("");
-
-  const [
     announcements,
     setAnnouncements,
   ] = useState<any[]>([]);
 
-  function addAnnouncement() {
-    if (!message) return;
+  const [
+    text,
+    setText,
+  ] = useState("");
+
+  function addMessage() {
+    if (!text) return;
 
     setAnnouncements([
       {
         id: Date.now(),
-        text: message,
-        active: true,
+        text,
+        active: false,
       },
 
       ...announcements,
     ]);
 
-    setMessage("");
+    setText("");
   }
 
-  function toggleAnnouncement(
+  function toggleMessage(
     id: number
   ) {
-    const updated =
+    setAnnouncements(
       announcements.map(
         (item) =>
           item.id === id
@@ -44,9 +44,31 @@ export default function AnnouncementsPage() {
                   !item.active,
               }
             : item
+      )
+    );
+  }
+
+  function editMessage(
+    id: number
+  ) {
+    const updated =
+      prompt(
+        "Edit message"
       );
 
-    setAnnouncements(updated);
+    if (!updated) return;
+
+    setAnnouncements(
+      announcements.map(
+        (item) =>
+          item.id === id
+            ? {
+                ...item,
+                text: updated,
+              }
+            : item
+      )
+    );
   }
 
   return (
@@ -55,13 +77,12 @@ export default function AnnouncementsPage() {
         Announcements
       </h1>
 
-      {/* CREATE */}
       <div style={card}>
         <textarea
-          placeholder="Type announcement..."
-          value={message}
+          placeholder="Type message..."
+          value={text}
           onChange={(e) =>
-            setMessage(
+            setText(
               e.target.value
             )
           }
@@ -69,19 +90,16 @@ export default function AnnouncementsPage() {
         />
 
         <button
-          onClick={
-            addAnnouncement
-          }
+          onClick={addMessage}
           style={button}
         >
-          Add Announcement
+          Add Message
         </button>
       </div>
 
-      {/* LIST */}
       <div
         style={{
-          marginTop: "30px",
+          marginTop: "24px",
           display: "flex",
           flexDirection:
             "column",
@@ -92,55 +110,57 @@ export default function AnnouncementsPage() {
           (item) => (
             <div
               key={item.id}
-              style={{
-                background:
-                  "#0B1120",
-                padding: "24px",
-                borderRadius:
-                  "24px",
-              }}
+              style={messageCard}
             >
-              <p
-                style={{
-                  marginBottom:
-                    "20px",
-                }}
-              >
+              <p>
                 {item.text}
               </p>
 
-              <button
-                onClick={() =>
-                  toggleAnnouncement(
-                    item.id
-                  )
-                }
+              <div
                 style={{
-                  background:
-                    item.active
-                      ? "#16a34a"
-                      : "#374151",
-
-                  border:
-                    "none",
-
-                  color:
-                    "white",
-
-                  padding:
-                    "12px 18px",
-
-                  borderRadius:
-                    "14px",
-
-                  cursor:
-                    "pointer",
+                  display:
+                    "flex",
+                  gap: "12px",
+                  flexWrap:
+                    "wrap",
+                  marginTop:
+                    "20px",
                 }}
               >
-                {item.active
-                  ? "Showing"
-                  : "Hidden"}
-              </button>
+                <button
+                  onClick={() =>
+                    toggleMessage(
+                      item.id
+                    )
+                  }
+                  style={{
+                    ...button,
+                    background:
+                      item.active
+                        ? "#16a34a"
+                        : "#374151",
+                  }}
+                >
+                  {item.active
+                    ? "Showing"
+                    : "Hidden"}
+                </button>
+
+                <button
+                  onClick={() =>
+                    editMessage(
+                      item.id
+                    )
+                  }
+                  style={{
+                    ...button,
+                    background:
+                      "#2563eb",
+                  }}
+                >
+                  Edit
+                </button>
+              </div>
             </div>
           )
         )}
@@ -159,33 +179,29 @@ const card = {
   background: "#0B1120",
   padding: "24px",
   borderRadius: "24px",
-  display: "flex",
-  flexDirection: "column" as const,
-  gap: "20px",
 };
 
 const textarea = {
+  width: "100%",
   minHeight: "180px",
   background: "#111827",
-  border: "none",
-  borderRadius: "18px",
-  padding: "20px",
+  border: "1px solid #374151",
   color: "white",
+  padding: "20px",
+  borderRadius: "18px",
 };
 
 const button = {
-  background:
-    "linear-gradient(135deg,#2563eb,#7c3aed)",
-
   border: "none",
-
   color: "white",
-
-  padding: "18px",
-
-  borderRadius: "18px",
-
-  fontWeight: "700",
-
+  padding: "14px 20px",
+  borderRadius: "14px",
   cursor: "pointer",
+  marginTop: "18px",
+};
+
+const messageCard = {
+  background: "#0B1120",
+  padding: "24px",
+  borderRadius: "24px",
 };
