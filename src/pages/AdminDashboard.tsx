@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
+
 import { supabase } from "../lib/supabase";
 
 export default function AdminDashboard() {
@@ -52,55 +53,55 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="gradient rounded-3xl p-10 mb-8">
-        <h1 className="text-5xl font-bold">
+      <div className="gradient rounded-3xl p-10 mb-10 shadow-2xl">
+        <h1 className="text-5xl font-black">
           Admin Dashboard
         </h1>
 
-        <p className="text-white/70 mt-3">
+        <p className="text-white/70 mt-3 text-lg">
           DonmacData Management Platform
         </p>
       </div>
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <div className="glass p-8 rounded-3xl">
-          <h2 className="text-gray-400">
+          <p className="text-gray-400 text-lg">
             Resellers
-          </h2>
+          </p>
 
-          <p className="text-5xl font-bold mt-4">
+          <h2 className="text-5xl font-bold mt-4">
             {stats.resellers}
-          </p>
+          </h2>
         </div>
 
         <div className="glass p-8 rounded-3xl">
-          <h2 className="text-gray-400">
+          <p className="text-gray-400 text-lg">
             Customers
-          </h2>
+          </p>
 
-          <p className="text-5xl font-bold mt-4">
+          <h2 className="text-5xl font-bold mt-4">
             {stats.customers}
-          </p>
+          </h2>
         </div>
 
         <div className="glass p-8 rounded-3xl">
-          <h2 className="text-gray-400">
+          <p className="text-gray-400 text-lg">
             Orders
-          </h2>
-
-          <p className="text-5xl font-bold mt-4">
-            {stats.orders}
           </p>
+
+          <h2 className="text-5xl font-bold mt-4">
+            {stats.orders}
+          </h2>
         </div>
 
         <div className="glass p-8 rounded-3xl">
-          <h2 className="text-gray-400">
+          <p className="text-gray-400 text-lg">
             Revenue
-          </h2>
-
-          <p className="text-5xl font-bold mt-4">
-            ₵0.00
           </p>
+
+          <h2 className="text-5xl font-bold mt-4">
+            ₵0.00
+          </h2>
         </div>
       </div>
     </AdminLayout>
