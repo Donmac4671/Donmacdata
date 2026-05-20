@@ -54,7 +54,8 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-[#050816] text-white flex">
-      <aside className="w-72 bg-[#0B1120] border-r border-slate-800 p-6 flex flex-col">
+      {/* SIDEBAR */}
+      <aside className="w-[280px] min-h-screen bg-[#0B1120] border-r border-slate-800 flex flex-col p-6">
         <div>
           <h1 className="text-4xl font-black">
             DonmacData
@@ -65,39 +66,44 @@ export default function AdminLayout({
           </p>
         </div>
 
-        <nav className="mt-10 space-y-3 flex-1">
+        {/* MENU */}
+        <div className="flex flex-col gap-3 mt-10">
           {menus.map((menu) => (
             <Link
               key={menu.path}
               to={menu.path}
-              className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${
+              className={`flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 ${
                 location.pathname ===
                 menu.path
-                  ? "gradient"
-                  : "hover:bg-slate-800"
+                  ? "gradient text-white"
+                  : "hover:bg-slate-800 text-gray-300"
               }`}
             >
               <span className="text-2xl">
                 {menu.icon}
               </span>
 
-              <span className="text-lg">
+              <span className="text-lg font-medium">
                 {menu.name}
               </span>
             </Link>
           ))}
-        </nav>
+        </div>
 
-        <button
-          onClick={logout}
-          className="bg-red-600 hover:bg-red-700 transition p-4 rounded-2xl flex items-center justify-center gap-3"
-        >
-          <FiLogOut />
+        {/* LOGOUT */}
+        <div className="mt-auto">
+          <button
+            onClick={logout}
+            className="w-full bg-red-600 hover:bg-red-700 transition-all px-5 py-4 rounded-2xl flex items-center justify-center gap-3 font-semibold"
+          >
+            <FiLogOut />
 
-          Logout
-        </button>
+            Logout
+          </button>
+        </div>
       </aside>
 
+      {/* MAIN CONTENT */}
       <main className="flex-1 p-8 overflow-auto">
         {children}
       </main>
