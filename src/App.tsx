@@ -5,6 +5,8 @@ import {
 
 import LoginPage from "./pages/LoginPage";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import AdminDashboard from "./pages/AdminDashboard";
 
 import ResellersPage from "./pages/ResellersPage";
@@ -13,7 +15,15 @@ import CustomersPage from "./pages/CustomersPage";
 
 import OrdersPage from "./pages/OrdersPage";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import TopupsPage from "./pages/TopupsPage";
+
+import ComplaintsPage from "./pages/ComplaintsPage";
+
+import AnnouncementsPage from "./pages/AnnouncementsPage";
+
+import PackagesPage from "./pages/PackagesPage";
+
+import RankingsPage from "./pages/RankingsPage";
 
 export default function App() {
   return (
@@ -55,6 +65,51 @@ export default function App() {
         element={
           <ProtectedRoute>
             <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/topups"
+        element={
+          <ProtectedRoute>
+            <TopupsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/complaints"
+        element={
+          <ProtectedRoute>
+            <ComplaintsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/announcements"
+        element={
+          <ProtectedRoute>
+            <AnnouncementsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/packages"
+        element={
+          <ProtectedRoute>
+            <PackagesPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/rankings"
+        element={
+          <ProtectedRoute>
+            <RankingsPage />
           </ProtectedRoute>
         }
       />
