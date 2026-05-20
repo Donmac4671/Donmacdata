@@ -7,19 +7,21 @@ export default function LoginPage() {
     useState("");
 
   async function handleLogin() {
-    const { error } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+  const { error } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    window.location.href = "/admin";
+  if (error) {
+    alert(error.message);
+    return;
   }
+
+  setTimeout(() => {
+    window.location.href = "/admin";
+  }, 500);
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050816]">
