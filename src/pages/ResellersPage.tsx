@@ -11,14 +11,18 @@ export default function ResellersPage() {
   const [resellers, setResellers] =
     useState<any[]>([]);
 
+  const [loading, setLoading] =
+    useState(true);
+
   const [showModal, setShowModal] =
     useState(false);
 
-  const [selectedUser, setSelectedUser] =
-    useState<any>(null);
-
-  const [amount, setAmount] =
-    useState("");
+  const [formData, setFormData] =
+    useState({
+      email: "",
+      phone: "",
+      location: "",
+    });
 
   async function fetchResellers() {
     const { data } = await supabase
@@ -30,15 +34,40 @@ export default function ResellersPage() {
       });
 
     setResellers(data || []);
+
+    setLoading(false);
   }
 
   useEffect(() => {
     fetchResellers();
   }, []);
 
-  async function blockReseller(
-    id: string
-  ) {
+  async function addReseller() {
+    if (!formData.email) return;
+
+    await supabase
+      .from("profiles")
+      .insert({
+        email: formData.email,
+        phone: formData.phone,
+        location: formData.location,
+        role: "reseller",
+        status: "active",
+        wallet_balance: 0,
+      });
+
+    setShowModal(false);
+
+    setFormData({
+      email: "",
+      phone: "",
+      location: "",
+    });
+
+    fetchResellers();
+  }
+
+  async function blockUser(id: string) {
     await supabase
       .from("profiles")
       .update({
@@ -49,27 +78,12 @@ export default function ResellersPage() {
     fetchResellers();
   }
 
-  async function unblockReseller(
-    id: string
-  ) {
-    await supabase
-      .from("profiles")
-      .update({
-        status: "active",
-      })
-      .eq("id", id);
-
-    fetchResellers();
-  }
-
-  async function deleteReseller(
-    id: string
-  ) {
-    const confirmed = confirm(
+  async function deleteUser(id: string) {
+    const confirmDelete = confirm(
       "Delete reseller?"
     );
 
-    if (!confirmed) return;
+    if (!confirmDelete) return;
 
     await supabase
       .from("profiles")
@@ -79,195 +93,439 @@ export default function ResellersPage() {
     fetchResellers();
   }
 
-  async function creditWallet() {
-    if (!selectedUser) return;
-
-    const numericAmount =
-      Number(amount);
-
-    const newBalance =
-      Number(
-        selectedUser.wallet_balance || 0
-      ) + numericAmount;
-
-    await supabase
-      .from("profiles")
-      .update({
-        wallet_balance: newBalance,
-      })
-      .eq("id", selectedUser.id);
-
-    await supabase
-      .from("transactions")
-      .insert({
-        user_id: selectedUser.id,
-        type: "credit",
-        amount: numericAmount,
-        description:
-          "Admin credited reseller wallet",
-      });
-
-    setShowModal(false);
-
-    setAmount("");
-
-    fetchResellers();
-  }
-
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-10">
+      {/* HEADER */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent:
+            "space-between",
+          alignItems: "center",
+          marginBottom: "30px",
+          flexWrap: "wrap",
+          gap: "20px",
+        }}
+      >
         <div>
-          <h1 className="text-5xl font-black">
+          <h1
+            style={{
+              fontSize: "42px",
+              fontWeight: "900",
+            }}
+          >
             Resellers
           </h1>
 
-          <p className="text-gray-400 mt-2">
-            Manage reseller accounts
+          <p
+            style={{
+              color: "#94a3b8",
+            }}
+          >
+            Manage all resellers
           </p>
         </div>
 
-        <button className="gradient px-6 py-4 rounded-2xl font-semibold">
-          Add Reseller
+        <button
+          onClick={() =>
+            setShowModal(true)
+          }
+          style={{
+            background:
+              "linear-gradient(135deg,#2563eb,#7c3aed)",
+            border: "none",
+            color: "white",
+            padding: "16px 22px",
+            borderRadius: "18px",
+            fontWeight: "700",
+            cursor: "pointer",
+          }}
+        >
+          + Add Reseller
         </button>
       </div>
 
-      <div className="glass rounded-3xl overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-slate-900">
-            <tr>
-              <th className="p-5 text-left">
-                Email
-              </th>
-
-              <th className="p-5 text-left">
-                Status
-              </th>
-
-              <th className="p-5 text-left">
-                Wallet
-              </th>
-
-              <th className="p-5 text-left">
-                Actions
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {resellers.map((reseller) => (
+      {/* TABLE */}
+      <div
+        style={{
+          background: "#0B1120",
+          borderRadius: "24px",
+          overflowX: "auto",
+          padding: "20px",
+        }}
+      >
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <table
+            style={{
+              width: "100%",
+              borderCollapse:
+                "collapse",
+            }}
+          >
+            <thead>
               <tr
-                key={reseller.id}
-                className="border-t border-slate-800 hover:bg-slate-900/40"
+                style={{
+                  textAlign: "left",
+                  color: "#94a3b8",
+                }}
               >
-                <td className="p-5">
-                  {reseller.email}
-                </td>
+                <th
+                  style={{
+                    padding: "14px",
+                  }}
+                >
+                  Email
+                </th>
 
-                <td className="p-5">
-                  <span
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      reseller.status ===
-                      "blocked"
-                        ? "bg-red-500/20 text-red-400"
-                        : "bg-green-500/20 text-green-400"
-                    }`}
-                  >
-                    {reseller.status}
-                  </span>
-                </td>
+                <th
+                  style={{
+                    padding: "14px",
+                  }}
+                >
+                  Phone
+                </th>
 
-                <td className="p-5">
-                  ₵
-                  {Number(
-                    reseller.wallet_balance || 0
-                  ).toFixed(2)}
-                </td>
+                <th
+                  style={{
+                    padding: "14px",
+                  }}
+                >
+                  Location
+                </th>
 
-                <td className="p-5">
-                  <div className="flex gap-3 flex-wrap">
-                    <button
-                      onClick={() => {
-                        setSelectedUser(
-                          reseller
-                        );
+                <th
+                  style={{
+                    padding: "14px",
+                  }}
+                >
+                  Wallet
+                </th>
 
-                        setShowModal(true);
-                      }}
-                      className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
-                    >
-                      Credit
-                    </button>
+                <th
+                  style={{
+                    padding: "14px",
+                  }}
+                >
+                  Status
+                </th>
 
-                    {reseller.status ===
-                    "blocked" ? (
-                      <button
-                        onClick={() =>
-                          unblockReseller(
-                            reseller.id
-                          )
-                        }
-                        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl"
-                      >
-                        Unblock
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() =>
-                          blockReseller(
-                            reseller.id
-                          )
-                        }
-                        className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-xl"
-                      >
-                        Block
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() =>
-                        deleteReseller(
-                          reseller.id
-                        )
-                      }
-                      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </td>
+                <th
+                  style={{
+                    padding: "14px",
+                  }}
+                >
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {resellers.map(
+                (reseller) => (
+                  <tr
+                    key={
+                      reseller.id
+                    }
+                    style={{
+                      borderTop:
+                        "1px solid rgba(255,255,255,0.08)",
+                    }}
+                  >
+                    <td
+                      style={{
+                        padding:
+                          "16px",
+                      }}
+                    >
+                      {
+                        reseller.email
+                      }
+                    </td>
+
+                    <td
+                      style={{
+                        padding:
+                          "16px",
+                      }}
+                    >
+                      {
+                        reseller.phone
+                      }
+                    </td>
+
+                    <td
+                      style={{
+                        padding:
+                          "16px",
+                      }}
+                    >
+                      {
+                        reseller.location
+                      }
+                    </td>
+
+                    <td
+                      style={{
+                        padding:
+                          "16px",
+                      }}
+                    >
+                      ₵
+                      {Number(
+                        reseller.wallet_balance ||
+                          0
+                      ).toFixed(2)}
+                    </td>
+
+                    <td
+                      style={{
+                        padding:
+                          "16px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          background:
+                            reseller.status ===
+                            "blocked"
+                              ? "#7f1d1d"
+                              : "#052e16",
+                          color:
+                            reseller.status ===
+                            "blocked"
+                              ? "#fca5a5"
+                              : "#86efac",
+                          padding:
+                            "8px 14px",
+                          borderRadius:
+                            "999px",
+                          fontSize:
+                            "14px",
+                        }}
+                      >
+                        {
+                          reseller.status
+                        }
+                      </span>
+                    </td>
+
+                    <td
+                      style={{
+                        padding:
+                          "16px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          gap: "10px",
+                          flexWrap:
+                            "wrap",
+                        }}
+                      >
+                        <button
+                          style={
+                            actionButtonBlue
+                          }
+                        >
+                          Credit
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            blockUser(
+                              reseller.id
+                            )
+                          }
+                          style={
+                            actionButtonYellow
+                          }
+                        >
+                          Block
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            deleteUser(
+                              reseller.id
+                            )
+                          }
+                          style={
+                            actionButtonRed
+                          }
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
 
+      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="glass p-8 rounded-3xl w-full max-w-md">
-            <h2 className="text-3xl font-bold mb-6">
-              Credit Wallet
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background:
+              "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent:
+              "center",
+            zIndex: 3000,
+            padding: "20px",
+          }}
+        >
+          <div
+            style={{
+              background:
+                "#0B1120",
+              width: "100%",
+              maxWidth: "500px",
+              borderRadius:
+                "24px",
+              padding: "30px",
+            }}
+          >
+            <h2
+              style={{
+                fontSize: "32px",
+                fontWeight: "800",
+                marginBottom:
+                  "24px",
+              }}
+            >
+              Add Reseller
             </h2>
 
-            <input
-              type="number"
-              placeholder="Amount"
-              className="w-full p-4 rounded-xl bg-slate-900 mb-4 outline-none"
-              value={amount}
-              onChange={(e) =>
-                setAmount(e.target.value)
-              }
-            />
-
-            <button
-              onClick={creditWallet}
-              className="gradient w-full p-4 rounded-xl font-semibold"
+            <div
+              style={{
+                display: "flex",
+                flexDirection:
+                  "column",
+                gap: "16px",
+              }}
             >
-              Credit Wallet
-            </button>
+              <input
+                placeholder="Email"
+                value={
+                  formData.email
+                }
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    email:
+                      e.target
+                        .value,
+                  })
+                }
+                style={inputStyle}
+              />
+
+              <input
+                placeholder="Phone"
+                value={
+                  formData.phone
+                }
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    phone:
+                      e.target
+                        .value,
+                  })
+                }
+                style={inputStyle}
+              />
+
+              <input
+                placeholder="Location"
+                value={
+                  formData.location
+                }
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    location:
+                      e.target
+                        .value,
+                  })
+                }
+                style={inputStyle}
+              />
+
+              <button
+                onClick={
+                  addReseller
+                }
+                style={{
+                  background:
+                    "linear-gradient(135deg,#2563eb,#7c3aed)",
+                  border:
+                    "none",
+                  color:
+                    "white",
+                  padding:
+                    "18px",
+                  borderRadius:
+                    "18px",
+                  fontWeight:
+                    "700",
+                  cursor:
+                    "pointer",
+                }}
+              >
+                Create Reseller
+              </button>
+            </div>
           </div>
         </div>
       )}
     </AdminLayout>
   );
 }
+
+const inputStyle = {
+  background: "#111827",
+  border: "none",
+  padding: "18px",
+  borderRadius: "18px",
+  color: "white",
+  fontSize: "16px",
+};
+
+const actionButtonBlue = {
+  background: "#2563eb",
+  border: "none",
+  color: "white",
+  padding: "10px 14px",
+  borderRadius: "12px",
+  cursor: "pointer",
+};
+
+const actionButtonYellow = {
+  background: "#ca8a04",
+  border: "none",
+  color: "white",
+  padding: "10px 14px",
+  borderRadius: "12px",
+  cursor: "pointer",
+};
+
+const actionButtonRed = {
+  background: "#dc2626",
+  border: "none",
+  color: "white",
+  padding: "10px 14px",
+  borderRadius: "12px",
+  cursor: "pointer",
+};
