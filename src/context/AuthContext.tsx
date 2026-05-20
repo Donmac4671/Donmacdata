@@ -15,53 +15,40 @@ export function AuthProvider({
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
-  async function loadProfile(userId: string) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    setProfile(data);
-  }
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      const session = data.session;
+    async function getSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (session?.user) {
-        setUser(session.user);
-        await loadProfile(session.user.id);
-      }
+      setUser(session?.user ?? null);
 
       setLoading(false);
-    });
+    }
+
+    getSession();
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          await loadProfile(session.user.id);
-        } else {
-          setUser(null);
-          setProfile(null);
-        }
+      (_event, session) => {
+        setUser(session?.user ?? null);
       }
     );
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        profile,
         loading,
       }}
     >
