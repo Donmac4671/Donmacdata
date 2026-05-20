@@ -5,161 +5,599 @@ import {
 import AdminLayout from "../layouts/AdminLayout";
 
 export default function TopupsPage() {
-  const [topups] =
-    useState([
-      {
-        id: "TP123",
-        network: "MTN",
-        amount: "₵200",
-        status:
-          "claimed",
-        claimedBy:
-          "Kwame",
-        date:
-          "2026-05-20",
-      },
-    ]);
+  const [status, setStatus] =
+    useState("All");
+
+  const topups = [
+    {
+      id: "TPX82AK",
+      network: "MTN",
+      amount: "GH₵ 100",
+      status: "Claimed",
+      claimedBy:
+        "Michael Mensah",
+      date:
+        "2026-05-20",
+      time: "10:30 AM",
+    },
+
+    {
+      id: "TPZ22PL",
+      network:
+        "Telecel",
+      amount: "GH₵ 50",
+      status:
+        "Unclaimed",
+      claimedBy: "-",
+      date:
+        "2026-05-20",
+      time: "11:15 AM",
+    },
+
+    {
+      id: "TPQ91LK",
+      network:
+        "AirtelTigo",
+      amount: "GH₵ 200",
+      status: "Claimed",
+      claimedBy:
+        "Sarah Arthur",
+      date:
+        "2026-05-19",
+      time: "4:10 PM",
+    },
+
+    {
+      id: "TPR55BN",
+      network:
+        "MTN",
+      amount: "GH₵ 80",
+      status:
+        "Unclaimed",
+      claimedBy: "-",
+      date:
+        "2026-05-18",
+      time: "2:45 PM",
+    },
+  ];
+
+  function statusColor(
+    value: string
+  ) {
+    switch (value) {
+      case "Claimed":
+        return "#22c55e";
+
+      case "Unclaimed":
+        return "#ef4444";
+
+      default:
+        return "white";
+    }
+  }
 
   return (
     <AdminLayout>
-      <h1 style={title}>
-        Top Ups
-      </h1>
+      <div>
+        {/* HEADER */}
+        <div
+          style={{
+            display: "flex",
 
-      {/* FILTERS */}
-      <div style={filterWrap}>
-        <input
-          type="date"
-          style={input}
-        />
+            justifyContent:
+              "space-between",
 
-        <input
-          type="date"
-          style={input}
-        />
-      </div>
+            alignItems:
+              "center",
 
-      <div style={card}>
-        <table style={table}>
-          <thead>
-            <tr>
-              <th style={th}>
-                Transaction ID
-              </th>
+            flexWrap:
+              "wrap",
 
-              <th style={th}>
-                Network
-              </th>
+            gap: "20px",
 
-              <th style={th}>
-                Amount
-              </th>
+            marginBottom:
+              "30px",
+          }}
+        >
+          <div>
+            <h1
+              style={{
+                fontSize:
+                  "40px",
 
-              <th style={th}>
-                Status
-              </th>
+                fontWeight:
+                  "900",
 
-              <th style={th}>
-                Claimed By
-              </th>
+                marginBottom:
+                  "8px",
+              }}
+            >
+              Top Ups
+            </h1>
 
-              <th style={th}>
-                Date
-              </th>
-            </tr>
-          </thead>
+            <p
+              style={{
+                color:
+                  "#94a3b8",
+              }}
+            >
+              Monitor all
+              top up
+              transactions
+            </p>
+          </div>
 
-          <tbody>
-            {topups.map(
-              (topup) => (
-                <tr
-                  key={
-                    topup.id
+          <button
+            style={{
+              background:
+                "linear-gradient(135deg,#2563eb,#7c3aed)",
+
+              border:
+                "none",
+
+              color:
+                "white",
+
+              padding:
+                "14px 24px",
+
+              borderRadius:
+                "14px",
+
+              fontWeight:
+                "700",
+
+              cursor:
+                "pointer",
+            }}
+          >
+            Export Top Ups
+          </button>
+        </div>
+
+        {/* STATS */}
+        <div
+          style={{
+            display: "grid",
+
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
+
+            gap: "20px",
+
+            marginBottom:
+              "30px",
+          }}
+        >
+          <div
+            style={
+              cardStyle
+            }
+          >
+            <p
+              style={
+                cardTitle
+              }
+            >
+              Total Top Ups
+            </p>
+
+            <h2
+              style={
+                cardValue
+              }
+            >
+              324
+            </h2>
+          </div>
+
+          <div
+            style={
+              cardStyle
+            }
+          >
+            <p
+              style={
+                cardTitle
+              }
+            >
+              Claimed
+            </p>
+
+            <h2
+              style={{
+                ...cardValue,
+
+                color:
+                  "#22c55e",
+              }}
+            >
+              280
+            </h2>
+          </div>
+
+          <div
+            style={
+              cardStyle
+            }
+          >
+            <p
+              style={
+                cardTitle
+              }
+            >
+              Unclaimed
+            </p>
+
+            <h2
+              style={{
+                ...cardValue,
+
+                color:
+                  "#ef4444",
+              }}
+            >
+              44
+            </h2>
+          </div>
+
+          <div
+            style={
+              cardStyle
+            }
+          >
+            <p
+              style={
+                cardTitle
+              }
+            >
+              Total Amount
+            </p>
+
+            <h2
+              style={{
+                ...cardValue,
+
+                color:
+                  "#38bdf8",
+              }}
+            >
+              GH₵ 24,300
+            </h2>
+          </div>
+        </div>
+
+        {/* FILTERS */}
+        <div
+          style={{
+            background:
+              "#0f172a",
+
+            padding: "24px",
+
+            borderRadius:
+              "24px",
+
+            marginBottom:
+              "30px",
+
+            display: "grid",
+
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
+
+            gap: "18px",
+
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <input
+            placeholder="Search transaction ID"
+            style={inputStyle}
+          />
+
+          <select
+            value={status}
+            onChange={(
+              e
+            ) =>
+              setStatus(
+                e.target
+                  .value
+              )
+            }
+            style={
+              inputStyle
+            }
+          >
+            <option>
+              All
+            </option>
+
+            <option>
+              Claimed
+            </option>
+
+            <option>
+              Unclaimed
+            </option>
+          </select>
+
+          <input
+            type="date"
+            style={inputStyle}
+          />
+
+          <input
+            type="date"
+            style={inputStyle}
+          />
+        </div>
+
+        {/* TABLE */}
+        <div
+          style={{
+            overflowX:
+              "auto",
+
+            background:
+              "#0f172a",
+
+            borderRadius:
+              "24px",
+
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <table
+            style={{
+              width: "100%",
+
+              borderCollapse:
+                "collapse",
+
+              minWidth:
+                "900px",
+            }}
+          >
+            <thead>
+              <tr
+                style={{
+                  background:
+                    "#111827",
+                }}
+              >
+                <th
+                  style={
+                    thStyle
                   }
                 >
-                  <td style={td}>
-                    {
-                      topup.id
-                    }
-                  </td>
+                  Transaction ID
+                </th>
 
-                  <td style={td}>
-                    {
-                      topup.network
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Network
+                </th>
 
-                  <td style={td}>
-                    {
-                      topup.amount
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Amount
+                </th>
 
-                  <td style={td}>
-                    {
-                      topup.status
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Status
+                </th>
 
-                  <td style={td}>
-                    {
-                      topup.claimedBy
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Claimed By
+                </th>
 
-                  <td style={td}>
-                    {
-                      topup.date
-                    }
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Date
+                </th>
+
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Time
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {topups.map(
+                (
+                  topup,
+                  index
+                ) => (
+                  <tr
+                    key={index}
+                    style={{
+                      borderBottom:
+                        "1px solid rgba(255,255,255,0.06)",
+                    }}
+                  >
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        topup.id
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        topup.network
+                      }
+                    </td>
+
+                    <td
+                      style={{
+                        ...tdStyle,
+
+                        color:
+                          "#38bdf8",
+
+                        fontWeight:
+                          "700",
+                      }}
+                    >
+                      {
+                        topup.amount
+                      }
+                    </td>
+
+                    <td
+                      style={{
+                        ...tdStyle,
+
+                        color:
+                          statusColor(
+                            topup.status
+                          ),
+
+                        fontWeight:
+                          "700",
+                      }}
+                    >
+                      {
+                        topup.status
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        topup.claimedBy
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        topup.date
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        topup.time
+                      }
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </AdminLayout>
   );
 }
 
-const title = {
-  fontSize: "42px",
-  fontWeight: "900",
-  marginBottom: "24px",
-};
+const cardStyle = {
+  background:
+    "#0f172a",
 
-const filterWrap = {
-  display: "flex",
-  gap: "14px",
-  flexWrap: "wrap" as const,
-  marginBottom: "24px",
-};
+  border:
+    "1px solid rgba(255,255,255,0.08)",
 
-const input = {
-  background: "#111827",
-  border: "1px solid #374151",
-  color: "white",
-  padding: "14px",
-  borderRadius: "14px",
-};
+  borderRadius:
+    "22px",
 
-const card = {
-  background: "#0B1120",
   padding: "24px",
-  borderRadius: "24px",
-  overflowX: "auto" as const,
 };
 
-const table = {
-  width: "100%",
-};
-
-const th = {
-  textAlign: "left" as const,
-  padding: "14px",
+const cardTitle = {
   color: "#94a3b8",
+
+  marginBottom:
+    "12px",
 };
 
-const td = {
-  padding: "16px",
+const cardValue = {
+  fontSize: "34px",
+
+  fontWeight:
+    "900",
+};
+
+const inputStyle = {
+  background:
+    "#111827",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+
+  color: "white",
+
+  padding: "14px",
+
+  borderRadius:
+    "14px",
+
+  outline: "none",
+
+  width: "100%",
+
+  boxSizing:
+    "border-box" as const,
+};
+
+const thStyle = {
+  textAlign:
+    "left" as const,
+
+  padding: "20px",
+
+  color: "#94a3b8",
+
+  fontSize: "14px",
+};
+
+const tdStyle = {
+  padding: "20px",
+
+  fontSize: "14px",
+
+  color: "white",
 };
