@@ -1,406 +1,163 @@
-import {
-  Link,
-  useLocation,
-} from "react-router-dom";
+import AdminLayout from "../layouts/AdminLayout";
 
-import {
-  useEffect,
-  useState,
-} from "react";
-
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const location =
-    useLocation();
-
-  const [open, setOpen] =
-    useState(false);
-
-  const [
-    isMobile,
-    setIsMobile,
-  ] = useState(false);
-
-  useEffect(() => {
-    const checkMobile =
-      () => {
-        setIsMobile(
-          window.innerWidth <
-            900
-        );
-      };
-
-    checkMobile();
-
-    window.addEventListener(
-      "resize",
-      checkMobile
-    );
-
-    return () =>
-      window.removeEventListener(
-        "resize",
-        checkMobile
-      );
-  }, []);
-
-  const menus = [
+export default function AdminDashboard() {
+  const cards = [
     {
-      name: "Dashboard",
-      path: "/admin",
+      title: "Resellers",
+      value: "0",
     },
 
     {
-      name: "Resellers",
-      path:
-        "/admin/resellers",
+      title: "Customers",
+      value: "0",
     },
 
     {
-      name: "Customers",
-      path:
-        "/admin/customers",
+      title: "Orders",
+      value: "0",
     },
 
     {
-      name: "Orders",
-      path:
-        "/admin/orders",
+      title: "Revenue",
+      value: "GH₵ 0.00",
     },
 
     {
-      name: "Top Ups",
-      path:
-        "/admin/topups",
+      title: "Top Ups",
+      value: "0",
     },
 
     {
-      name:
-        "Complaints",
-      path:
-        "/admin/complaints",
+      title: "Complaints",
+      value: "0",
     },
 
     {
-      name:
-        "Announcements",
-      path:
-        "/admin/announcements",
+      title:
+        "Wallet Balance",
+      value: "GH₵ 0.00",
     },
 
     {
-      name:
-        "Packages",
-      path:
-        "/admin/packages",
-    },
-
-    {
-      name:
-        "Rankings",
-      path:
-        "/admin/rankings",
+      title: "Profit",
+      value: "GH₵ 0.00",
     },
   ];
 
   return (
-    <div
-      style={{
-        background:
-          "#050816",
-
-        minHeight:
-          "100vh",
-
-        color: "white",
-      }}
-    >
-      {/* MOBILE TOPBAR */}
-      {isMobile && (
+    <AdminLayout>
+      <div>
+        {/* HEADER */}
         <div
           style={{
-            height: "70px",
-
-            display:
-              "flex",
-
-            alignItems:
-              "center",
-
-            justifyContent:
-              "space-between",
-
-            padding:
-              "0 20px",
-
             background:
-              "#0B1120",
+              "linear-gradient(135deg,#2563eb,#7c3aed)",
 
-            borderBottom:
-              "1px solid rgba(255,255,255,0.08)",
+            padding: "32px",
 
-            position:
-              "sticky",
+            borderRadius:
+              "24px",
 
-            top: 0,
-
-            zIndex: 999,
+            marginBottom:
+              "30px",
           }}
         >
           <h1
             style={{
               fontSize:
-                "28px",
+                "42px",
 
               fontWeight:
                 "900",
+
+              marginBottom:
+                "10px",
+            }}
+          >
+            Admin Dashboard
+          </h1>
+
+          <p
+            style={{
+              color:
+                "rgba(255,255,255,0.85)",
+
+              fontSize:
+                "18px",
             }}
           >
             DonmacData
-          </h1>
-
-          <button
-            onClick={() =>
-              setOpen(
-                true
-              )
-            }
-            style={{
-              width:
-                "48px",
-
-              height:
-                "48px",
-
-              border:
-                "none",
-
-              borderRadius:
-                "12px",
-
-              background:
-                "#111827",
-
-              color:
-                "white",
-
-              fontSize:
-                "24px",
-
-              cursor:
-                "pointer",
-            }}
-          >
-            ☰
-          </button>
+            Management
+            Platform
+          </p>
         </div>
-      )}
 
-      {/* OVERLAY */}
-      {isMobile &&
-        open && (
-          <div
-            onClick={() =>
-              setOpen(
-                false
-              )
-            }
-            style={{
-              position:
-                "fixed",
-
-              inset: 0,
-
-              background:
-                "rgba(0,0,0,0.6)",
-
-              zIndex: 998,
-            }}
-          />
-        )}
-
-      {/* SIDEBAR */}
-      <aside
-        style={{
-          width: "280px",
-
-          background:
-            "#0B1120",
-
-          borderRight:
-            "1px solid rgba(255,255,255,0.08)",
-
-          position:
-            "fixed",
-
-          top: 0,
-
-          left: 0,
-
-          bottom: 0,
-
-          padding:
-            "24px",
-
-          zIndex: 999,
-
-          overflowY:
-            "auto",
-
-          transition:
-            "0.3s ease",
-
-          transform:
-            isMobile
-              ? open
-                ? "translateX(0)"
-                : "translateX(-100%)"
-              : "translateX(0)",
-        }}
-      >
-        <h1
-          style={{
-            fontSize:
-              "38px",
-
-            fontWeight:
-              "900",
-
-            marginBottom:
-              "8px",
-          }}
-        >
-          DonmacData
-        </h1>
-
-        <p
-          style={{
-            color:
-              "#94a3b8",
-
-            marginBottom:
-              "40px",
-          }}
-        >
-          Admin Panel
-        </p>
-
+        {/* GRID */}
         <div
           style={{
-            display:
-              "flex",
+            display: "grid",
 
-            flexDirection:
-              "column",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(240px,1fr))",
 
-            gap: "12px",
+            gap: "24px",
           }}
         >
-          {menus.map(
-            (menu) => (
-              <Link
+          {cards.map(
+            (card) => (
+              <div
                 key={
-                  menu.path
-                }
-                to={
-                  menu.path
-                }
-                onClick={() =>
-                  setOpen(
-                    false
-                  )
+                  card.title
                 }
                 style={{
-                  padding:
-                    "16px",
+                  background:
+                    "#0f172a",
+
+                  border:
+                    "1px solid rgba(255,255,255,0.08)",
 
                   borderRadius:
-                    "14px",
+                    "22px",
 
-                  textDecoration:
-                    "none",
-
-                  color:
-                    "white",
-
-                  fontWeight:
-                    "600",
-
-                  background:
-                    location.pathname ===
-                    menu.path
-                      ? "linear-gradient(135deg,#2563eb,#7c3aed)"
-                      : "#111827",
+                  padding:
+                    "28px",
                 }}
               >
-                {
-                  menu.name
-                }
-              </Link>
+                <p
+                  style={{
+                    color:
+                      "#94a3b8",
+
+                    marginBottom:
+                      "14px",
+
+                    fontSize:
+                      "16px",
+                  }}
+                >
+                  {
+                    card.title
+                  }
+                </p>
+
+                <h2
+                  style={{
+                    fontSize:
+                      "34px",
+
+                    fontWeight:
+                      "900",
+                  }}
+                >
+                  {
+                    card.value
+                  }
+                </h2>
+              </div>
             )
           )}
         </div>
-
-        <button
-          style={{
-            marginTop:
-              "40px",
-
-            width: "100%",
-
-            background:
-              "#dc2626",
-
-            border:
-              "none",
-
-            color:
-              "white",
-
-            padding:
-              "16px",
-
-            borderRadius:
-              "14px",
-
-            fontWeight:
-              "700",
-
-            cursor:
-              "pointer",
-          }}
-        >
-          Logout
-        </button>
-      </aside>
-
-      {/* PAGE CONTENT */}
-      <main
-        style={{
-          marginLeft:
-            isMobile
-              ? "0"
-              : "280px",
-
-          padding:
-            isMobile
-              ? "20px"
-              : "40px",
-
-          width:
-            isMobile
-              ? "100%"
-              : "calc(100% - 280px)",
-
-          boxSizing:
-            "border-box",
-        }}
-      >
-        {children}
-      </main>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }
