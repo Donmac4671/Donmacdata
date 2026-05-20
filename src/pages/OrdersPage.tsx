@@ -1,301 +1,645 @@
-import { useState } from "react";
+import {
+  useState,
+} from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
 
-function generateRef() {
-  return Math.random()
-    .toString(36)
-    .substring(2, 10)
-    .toUpperCase();
-}
-
 export default function OrdersPage() {
-  const [orders, setOrders] =
-    useState([
-      {
-        id: 1,
-        ref: generateRef(),
-        phone: "0240000000",
-        network: "MTN",
-        package:
-          "10GB Bundle",
-        amount: "₵120",
-        status: "pending",
-        date: "2026-05-20",
-      },
-
-      {
-        id: 2,
-        ref: generateRef(),
-        phone: "0550000000",
-        network:
-          "Telecel",
-        package:
-          "Voice + SMS",
-        amount: "₵40",
-        status:
-          "delivered",
-        date: "2026-05-18",
-      },
-    ]);
-
-  const [search, setSearch] =
-    useState("");
+  const [status, setStatus] =
+    useState("All");
 
   const [network, setNetwork] =
-    useState("");
+    useState("All");
 
-  const [fromDate, setFromDate] =
-    useState("");
+  const orders = [
+    {
+      ref: "DMX92AK",
+      phone: "0241234567",
+      network: "MTN",
+      package: "10GB",
+      amount: "GH₵ 35",
+      status: "Delivered",
+      time: "10 mins",
+      date: "2026-05-20",
+    },
 
-  const [toDate, setToDate] =
-    useState("");
+    {
+      ref: "GHK72PL",
+      phone: "0559876543",
+      network: "Telecel",
+      package: "5GB",
+      amount: "GH₵ 20",
+      status: "Pending",
+      time: "20 mins",
+      date: "2026-05-20",
+    },
 
-  const filtered =
-    orders.filter((o) => {
-      const matchesSearch =
-        o.ref
-          .toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-        o.phone.includes(
-          search
-        );
+    {
+      ref: "KLP92TR",
+      phone: "0204567890",
+      network:
+        "AirtelTigo",
+      package:
+        "Airtime",
+      amount: "GH₵ 50",
+      status:
+        "Processing",
+      time: "45 mins",
+      date: "2026-05-19",
+    },
 
-      const matchesNetwork =
-        network
-          ? o.network ===
-            network
-          : true;
+    {
+      ref: "POX12MK",
+      phone: "0278882221",
+      network:
+        "Mashup",
+      package:
+        "20GB",
+      amount: "GH₵ 70",
+      status: "Failed",
+      time: "1 hour",
+      date: "2026-05-18",
+    },
 
-      const orderDate =
-        new Date(o.date);
+    {
+      ref: "ZXC67QP",
+      phone: "0542228881",
+      network:
+        "Telecel Voice + SMS",
+      package:
+        "Combo",
+      amount: "GH₵ 40",
+      status: "Waiting",
+      time:
+        "1 hour 30 mins",
+      date: "2026-05-18",
+    },
+  ];
 
-      const matchesFrom =
-        fromDate
-          ? orderDate >=
-            new Date(
-              fromDate
-            )
-          : true;
-
-      const matchesTo =
-        toDate
-          ? orderDate <=
-            new Date(
-              toDate
-            )
-          : true;
-
-      return (
-        matchesSearch &&
-        matchesNetwork &&
-        matchesFrom &&
-        matchesTo
-      );
-    });
-
-  function updateStatus(
-    id: number,
-    status: string
+  function statusColor(
+    value: string
   ) {
-    setOrders(
-      orders.map((o) =>
-        o.id === id
-          ? {
-              ...o,
-              status,
-            }
-          : o
-      )
-    );
-  }
+    switch (value) {
+      case "Delivered":
+        return "#22c55e";
 
-  function deleteOrder(
-    id: number
-  ) {
-    const confirmDelete =
-      confirm(
-        "Delete order?"
-      );
+      case "Pending":
+        return "#eab308";
 
-    if (!confirmDelete)
-      return;
+      case "Processing":
+        return "#3b82f6";
 
-    setOrders(
-      orders.filter(
-        (o) => o.id !== id
-      )
-    );
+      case "Failed":
+        return "#ef4444";
+
+      case "Waiting":
+        return "#9ca3af";
+
+      default:
+        return "white";
+    }
   }
 
   return (
     <AdminLayout>
-      <h1 style={title}>
-        Orders
-      </h1>
+      <div>
+        {/* HEADER */}
+        <div
+          style={{
+            display: "flex",
 
-      {/* FILTERS */}
-      <div style={filters}>
-        <input
-          placeholder="Search ref or phone"
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          style={input}
-        />
+            justifyContent:
+              "space-between",
 
-        <select
-          value={network}
-          onChange={(e) =>
-            setNetwork(
-              e.target.value
-            )
-          }
-          style={input}
+            alignItems:
+              "center",
+
+            flexWrap:
+              "wrap",
+
+            gap: "20px",
+
+            marginBottom:
+              "30px",
+          }}
         >
-          <option value="">
-            All Networks
-          </option>
+          <div>
+            <h1
+              style={{
+                fontSize:
+                  "40px",
 
-          <option>
-            MTN
-          </option>
+                fontWeight:
+                  "900",
 
-          <option>
-            Telecel
-          </option>
+                marginBottom:
+                  "8px",
+              }}
+            >
+              Orders
+            </h1>
 
-          <option>
-            AirtelTigo
-          </option>
+            <p
+              style={{
+                color:
+                  "#94a3b8",
+              }}
+            >
+              Manage all
+              customer
+              orders
+            </p>
+          </div>
 
-          <option>
-            Mashup
-          </option>
+          <button
+            style={{
+              background:
+                "linear-gradient(135deg,#2563eb,#7c3aed)",
 
-          <option>
-            Airtime
-          </option>
+              border:
+                "none",
 
-          <option>
-            Telecel Voice + SMS
-          </option>
+              color:
+                "white",
 
-          <option>
-            Telecel Voice + Data + SMS
-          </option>
-        </select>
+              padding:
+                "14px 24px",
 
-        <input
-          type="date"
-          value={fromDate}
-          onChange={(e) =>
-            setFromDate(
-              e.target.value
-            )
-          }
-          style={dateInput}
-        />
+              borderRadius:
+                "14px",
 
-        <input
-          type="date"
-          value={toDate}
-          onChange={(e) =>
-            setToDate(
-              e.target.value
-            )
-          }
-          style={dateInput}
-        />
-      </div>
+              fontWeight:
+                "700",
 
-      {/* TABLE */}
-      <div style={card}>
-        <table style={table}>
-          <thead>
-            <tr>
-              <th style={th}>
-                Ref
-              </th>
+              cursor:
+                "pointer",
+            }}
+          >
+            Export Orders
+          </button>
+        </div>
 
-              <th style={th}>
-                Phone
-              </th>
+        {/* FILTERS */}
+        <div
+          style={{
+            background:
+              "#0f172a",
 
-              <th style={th}>
-                Network
-              </th>
+            padding: "24px",
 
-              <th style={th}>
-                Package
-              </th>
+            borderRadius:
+              "24px",
 
-              <th style={th}>
-                Amount
-              </th>
+            marginBottom:
+              "30px",
 
-              <th style={th}>
-                Status
-              </th>
+            display: "grid",
 
-              <th style={th}>
-                Auto Deliver
-              </th>
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
 
-              <th style={th}>
-                Actions
-              </th>
-            </tr>
-          </thead>
+            gap: "18px",
 
-          <tbody>
-            {filtered.map(
-              (order) => (
-                <tr
-                  key={
-                    order.id
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <input
+            placeholder="Search phone or ref code"
+            style={inputStyle}
+          />
+
+          <select
+            value={network}
+            onChange={(
+              e
+            ) =>
+              setNetwork(
+                e.target
+                  .value
+              )
+            }
+            style={
+              inputStyle
+            }
+          >
+            <option>
+              All
+            </option>
+
+            <option>
+              MTN
+            </option>
+
+            <option>
+              Telecel
+            </option>
+
+            <option>
+              AirtelTigo
+            </option>
+
+            <option>
+              Mashup
+            </option>
+
+            <option>
+              Airtime
+            </option>
+
+            <option>
+              Telecel Voice + SMS
+            </option>
+
+            <option>
+              Telecel Voice + Data + SMS
+            </option>
+          </select>
+
+          <select
+            value={status}
+            onChange={(
+              e
+            ) =>
+              setStatus(
+                e.target
+                  .value
+              )
+            }
+            style={
+              inputStyle
+            }
+          >
+            <option>
+              All
+            </option>
+
+            <option>
+              Delivered
+            </option>
+
+            <option>
+              Pending
+            </option>
+
+            <option>
+              Processing
+            </option>
+
+            <option>
+              Waiting
+            </option>
+
+            <option>
+              Failed
+            </option>
+          </select>
+
+          <input
+            type="date"
+            style={inputStyle}
+          />
+
+          <input
+            type="date"
+            style={inputStyle}
+          />
+        </div>
+
+        {/* AUTO DELIVERY */}
+        <div
+          style={{
+            background:
+              "#0f172a",
+
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+
+            borderRadius:
+              "24px",
+
+            padding: "24px",
+
+            marginBottom:
+              "30px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+
+              justifyContent:
+                "space-between",
+
+              alignItems:
+                "center",
+
+              flexWrap:
+                "wrap",
+
+              gap: "20px",
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  fontSize:
+                    "24px",
+
+                  fontWeight:
+                    "800",
+
+                  marginBottom:
+                    "8px",
+                }}
+              >
+                Auto Delivery
+              </h2>
+
+              <p
+                style={{
+                  color:
+                    "#94a3b8",
+                }}
+              >
+                Automatically
+                mark orders
+                as delivered
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+
+                gap: "14px",
+
+                flexWrap:
+                  "wrap",
+              }}
+            >
+              <select
+                style={
+                  inputStyle
+                }
+              >
+                <option>
+                  5 mins
+                </option>
+
+                <option>
+                  10 mins
+                </option>
+
+                <option>
+                  15 mins
+                </option>
+
+                <option>
+                  20 mins
+                </option>
+
+                <option>
+                  25 mins
+                </option>
+
+                <option>
+                  30 mins
+                </option>
+
+                <option>
+                  45 mins
+                </option>
+
+                <option>
+                  1 hour
+                </option>
+
+                <option>
+                  1 hour 30 mins
+                </option>
+
+                <option>
+                  2 hours
+                </option>
+              </select>
+
+              <button
+                style={{
+                  background:
+                    "#22c55e",
+
+                  border:
+                    "none",
+
+                  color:
+                    "white",
+
+                  padding:
+                    "14px 24px",
+
+                  borderRadius:
+                    "14px",
+
+                  fontWeight:
+                    "700",
+
+                  cursor:
+                    "pointer",
+                }}
+              >
+                Enable
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* TABLE */}
+        <div
+          style={{
+            overflowX:
+              "auto",
+
+            background:
+              "#0f172a",
+
+            borderRadius:
+              "24px",
+
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <table
+            style={{
+              width: "100%",
+
+              borderCollapse:
+                "collapse",
+
+              minWidth:
+                "1100px",
+            }}
+          >
+            <thead>
+              <tr
+                style={{
+                  background:
+                    "#111827",
+                }}
+              >
+                <th
+                  style={
+                    thStyle
                   }
                 >
-                  <td style={td}>
-                    {order.ref}
-                  </td>
+                  Ref Code
+                </th>
 
-                  <td style={td}>
-                    {
-                      order.phone
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Phone
+                </th>
 
-                  <td style={td}>
-                    {
-                      order.network
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Network
+                </th>
 
-                  <td style={td}>
-                    {
-                      order.package
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Package
+                </th>
 
-                  <td style={td}>
-                    {
-                      order.amount
-                    }
-                  </td>
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Amount
+                </th>
 
-                  <td style={td}>
-                    <span
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Status
+                </th>
+
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Auto Time
+                </th>
+
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Date
+                </th>
+
+                <th
+                  style={
+                    thStyle
+                  }
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {orders.map(
+                (
+                  order,
+                  index
+                ) => (
+                  <tr
+                    key={index}
+                    style={{
+                      borderBottom:
+                        "1px solid rgba(255,255,255,0.06)",
+                    }}
+                  >
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        order.ref
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        order.phone
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        order.network
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      {
+                        order.package
+                      }
+                    </td>
+
+                    <td
                       style={{
+                        ...tdStyle,
+
                         color:
-                          getStatusColor(
+                          "#38bdf8",
+
+                        fontWeight:
+                          "700",
+                      }}
+                    >
+                      {
+                        order.amount
+                      }
+                    </td>
+
+                    <td
+                      style={{
+                        ...tdStyle,
+
+                        color:
+                          statusColor(
                             order.status
                           ),
+
                         fontWeight:
                           "700",
                       }}
@@ -303,214 +647,156 @@ export default function OrdersPage() {
                       {
                         order.status
                       }
-                    </span>
-                  </td>
+                    </td>
 
-                  <td style={td}>
-                    <select
+                    <td
                       style={
-                        input
+                        tdStyle
                       }
                     >
-                      <option>
-                        5 mins
-                      </option>
+                      {
+                        order.time
+                      }
+                    </td>
 
-                      <option>
-                        10 mins
-                      </option>
-
-                      <option>
-                        15 mins
-                      </option>
-
-                      <option>
-                        20 mins
-                      </option>
-
-                      <option>
-                        30 mins
-                      </option>
-
-                      <option>
-                        45 mins
-                      </option>
-
-                      <option>
-                        1 hour
-                      </option>
-
-                      <option>
-                        2 hours
-                      </option>
-                    </select>
-                  </td>
-
-                  <td style={td}>
-                    <div
-                      style={{
-                        display:
-                          "flex",
-                        gap: "10px",
-                        flexWrap:
-                          "wrap",
-                      }}
+                    <td
+                      style={
+                        tdStyle
+                      }
                     >
-                      <select
-                        value={
-                          order.status
-                        }
-                        onChange={(
-                          e
-                        ) =>
-                          updateStatus(
-                            order.id,
-                            e
-                              .target
-                              .value
-                          )
-                        }
-                        style={
-                          input
-                        }
+                      {
+                        order.date
+                      }
+                    </td>
+
+                    <td
+                      style={
+                        tdStyle
+                      }
+                    >
+                      <div
+                        style={{
+                          display:
+                            "flex",
+
+                          gap: "10px",
+
+                          flexWrap:
+                            "wrap",
+                        }}
                       >
-                        <option value="failed">
-                          Failed
-                        </option>
+                        <select
+                          style={{
+                            ...inputStyle,
 
-                        <option value="waiting">
-                          Waiting
-                        </option>
+                            padding:
+                              "10px",
 
-                        <option value="pending">
-                          Pending
-                        </option>
+                            minWidth:
+                              "140px",
+                          }}
+                        >
+                          <option>
+                            Update Status
+                          </option>
 
-                        <option value="processing">
-                          Processing
-                        </option>
+                          <option>
+                            Delivered
+                          </option>
 
-                        <option value="delivered">
-                          Delivered
-                        </option>
-                      </select>
+                          <option>
+                            Pending
+                          </option>
 
-                      <button
-                        onClick={() =>
-                          deleteOrder(
-                            order.id
-                          )
-                        }
-                        style={
-                          deleteBtn
-                        }
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )
-            )}
-          </tbody>
-        </table>
+                          <option>
+                            Processing
+                          </option>
+
+                          <option>
+                            Waiting
+                          </option>
+
+                          <option>
+                            Failed
+                          </option>
+                        </select>
+
+                        <button
+                          style={{
+                            background:
+                              "#dc2626",
+
+                            border:
+                              "none",
+
+                            color:
+                              "white",
+
+                            padding:
+                              "10px 14px",
+
+                            borderRadius:
+                              "12px",
+
+                            cursor:
+                              "pointer",
+
+                            fontWeight:
+                              "700",
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </AdminLayout>
   );
 }
 
-function getStatusColor(
-  status: string
-) {
-  switch (status) {
-    case "failed":
-      return "#ef4444";
+const inputStyle = {
+  background:
+    "#111827",
 
-    case "waiting":
-      return "#9ca3af";
-
-    case "pending":
-      return "#facc15";
-
-    case "processing":
-      return "#3b82f6";
-
-    case "delivered":
-      return "#22c55e";
-
-    default:
-      return "white";
-  }
-}
-
-const title = {
-  fontSize: "42px",
-  fontWeight: "900",
-  marginBottom: "24px",
-};
-
-const filters = {
-  display: "flex",
-  gap: "14px",
-  flexWrap: "wrap" as const,
-  marginBottom: "24px",
-};
-
-const input = {
-  background: "#111827",
   border:
-    "1px solid #374151",
+    "1px solid rgba(255,255,255,0.08)",
 
   color: "white",
 
   padding: "14px",
-
-  borderRadius: "14px",
-};
-
-const dateInput = {
-  background: "#111827",
-  border:
-    "1px solid #4b5563",
-
-  color: "white",
-
-  padding:
-    "14px 18px",
 
   borderRadius:
     "14px",
 
-  minWidth: "180px",
-};
+  outline: "none",
 
-const card = {
-  background: "#0B1120",
-  padding: "24px",
-  borderRadius: "24px",
-  overflowX: "auto" as const,
-};
-
-const table = {
   width: "100%",
+
+  boxSizing:
+    "border-box" as const,
 };
 
-const th = {
-  textAlign: "left" as const,
-  padding: "14px",
+const thStyle = {
+  textAlign:
+    "left" as const,
+
+  padding: "20px",
+
   color: "#94a3b8",
+
+  fontSize: "14px",
 };
 
-const td = {
-  padding: "16px",
-};
+const tdStyle = {
+  padding: "20px",
 
-const deleteBtn = {
-  background: "#dc2626",
-  border: "none",
+  fontSize: "14px",
+
   color: "white",
-  padding:
-    "12px 18px",
-  borderRadius: "12px",
-  cursor: "pointer",
 };
