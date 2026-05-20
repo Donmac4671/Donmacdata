@@ -28,15 +28,17 @@ export default function OrdersPage() {
       },
     ]);
 
-  const [
-    search,
-    setSearch,
-  ] = useState("");
+  const [search, setSearch] =
+  useState("");
 
-  const [
-    network,
-    setNetwork,
-  ] = useState("");
+const [network, setNetwork] =
+  useState("");
+
+const [fromDate, setFromDate] =
+  useState("");
+
+const [toDate, setToDate] =
+  useState("");
 
   const filtered =
     orders.filter((o) => {
