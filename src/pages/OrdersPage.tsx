@@ -1,6 +1,4 @@
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
 
@@ -23,60 +21,80 @@ export default function OrdersPage() {
           "10GB Bundle",
         amount: "₵120",
         status: "pending",
-        autoTime: "15 mins",
         date: "2026-05-20",
+      },
+
+      {
+        id: 2,
+        ref: generateRef(),
+        phone: "0550000000",
+        network:
+          "Telecel",
+        package:
+          "Voice + SMS",
+        amount: "₵40",
+        status:
+          "delivered",
+        date: "2026-05-18",
       },
     ]);
 
   const [search, setSearch] =
-  useState("");
+    useState("");
 
-const [network, setNetwork] =
-  useState("");
+  const [network, setNetwork] =
+    useState("");
 
-const [fromDate, setFromDate] =
-  useState("");
+  const [fromDate, setFromDate] =
+    useState("");
 
-const [toDate, setToDate] =
-  useState("");
+  const [toDate, setToDate] =
+    useState("");
 
   const filtered =
-  orders.filter((o) => {
-    const matchesSearch =
-      o.ref
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        ) ||
-      o.phone.includes(search);
+    orders.filter((o) => {
+      const matchesSearch =
+        o.ref
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          ) ||
+        o.phone.includes(
+          search
+        );
 
-    const matchesNetwork =
-      network
-        ? o.network === network
-        : true;
+      const matchesNetwork =
+        network
+          ? o.network ===
+            network
+          : true;
 
-    const orderDate =
-      new Date(o.date);
+      const orderDate =
+        new Date(o.date);
 
-    const matchesFrom =
-      fromDate
-        ? orderDate >=
-          new Date(fromDate)
-        : true;
+      const matchesFrom =
+        fromDate
+          ? orderDate >=
+            new Date(
+              fromDate
+            )
+          : true;
 
-    const matchesTo =
-      toDate
-        ? orderDate <=
-          new Date(toDate)
-        : true;
+      const matchesTo =
+        toDate
+          ? orderDate <=
+            new Date(
+              toDate
+            )
+          : true;
 
-    return (
-      matchesSearch &&
-      matchesNetwork &&
-      matchesFrom &&
-      matchesTo
-    );
-  });
+      return (
+        matchesSearch &&
+        matchesNetwork &&
+        matchesFrom &&
+        matchesTo
+      );
+    });
 
   function updateStatus(
     id: number,
@@ -119,7 +137,7 @@ const [toDate, setToDate] =
       </h1>
 
       {/* FILTERS */}
-      <div style={filterWrap}>
+      <div style={filters}>
         <input
           placeholder="Search ref or phone"
           value={search}
@@ -175,12 +193,24 @@ const [toDate, setToDate] =
 
         <input
           type="date"
-          style={input}
+          value={fromDate}
+          onChange={(e) =>
+            setFromDate(
+              e.target.value
+            )
+          }
+          style={dateInput}
         />
 
         <input
           type="date"
-          style={input}
+          value={toDate}
+          onChange={(e) =>
+            setToDate(
+              e.target.value
+            )
+          }
+          style={dateInput}
         />
       </div>
 
@@ -190,7 +220,7 @@ const [toDate, setToDate] =
           <thead>
             <tr>
               <th style={th}>
-                Ref Code
+                Ref
               </th>
 
               <th style={th}>
@@ -230,10 +260,6 @@ const [toDate, setToDate] =
                   key={
                     order.id
                   }
-                  style={{
-                    borderTop:
-                      "1px solid rgba(255,255,255,0.08)",
-                  }}
                 >
                   <td style={td}>
                     {order.ref}
@@ -303,10 +329,6 @@ const [toDate, setToDate] =
                       </option>
 
                       <option>
-                        25 mins
-                      </option>
-
-                      <option>
                         30 mins
                       </option>
 
@@ -316,10 +338,6 @@ const [toDate, setToDate] =
 
                       <option>
                         1 hour
-                      </option>
-
-                      <option>
-                        1 hour 30 mins
                       </option>
 
                       <option>
@@ -431,7 +449,7 @@ const title = {
   marginBottom: "24px",
 };
 
-const filterWrap = {
+const filters = {
   display: "flex",
   gap: "14px",
   flexWrap: "wrap" as const,
@@ -440,10 +458,30 @@ const filterWrap = {
 
 const input = {
   background: "#111827",
-  border: "none",
-  padding: "14px",
-  borderRadius: "14px",
+  border:
+    "1px solid #374151",
+
   color: "white",
+
+  padding: "14px",
+
+  borderRadius: "14px",
+};
+
+const dateInput = {
+  background: "#111827",
+  border:
+    "1px solid #4b5563",
+
+  color: "white",
+
+  padding:
+    "14px 18px",
+
+  borderRadius:
+    "14px",
+
+  minWidth: "180px",
 };
 
 const card = {
@@ -471,7 +509,8 @@ const deleteBtn = {
   background: "#dc2626",
   border: "none",
   color: "white",
-  padding: "12px 16px",
+  padding:
+    "12px 18px",
   borderRadius: "12px",
   cursor: "pointer",
 };
