@@ -118,7 +118,7 @@ export default function AdminLayout({
         color: "white",
       }}
     >
-      {/* MOBILE TOPBAR */}
+      {/* MOBILE HEADER */}
       {isMobile && (
         <div
           style={{
@@ -152,7 +152,7 @@ export default function AdminLayout({
           <h1
             style={{
               fontSize:
-                "28px",
+                "24px",
 
               fontWeight:
                 "900",
@@ -169,10 +169,10 @@ export default function AdminLayout({
             }
             style={{
               width:
-                "48px",
+                "45px",
 
               height:
-                "48px",
+                "45px",
 
               border:
                 "none",
@@ -187,7 +187,7 @@ export default function AdminLayout({
                 "white",
 
               fontSize:
-                "24px",
+                "22px",
 
               cursor:
                 "pointer",
@@ -224,7 +224,7 @@ export default function AdminLayout({
       {/* SIDEBAR */}
       <div
         style={{
-          width: "280px",
+          width: "230px",
 
           background:
             "#0B1120",
@@ -239,7 +239,7 @@ export default function AdminLayout({
           bottom: 0,
 
           padding:
-            "24px",
+            "20px",
 
           borderRight:
             "1px solid rgba(255,255,255,0.08)",
@@ -263,13 +263,13 @@ export default function AdminLayout({
         <h1
           style={{
             fontSize:
-              "38px",
+              "30px",
 
             fontWeight:
               "900",
 
             marginBottom:
-              "8px",
+              "6px",
           }}
         >
           DonmacData
@@ -281,7 +281,10 @@ export default function AdminLayout({
               "#94a3b8",
 
             marginBottom:
-              "40px",
+              "30px",
+
+            fontSize:
+              "14px",
           }}
         >
           Admin Panel
@@ -295,7 +298,7 @@ export default function AdminLayout({
             flexDirection:
               "column" as const,
 
-            gap: "12px",
+            gap: "10px",
           }}
         >
           {menus.map(
@@ -314,7 +317,7 @@ export default function AdminLayout({
                 }
                 style={{
                   padding:
-                    "16px",
+                    "14px",
 
                   borderRadius:
                     "14px",
@@ -327,6 +330,9 @@ export default function AdminLayout({
 
                   fontWeight:
                     "600",
+
+                  fontSize:
+                    "14px",
 
                   background:
                     location.pathname ===
@@ -346,12 +352,12 @@ export default function AdminLayout({
         <button
           style={{
             marginTop:
-              "40px",
+              "30px",
 
             width: "100%",
 
             padding:
-              "16px",
+              "14px",
 
             border:
               "none",
@@ -370,6 +376,9 @@ export default function AdminLayout({
 
             cursor:
               "pointer",
+
+            fontSize:
+              "14px",
           }}
         >
           Logout
@@ -382,17 +391,17 @@ export default function AdminLayout({
           marginLeft:
             isMobile
               ? "0"
-              : "280px",
-
-          padding:
-            isMobile
-              ? "20px"
-              : "40px",
+              : "230px",
 
           width:
             isMobile
               ? "100%"
-              : "calc(100% - 280px)",
+              : "calc(100% - 230px)",
+
+          padding:
+            isMobile
+              ? "20px"
+              : "35px",
 
           boxSizing:
             "border-box" as const,
