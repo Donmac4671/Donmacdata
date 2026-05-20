@@ -79,15 +79,15 @@ export default function AdminLayout({
 
   return (
     <div style={wrapper}>
-      {/* MOBILE TOP BAR */}
-      <div style={mobileTop}>
-        <h1 style={logo}>
+      {/* MOBILE HEADER */}
+      <div style={mobileHeader}>
+        <h1 style={mobileLogo}>
           DonmacData
         </h1>
 
         <button
           onClick={() =>
-            setOpen(!open)
+            setOpen(true)
           }
           style={menuButton}
         >
@@ -95,58 +95,106 @@ export default function AdminLayout({
         </button>
       </div>
 
+      {/* OVERLAY */}
+      {open && (
+        <div
+          onClick={() =>
+            setOpen(false)
+          }
+          style={overlay}
+        />
+      )}
+
       {/* SIDEBAR */}
       <aside
         style={{
           ...sidebar,
 
-          left:
+          transform:
             open ||
             window.innerWidth >
               900
-              ? "0"
-              : "-100%",
+              ? "translateX(0)"
+              : "translateX(-100%)",
         }}
       >
         <div>
-          <h1 style={logo}>
-            DonmacData
-          </h1>
+          <div
+            style={{
+              display:
+                "flex",
+              justifyContent:
+                "space-between",
+              alignItems:
+                "center",
+            }}
+          >
+            <div>
+              <h1 style={logo}>
+                DonmacData
+              </h1>
 
-          <p style={sub}>
-            Admin Panel
-          </p>
-        </div>
+              <p style={sub}>
+                Admin Panel
+              </p>
+            </div>
 
-        <div style={menuWrap}>
-          {menus.map((menu) => (
-            <Link
-              key={
-                menu.path
-              }
-              to={menu.path}
+            <button
               onClick={() =>
                 setOpen(
                   false
                 )
               }
-              style={{
-                ...menuStyle,
-
-                background:
-                  location.pathname ===
-                  menu.path
-                    ? "linear-gradient(135deg,#2563eb,#7c3aed)"
-                    : "#111827",
-              }}
+              style={
+                closeBtn
+              }
             >
-              {menu.name}
-            </Link>
-          ))}
+              ✕
+            </button>
+          </div>
+
+          <div
+            style={
+              menuWrap
+            }
+          >
+            {menus.map(
+              (menu) => (
+                <Link
+                  key={
+                    menu.path
+                  }
+                  to={
+                    menu.path
+                  }
+                  onClick={() =>
+                    setOpen(
+                      false
+                    )
+                  }
+                  style={{
+                    ...menuStyle,
+
+                    background:
+                      location.pathname ===
+                      menu.path
+                        ? "linear-gradient(135deg,#2563eb,#7c3aed)"
+                        : "#111827",
+                  }}
+                >
+                  {
+                    menu.name
+                  }
+                </Link>
+              )
+            )}
+          </div>
         </div>
 
         <button
-          style={logoutBtn}
+          style={
+            logoutBtn
+          }
         >
           Logout
         </button>
@@ -163,26 +211,65 @@ export default function AdminLayout({
 }
 
 const wrapper = {
-  display: "flex",
   minHeight: "100vh",
   background: "#050816",
   color: "white",
 };
 
+const mobileHeader = {
+  height: "70px",
+  background: "#0B1120",
+  borderBottom:
+    "1px solid rgba(255,255,255,0.08)",
+
+  display: "flex",
+
+  alignItems: "center",
+
+  justifyContent:
+    "space-between",
+
+  padding: "0 20px",
+
+  position: "sticky" as const,
+
+  top: 0,
+
+  zIndex: 100,
+};
+
+const mobileLogo = {
+  fontSize: "28px",
+  fontWeight: "900",
+};
+
+const menuButton = {
+  background: "#111827",
+  border: "none",
+  color: "white",
+  width: "48px",
+  height: "48px",
+  borderRadius: "12px",
+  fontSize: "24px",
+  cursor: "pointer",
+};
+
+const overlay = {
+  position: "fixed" as const,
+  inset: 0,
+  background:
+    "rgba(0,0,0,0.6)",
+  zIndex: 999,
+};
+
 const sidebar = {
   width: "290px",
   background: "#0B1120",
+
   borderRight:
     "1px solid rgba(255,255,255,0.08)",
 
   padding: "24px",
-
-  display: "flex",
-  flexDirection:
-    "column" as const,
-
-  justifyContent:
-    "space-between",
 
   position: "fixed" as const,
 
@@ -190,20 +277,40 @@ const sidebar = {
 
   bottom: 0,
 
+  left: 0,
+
   zIndex: 1000,
+
+  display: "flex",
+
+  flexDirection:
+    "column" as const,
+
+  justifyContent:
+    "space-between",
 
   transition:
     "0.3s ease",
 };
 
 const logo = {
-  fontSize: "34px",
+  fontSize: "36px",
   fontWeight: "900",
 };
 
 const sub = {
   color: "#94a3b8",
   marginTop: "8px",
+};
+
+const closeBtn = {
+  background: "#111827",
+  border: "none",
+  color: "white",
+  width: "42px",
+  height: "42px",
+  borderRadius: "12px",
+  cursor: "pointer",
 };
 
 const menuWrap = {
@@ -228,9 +335,6 @@ const menuStyle = {
     "16px",
 
   fontWeight: "600",
-
-  transition:
-    "0.2s ease",
 };
 
 const logoutBtn = {
@@ -244,30 +348,10 @@ const logoutBtn = {
 };
 
 const main = {
-  flex: 1,
-  marginLeft: "290px",
-  width: "100%",
+  padding:
+    "24px 18px",
 };
 
 const content = {
-  padding: "32px",
-  maxWidth: "1600px",
-};
-
-const mobileTop = {
-  display: "none",
-};
-
-const menuButton = {
-  background: "#111827",
-  border: "none",
-  color: "white",
-  fontSize: "24px",
-  padding:
-    "10px 16px",
-
-  borderRadius:
-    "12px",
-
-  cursor: "pointer",
+  width: "100%",
 };
