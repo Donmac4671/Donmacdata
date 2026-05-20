@@ -1,13 +1,11 @@
-import {
-  useState,
+import React, {
+  useState
 } from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
 
 export default function TopupsPage() {
-  const [status, setStatus] import {
-  useState,
-} from "react";
+  const [status, setStatus] = useState<string>("");
 
 import AdminLayout from "../layouts/AdminLayout";
 
