@@ -1,109 +1,144 @@
-import { useEffect, useState } from "react";
-
 import AdminLayout from "../layouts/AdminLayout";
 
-import { supabase } from "../lib/supabase";
-
 export default function AdminDashboard() {
-  const [stats, setStats] = useState({
-    resellers: 0,
-    customers: 0,
-    orders: 0,
-    revenue: 0,
-  });
-
-  async function loadStats() {
-    const { count: resellerCount } =
-      await supabase
-        .from("profiles")
-        .select("*", {
-          count: "exact",
-          head: true,
-        })
-        .eq("role", "reseller");
-
-    const { count: customerCount } =
-      await supabase
-        .from("profiles")
-        .select("*", {
-          count: "exact",
-          head: true,
-        })
-        .eq("role", "customer");
-
-    const { count: orderCount } =
-      await supabase
-        .from("orders")
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
-
-    setStats({
-      resellers: resellerCount || 0,
-      customers: customerCount || 0,
-      orders: orderCount || 0,
-      revenue: 0,
-    });
-  }
-
-  useEffect(() => {
-    loadStats();
-  }, []);
-
   return (
     <AdminLayout>
-      <div className="gradient rounded-3xl p-10 mb-10 shadow-2xl">
-        <h1 className="text-5xl font-black">
+      {/* HEADER */}
+      <div
+        style={{
+          background:
+            "linear-gradient(135deg,#2563eb,#7c3aed)",
+          borderRadius: "28px",
+          padding: "40px",
+          marginBottom: "32px",
+          boxShadow:
+            "0 10px 40px rgba(0,0,0,0.4)",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "52px",
+            fontWeight: "900",
+            marginBottom: "10px",
+          }}
+        >
           Admin Dashboard
         </h1>
 
-        <p className="text-white/70 mt-3 text-lg">
-          DonmacData Management Platform
+        <p
+          style={{
+            color: "rgba(255,255,255,0.8)",
+            fontSize: "18px",
+          }}
+        >
+          Welcome to DonmacData Management
+          Platform
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div className="glass p-8 rounded-3xl">
-          <p className="text-gray-400 text-lg">
-            Resellers
-          </p>
+      {/* STATS */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit,minmax(240px,1fr))",
+          gap: "24px",
+        }}
+      >
+        <StatCard
+          title="Resellers"
+          value="0"
+        />
 
-          <h2 className="text-5xl font-bold mt-4">
-            {stats.resellers}
-          </h2>
-        </div>
+        <StatCard
+          title="Customers"
+          value="0"
+        />
 
-        <div className="glass p-8 rounded-3xl">
-          <p className="text-gray-400 text-lg">
-            Customers
-          </p>
+        <StatCard
+          title="Orders"
+          value="0"
+        />
 
-          <h2 className="text-5xl font-bold mt-4">
-            {stats.customers}
-          </h2>
-        </div>
+        <StatCard
+          title="Revenue"
+          value="₵0.00"
+        />
+      </div>
 
-        <div className="glass p-8 rounded-3xl">
-          <p className="text-gray-400 text-lg">
-            Orders
-          </p>
+      {/* RECENT ACTIVITY */}
+      <div
+        style={{
+          marginTop: "40px",
+          background: "#0B1120",
+          borderRadius: "28px",
+          padding: "30px",
+          border:
+            "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: "28px",
+            fontWeight: "800",
+            marginBottom: "20px",
+          }}
+        >
+          Recent Activity
+        </h2>
 
-          <h2 className="text-5xl font-bold mt-4">
-            {stats.orders}
-          </h2>
-        </div>
-
-        <div className="glass p-8 rounded-3xl">
-          <p className="text-gray-400 text-lg">
-            Revenue
-          </p>
-
-          <h2 className="text-5xl font-bold mt-4">
-            ₵0.00
-          </h2>
+        <div
+          style={{
+            color: "#94a3b8",
+            padding: "20px",
+            background: "#111827",
+            borderRadius: "20px",
+          }}
+        >
+          No recent activity yet
         </div>
       </div>
     </AdminLayout>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+}: {
+  title: string;
+  value: string;
+}) {
+  return (
+    <div
+      style={{
+        background: "#0B1120",
+        borderRadius: "28px",
+        padding: "30px",
+        border:
+          "1px solid rgba(255,255,255,0.08)",
+        boxShadow:
+          "0 10px 30px rgba(0,0,0,0.3)",
+      }}
+    >
+      <p
+        style={{
+          color: "#94a3b8",
+          fontSize: "18px",
+          marginBottom: "12px",
+        }}
+      >
+        {title}
+      </p>
+
+      <h2
+        style={{
+          fontSize: "46px",
+          fontWeight: "900",
+        }}
+      >
+        {value}
+      </h2>
+    </div>
   );
 }
