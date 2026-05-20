@@ -6,18 +6,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-/*
-CHANGE THIS IMPORT
-TO MATCH YOUR FILE LOCATION
-
-EXAMPLES:
-
-../supabase
-../lib/supabase
-../utils/supabase
-*/
-
-import { supabase } from "../supabase";
+import { supabase } from "../lib/supabase";
 
 export default function LoginPage() {
   const navigate =
@@ -69,7 +58,7 @@ export default function LoginPage() {
 
   return (
     <div style={wrapper}>
-      {/* LEFT */}
+      {/* LEFT SIDE */}
       <div style={left}>
         <div>
           <h1 style={logo}>
@@ -115,7 +104,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* RIGHT */}
+      {/* RIGHT SIDE */}
       <div style={right}>
         <form
           onSubmit={
@@ -175,6 +164,7 @@ export default function LoginPage() {
 
               <input
                 type="email"
+                placeholder="Enter email"
                 value={email}
                 onChange={(
                   e
@@ -185,7 +175,6 @@ export default function LoginPage() {
                       .value
                   )
                 }
-                placeholder="Enter email"
                 style={
                   input
                 }
@@ -203,6 +192,7 @@ export default function LoginPage() {
 
               <input
                 type="password"
+                placeholder="Enter password"
                 value={
                   password
                 }
@@ -215,7 +205,6 @@ export default function LoginPage() {
                       .value
                   )
                 }
-                placeholder="Enter password"
                 style={
                   input
                 }
