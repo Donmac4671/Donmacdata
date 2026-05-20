@@ -41,22 +41,42 @@ const [toDate, setToDate] =
   useState("");
 
   const filtered =
-    orders.filter((o) => {
-      return (
-        (o.ref
-          .toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-          o.phone.includes(
-            search
-          )) &&
-        (network
-          ? o.network ===
-            network
-          : true)
-      );
-    });
+  orders.filter((o) => {
+    const matchesSearch =
+      o.ref
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        ) ||
+      o.phone.includes(search);
+
+    const matchesNetwork =
+      network
+        ? o.network === network
+        : true;
+
+    const orderDate =
+      new Date(o.date);
+
+    const matchesFrom =
+      fromDate
+        ? orderDate >=
+          new Date(fromDate)
+        : true;
+
+    const matchesTo =
+      toDate
+        ? orderDate <=
+          new Date(toDate)
+        : true;
+
+    return (
+      matchesSearch &&
+      matchesNetwork &&
+      matchesFrom &&
+      matchesTo
+    );
+  });
 
   function updateStatus(
     id: number,
