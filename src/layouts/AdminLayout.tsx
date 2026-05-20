@@ -224,7 +224,7 @@ export default function AdminLayout({
       {/* SIDEBAR */}
       <div
         style={{
-          width: "230px",
+          width: "190px",
 
           background:
             "#0B1120",
