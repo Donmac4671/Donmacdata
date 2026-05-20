@@ -1,23 +1,33 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import AdminLayout from "../layouts/AdminLayout";
+
 import { supabase } from "../lib/supabase";
 
 export default function ResellersPage() {
-  const [resellers, setResellers] = useState<any[]>([]);
+  const [resellers, setResellers] =
+    useState<any[]>([]);
 
   const [showModal, setShowModal] =
     useState(false);
 
-  const [email, setEmail] = useState("");
+  const [selectedUser, setSelectedUser] =
+    useState<any>(null);
 
-  const [fullName, setFullName] =
+  const [amount, setAmount] =
     useState("");
 
   async function fetchResellers() {
     const { data } = await supabase
       .from("profiles")
       .select("*")
-      .eq("role", "reseller");
+      .eq("role", "reseller")
+      .order("created_at", {
+        ascending: false,
+      });
 
     setResellers(data || []);
   }
@@ -26,15 +36,9 @@ export default function ResellersPage() {
     fetchResellers();
   }, []);
 
-  async function createReseller() {
-    alert(
-      "Reseller creation backend comes next"
-    );
-
-    setShowModal(false);
-  }
-
-  async function blockReseller(id: string) {
+  async function blockReseller(
+    id: string
+  ) {
     await supabase
       .from("profiles")
       .update({
@@ -45,11 +49,76 @@ export default function ResellersPage() {
     fetchResellers();
   }
 
+  async function unblockReseller(
+    id: string
+  ) {
+    await supabase
+      .from("profiles")
+      .update({
+        status: "active",
+      })
+      .eq("id", id);
+
+    fetchResellers();
+  }
+
+  async function deleteReseller(
+    id: string
+  ) {
+    const confirmed = confirm(
+      "Delete reseller?"
+    );
+
+    if (!confirmed) return;
+
+    await supabase
+      .from("profiles")
+      .delete()
+      .eq("id", id);
+
+    fetchResellers();
+  }
+
+  async function creditWallet() {
+    if (!selectedUser) return;
+
+    const numericAmount =
+      Number(amount);
+
+    const newBalance =
+      Number(
+        selectedUser.wallet_balance || 0
+      ) + numericAmount;
+
+    await supabase
+      .from("profiles")
+      .update({
+        wallet_balance: newBalance,
+      })
+      .eq("id", selectedUser.id);
+
+    await supabase
+      .from("transactions")
+      .insert({
+        user_id: selectedUser.id,
+        type: "credit",
+        amount: numericAmount,
+        description:
+          "Admin credited reseller wallet",
+      });
+
+    setShowModal(false);
+
+    setAmount("");
+
+    fetchResellers();
+  }
+
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-10">
         <div>
-          <h1 className="text-4xl font-bold">
+          <h1 className="text-5xl font-black">
             Resellers
           </h1>
 
@@ -58,10 +127,7 @@ export default function ResellersPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="gradient px-6 py-3 rounded-2xl font-semibold"
-        >
+        <button className="gradient px-6 py-4 rounded-2xl font-semibold">
           Add Reseller
         </button>
       </div>
@@ -72,10 +138,6 @@ export default function ResellersPage() {
             <tr>
               <th className="p-5 text-left">
                 Email
-              </th>
-
-              <th className="p-5 text-left">
-                Name
               </th>
 
               <th className="p-5 text-left">
@@ -103,13 +165,8 @@ export default function ResellersPage() {
                 </td>
 
                 <td className="p-5">
-                  {reseller.full_name ||
-                    "No name"}
-                </td>
-
-                <td className="p-5">
                   <span
-                    className={`px-3 py-1 rounded-full text-sm ${
+                    className={`px-4 py-2 rounded-full text-sm ${
                       reseller.status ===
                       "blocked"
                         ? "bg-red-500/20 text-red-400"
@@ -128,22 +185,54 @@ export default function ResellersPage() {
                 </td>
 
                 <td className="p-5">
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 flex-wrap">
                     <button
-                      className="bg-blue-600 px-4 py-2 rounded-xl"
+                      onClick={() => {
+                        setSelectedUser(
+                          reseller
+                        );
+
+                        setShowModal(true);
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
                     >
                       Credit
                     </button>
 
+                    {reseller.status ===
+                    "blocked" ? (
+                      <button
+                        onClick={() =>
+                          unblockReseller(
+                            reseller.id
+                          )
+                        }
+                        className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl"
+                      >
+                        Unblock
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          blockReseller(
+                            reseller.id
+                          )
+                        }
+                        className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-xl"
+                      >
+                        Block
+                      </button>
+                    )}
+
                     <button
                       onClick={() =>
-                        blockReseller(
+                        deleteReseller(
                           reseller.id
                         )
                       }
-                      className="bg-red-600 px-4 py-2 rounded-xl"
+                      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl"
                     >
-                      Block
+                      Delete
                     </button>
                   </div>
                 </td>
@@ -154,40 +243,28 @@ export default function ResellersPage() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="glass p-8 rounded-3xl w-full max-w-md">
-            <h2 className="text-2xl font-bold mb-6">
-              Add Reseller
+            <h2 className="text-3xl font-bold mb-6">
+              Credit Wallet
             </h2>
 
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full p-4 rounded-xl bg-slate-900"
-                value={fullName}
-                onChange={(e) =>
-                  setFullName(e.target.value)
-                }
-              />
+            <input
+              type="number"
+              placeholder="Amount"
+              className="w-full p-4 rounded-xl bg-slate-900 mb-4 outline-none"
+              value={amount}
+              onChange={(e) =>
+                setAmount(e.target.value)
+              }
+            />
 
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full p-4 rounded-xl bg-slate-900"
-                value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
-              />
-
-              <button
-                onClick={createReseller}
-                className="gradient w-full p-4 rounded-xl font-semibold"
-              >
-                Create Reseller
-              </button>
-            </div>
+            <button
+              onClick={creditWallet}
+              className="gradient w-full p-4 rounded-xl font-semibold"
+            >
+              Credit Wallet
+            </button>
           </div>
         </div>
       )}
