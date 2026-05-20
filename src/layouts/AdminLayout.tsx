@@ -5,6 +5,53 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const menus = [
+    {
+      name: "Dashboard",
+      path: "/admin",
+    },
+
+    {
+      name: "Resellers",
+      path: "/admin/resellers",
+    },
+
+    {
+      name: "Customers",
+      path: "/admin/customers",
+    },
+
+    {
+      name: "Top Ups",
+      path: "/admin/topups",
+    },
+
+    {
+      name: "Complaints",
+      path: "/admin/complaints",
+    },
+
+    {
+      name: "Announcements",
+      path: "/admin/announcements",
+    },
+
+    {
+      name: "Packages",
+      path: "/admin/packages",
+    },
+
+    {
+      name: "Rankings",
+      path: "/admin/rankings",
+    },
+
+    {
+      name: "Orders",
+      path: "/admin/orders",
+    },
+  ];
+
   return (
     <div
       style={{
@@ -12,112 +59,104 @@ export default function AdminLayout({
         minHeight: "100vh",
         background: "#050816",
         color: "white",
+        fontFamily: "Inter, sans-serif",
       }}
     >
       {/* SIDEBAR */}
-      <div
+      <aside
         style={{
-          width: "280px",
+          width: "300px",
           background: "#0B1120",
           padding: "24px",
           borderRight:
-            "1px solid rgba(255,255,255,0.1)",
+            "1px solid rgba(255,255,255,0.08)",
           display: "flex",
           flexDirection: "column",
+          gap: "24px",
         }}
       >
-        <h1
-          style={{
-            fontSize: "40px",
-            fontWeight: "900",
-            marginBottom: "8px",
-          }}
-        >
-          DonmacData
-        </h1>
+        {/* LOGO */}
+        <div>
+          <h1
+            style={{
+              fontSize: "42px",
+              fontWeight: "900",
+              margin: 0,
+            }}
+          >
+            DonmacData
+          </h1>
 
-        <p
-          style={{
-            color: "#94a3b8",
-            marginBottom: "40px",
-          }}
-        >
-          Admin Panel
-        </p>
+          <p
+            style={{
+              color: "#94a3b8",
+              marginTop: "10px",
+              fontSize: "15px",
+            }}
+          >
+            Admin Panel
+          </p>
+        </div>
 
         {/* MENU */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "12px",
+            gap: "14px",
           }}
         >
-          <Link
-            to="/admin"
-            style={menuStyle}
-          >
-            Dashboard
-          </Link>
-
-          <Link
-            to="/admin/resellers"
-            style={menuStyle}
-          >
-            Resellers
-          </Link>
-
-          <Link
-            to="/admin/customers"
-            style={menuStyle}
-          >
-            Customers
-          </Link>
-
-          <Link
-            to="/admin/orders"
-            style={menuStyle}
-          >
-            Orders
-          </Link>
+          {menus.map((menu) => (
+            <Link
+              key={menu.path}
+              to={menu.path}
+              style={{
+                background: "#111827",
+                color: "white",
+                textDecoration: "none",
+                padding: "18px 20px",
+                borderRadius: "18px",
+                fontWeight: "700",
+                fontSize: "16px",
+                transition: "0.3s",
+              }}
+            >
+              {menu.name}
+            </Link>
+          ))}
         </div>
 
+        {/* LOGOUT */}
         <div style={{ marginTop: "auto" }}>
           <button
             style={{
               width: "100%",
-              background: "#dc2626",
+              background:
+                "linear-gradient(135deg,#dc2626,#ef4444)",
               border: "none",
               color: "white",
-              padding: "16px",
-              borderRadius: "16px",
-              fontWeight: "bold",
+              padding: "18px",
+              borderRadius: "18px",
+              fontWeight: "800",
               cursor: "pointer",
+              fontSize: "16px",
             }}
           >
             Logout
           </button>
         </div>
-      </div>
+      </aside>
 
-      {/* CONTENT */}
-      <div
+      {/* MAIN CONTENT */}
+      <main
         style={{
           flex: 1,
-          padding: "32px",
+          padding: "40px",
+          overflowY: "auto",
         }}
       >
         {children}
-      </div>
+      </main>
     </div>
   );
 }
-
-const menuStyle = {
-  background: "#111827",
-  color: "white",
-  textDecoration: "none",
-  padding: "16px 20px",
-  borderRadius: "16px",
-  fontWeight: "600",
-};
