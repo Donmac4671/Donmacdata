@@ -1,49 +1,32 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-console.log("LOGIN PAGE RENDERED");
 
 export default function LoginPage() {
-  const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] =
+    useState("");
 
   async function handleLogin() {
-  try {
-    console.log("LOGIN START");
-
-    const response =
+    const { error } =
       await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-    console.log("FULL RESPONSE:", response);
-
-    alert("LOGIN FINISHED");
-
-    if (response.error) {
-      alert(response.error.message);
+    if (error) {
+      alert(error.message);
       return;
     }
 
-    alert("SUCCESS");
-
     window.location.href = "/admin";
-  } catch (err) {
-    console.log("CATCH ERROR:", err);
-
-    alert("FAILED");
   }
-}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050816]">
-      <div className="glass w-full max-w-md p-8 rounded-3xl shadow-2xl">
-        <div className="gradient h-20 rounded-2xl mb-6"></div>
+      <div className="glass w-full max-w-md p-8 rounded-3xl">
+        <div className="gradient h-24 rounded-2xl mb-6"></div>
 
-        <h1 className="text-3xl font-bold mb-2 text-white">
+        <h1 className="text-4xl font-bold text-white mb-2">
           DonmacData
         </h1>
 
@@ -55,22 +38,27 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-4 rounded-xl bg-[#0f172a] border border-slate-700 text-white outline-none"
+            className="w-full p-4 rounded-xl bg-slate-900 text-white outline-none"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
           />
 
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-4 rounded-xl bg-[#0f172a] border border-slate-700 text-white outline-none"
+            className="w-full p-4 rounded-xl bg-slate-900 text-white outline-none"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
           />
 
           <button
+            type="button"
             onClick={handleLogin}
-            className="w-full gradient p-4 rounded-xl font-semibold text-white"
+            className="gradient w-full p-4 rounded-xl font-semibold text-white"
           >
             Login
           </button>
