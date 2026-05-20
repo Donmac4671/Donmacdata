@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+console.log("LOGIN PAGE RENDERED");
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -9,26 +10,32 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   async function handleLogin() {
-  console.log("LOGIN START");
+  try {
+    console.log("LOGIN START");
 
-  const response =
-    await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const response =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-  console.log("FULL RESPONSE:", response);
+    console.log("FULL RESPONSE:", response);
 
-  if (response.error) {
-    console.log("LOGIN ERROR:", response.error);
+    alert("LOGIN FINISHED");
 
-    alert(response.error.message);
-    return;
+    if (response.error) {
+      alert(response.error.message);
+      return;
+    }
+
+    alert("SUCCESS");
+
+    window.location.href = "/admin";
+  } catch (err) {
+    console.log("CATCH ERROR:", err);
+
+    alert("FAILED");
   }
-
-  console.log("LOGIN SUCCESS");
-
-  window.location.href = "/admin";
 }
 
   return (
