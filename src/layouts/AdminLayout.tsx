@@ -4,6 +4,7 @@ import {
 } from "react-router-dom";
 
 import {
+  useEffect,
   useState,
 } from "react";
 
@@ -17,6 +18,33 @@ export default function AdminLayout({
 
   const [open, setOpen] =
     useState(false);
+
+  const [
+    isMobile,
+    setIsMobile,
+  ] = useState(false);
+
+  useEffect(() => {
+    function checkSize() {
+      setIsMobile(
+        window.innerWidth <
+          900
+      );
+    }
+
+    checkSize();
+
+    window.addEventListener(
+      "resize",
+      checkSize
+    );
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        checkSize
+      );
+  }, []);
 
   const menus = [
     {
@@ -80,30 +108,49 @@ export default function AdminLayout({
   return (
     <div style={wrapper}>
       {/* MOBILE HEADER */}
-      <div style={mobileHeader}>
-        <h1 style={mobileLogo}>
-          DonmacData
-        </h1>
-
-        <button
-          onClick={() =>
-            setOpen(true)
+      {isMobile && (
+        <div
+          style={
+            mobileHeader
           }
-          style={menuButton}
         >
-          ☰
-        </button>
-      </div>
+          <h1
+            style={
+              mobileLogo
+            }
+          >
+            DonmacData
+          </h1>
+
+          <button
+            onClick={() =>
+              setOpen(
+                true
+              )
+            }
+            style={
+              menuButton
+            }
+          >
+            ☰
+          </button>
+        </div>
+      )}
 
       {/* OVERLAY */}
-      {open && (
-        <div
-          onClick={() =>
-            setOpen(false)
-          }
-          style={overlay}
-        />
-      )}
+      {isMobile &&
+        open && (
+          <div
+            onClick={() =>
+              setOpen(
+                false
+              )
+            }
+            style={
+              overlay
+            }
+          />
+        )}
 
       {/* SIDEBAR */}
       <aside
@@ -111,46 +158,51 @@ export default function AdminLayout({
           ...sidebar,
 
           transform:
-            open ||
-            window.innerWidth >
-              900
-              ? "translateX(0)"
-              : "translateX(-100%)",
+            isMobile
+              ? open
+                ? "translateX(0)"
+                : "translateX(-100%)"
+              : "translateX(0)",
         }}
       >
         <div>
           <div
-            style={{
-              display:
-                "flex",
-              justifyContent:
-                "space-between",
-              alignItems:
-                "center",
-            }}
+            style={
+              topSection
+            }
           >
             <div>
-              <h1 style={logo}>
+              <h1
+                style={
+                  logo
+                }
+              >
                 DonmacData
               </h1>
 
-              <p style={sub}>
+              <p
+                style={
+                  sub
+                }
+              >
                 Admin Panel
               </p>
             </div>
 
-            <button
-              onClick={() =>
-                setOpen(
-                  false
-                )
-              }
-              style={
-                closeBtn
-              }
-            >
-              ✕
-            </button>
+            {isMobile && (
+              <button
+                onClick={() =>
+                  setOpen(
+                    false
+                  )
+                }
+                style={
+                  closeBtn
+                }
+              >
+                ✕
+              </button>
+            )}
           </div>
 
           <div
@@ -179,7 +231,7 @@ export default function AdminLayout({
                       location.pathname ===
                       menu.path
                         ? "linear-gradient(135deg,#2563eb,#7c3aed)"
-                        : "#111827",
+                        : "transparent",
                   }}
                 >
                   {
@@ -200,8 +252,17 @@ export default function AdminLayout({
         </button>
       </aside>
 
-      {/* CONTENT */}
-      <main style={main}>
+      {/* MAIN */}
+      <main
+        style={{
+          ...main,
+
+          marginLeft:
+            isMobile
+              ? "0"
+              : "300px",
+        }}
+      >
         <div style={content}>
           {children}
         </div>
@@ -216,11 +277,137 @@ const wrapper = {
   color: "white",
 };
 
-const mobileHeader = {
-  height: "70px",
-  background: "#0B1120",
-  borderBottom:
+const sidebar = {
+  width: "300px",
+
+  background:
+    "linear-gradient(180deg,#0B1120,#111827)",
+
+  borderRight:
     "1px solid rgba(255,255,255,0.08)",
+
+  position: "fixed" as const,
+
+  top: 0,
+
+  left: 0,
+
+  bottom: 0,
+
+  padding: "30px 22px",
+
+  display: "flex",
+
+  flexDirection:
+    "column" as const,
+
+  justifyContent:
+    "space-between",
+
+  zIndex: 1000,
+
+  transition:
+    "0.3s ease",
+};
+
+const topSection = {
+  display: "flex",
+
+  justifyContent:
+    "space-between",
+
+  alignItems: "center",
+};
+
+const logo = {
+  fontSize: "34px",
+
+  fontWeight: "900",
+
+  margin: 0,
+};
+
+const sub = {
+  color: "#94a3b8",
+
+  marginTop: "8px",
+};
+
+const menuWrap = {
+  marginTop: "40px",
+
+  display: "flex",
+
+  flexDirection:
+    "column" as const,
+
+  gap: "12px",
+};
+
+const menuStyle = {
+  color: "white",
+
+  textDecoration:
+    "none",
+
+  padding:
+    "16px 18px",
+
+  borderRadius:
+    "16px",
+
+  fontWeight: "600",
+
+  transition:
+    "0.2s ease",
+
+  border:
+    "1px solid rgba(255,255,255,0.05)",
+};
+
+const logoutBtn = {
+  width: "100%",
+
+  background:
+    "linear-gradient(135deg,#dc2626,#ef4444)",
+
+  border: "none",
+
+  color: "white",
+
+  padding: "18px",
+
+  borderRadius:
+    "18px",
+
+  fontWeight: "700",
+
+  cursor: "pointer",
+
+  fontSize: "15px",
+};
+
+const main = {
+  minHeight: "100vh",
+
+  transition:
+    "0.3s ease",
+};
+
+const content = {
+  padding: "40px",
+
+  maxWidth: "1700px",
+};
+
+const mobileHeader = {
+  height: "72px",
+
+  background:
+    "rgba(11,17,32,0.95)",
+
+  backdropFilter:
+    "blur(10px)",
 
   display: "flex",
 
@@ -240,118 +427,51 @@ const mobileHeader = {
 
 const mobileLogo = {
   fontSize: "28px",
+
   fontWeight: "900",
 };
 
 const menuButton = {
   background: "#111827",
+
   border: "none",
+
   color: "white",
+
   width: "48px",
+
   height: "48px",
-  borderRadius: "12px",
+
+  borderRadius: "14px",
+
   fontSize: "24px",
+
+  cursor: "pointer",
+};
+
+const closeBtn = {
+  background: "#111827",
+
+  border: "none",
+
+  color: "white",
+
+  width: "40px",
+
+  height: "40px",
+
+  borderRadius: "12px",
+
   cursor: "pointer",
 };
 
 const overlay = {
   position: "fixed" as const,
+
   inset: 0,
+
   background:
     "rgba(0,0,0,0.6)",
+
   zIndex: 999,
-};
-
-const sidebar = {
-  width: "290px",
-  background: "#0B1120",
-
-  borderRight:
-    "1px solid rgba(255,255,255,0.08)",
-
-  padding: "24px",
-
-  position: "fixed" as const,
-
-  top: 0,
-
-  bottom: 0,
-
-  left: 0,
-
-  zIndex: 1000,
-
-  display: "flex",
-
-  flexDirection:
-    "column" as const,
-
-  justifyContent:
-    "space-between",
-
-  transition:
-    "0.3s ease",
-};
-
-const logo = {
-  fontSize: "36px",
-  fontWeight: "900",
-};
-
-const sub = {
-  color: "#94a3b8",
-  marginTop: "8px",
-};
-
-const closeBtn = {
-  background: "#111827",
-  border: "none",
-  color: "white",
-  width: "42px",
-  height: "42px",
-  borderRadius: "12px",
-  cursor: "pointer",
-};
-
-const menuWrap = {
-  display: "flex",
-  flexDirection:
-    "column" as const,
-
-  gap: "14px",
-
-  marginTop: "40px",
-};
-
-const menuStyle = {
-  color: "white",
-  textDecoration:
-    "none",
-
-  padding:
-    "16px 18px",
-
-  borderRadius:
-    "16px",
-
-  fontWeight: "600",
-};
-
-const logoutBtn = {
-  background: "#dc2626",
-  border: "none",
-  color: "white",
-  padding: "18px",
-  borderRadius: "18px",
-  fontWeight: "700",
-  cursor: "pointer",
-};
-
-const main = {
-  padding:
-    "24px 18px",
-};
-
-const content = {
-  width: "100%",
 };
