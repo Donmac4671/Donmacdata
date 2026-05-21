@@ -1,9 +1,4 @@
-
-import { Wallet, Users, ShoppingCart, TrendingUp } from "lucide-react";
-
-export default function DashboardPage() {
-  return (
-    <div className="flex min-h-screen bg-[#050816] text-white"import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
 
@@ -13,11 +8,22 @@ export default function DashboardPage() {
   const [orders, setOrders] =
     useState<any[]>([]);
 
+  const [loading, setLoading] =
+    useState(true);
+
   async function loadOrders() {
+    setLoading(true);
+
     const { data, error } =
       await supabase
         .from("orders")
-        .select("*");
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending: false,
+          }
+        );
 
     if (error) {
       console.log(error);
@@ -25,170 +31,517 @@ export default function DashboardPage() {
     }
 
     setOrders(data || []);
+
+    setLoading(false);
   }
 
   useEffect(() => {
     loadOrders();
+
+    // REALTIME
+
+    const channel =
+      supabase
+        .channel(
+          "orders-live"
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema:
+              "public",
+            table:
+              "orders",
+          },
+          () => {
+            loadOrders();
+          }
+        )
+        .subscribe();
+
+    return () => {
+      supabase.removeChannel(
+        channel
+      );
+    };
   }, []);
+
+  const deliveredOrders =
+    orders.filter(
+      (item) =>
+        item.status ===
+        "Delivered"
+    ).length;
+
+  const processingOrders =
+    orders.filter(
+      (item) =>
+        item.status ===
+        "Processing"
+    ).length;
+
+  const failedOrders =
+    orders.filter(
+      (item) =>
+        item.status ===
+        "Failed"
+    ).length;
+
+  const totalRevenue =
+    orders.reduce(
+      (
+        total,
+        item
+      ) =>
+        total +
+        Number(
+          item.amount ||
+            0
+        ),
+      0
+    );
+
+  function statusColor(
+    value: string
+  ) {
+    if (
+      value ===
+      "Delivered"
+    )
+      return "#22c55e";
+
+    if (
+      value ===
+      "Processing"
+    )
+      return "#3b82f6";
+
+    if (
+      value ===
+      "Pending"
+    )
+      return "#facc15";
+
+    if (
+      value ===
+      "Failed"
+    )
+      return "#ef4444";
+
+    return "#94a3b8";
+  }
 
   return (
     <AdminLayout>
       <div>
-        <h1
+        {/* HEADER */}
+
+        <div
           style={{
-            fontSize: "40px",
-            fontWeight: "900",
-            marginBottom: "30px",
+            display: "flex",
+            justifyContent:
+              "space-between",
+            alignItems:
+              "center",
+            flexWrap:
+              "wrap",
+            gap: "20px",
+            marginBottom:
+              "30px",
           }}
         >
-          Live Orders
-        </h1>
+          <div>
+            <h1
+              style={{
+                fontSize:
+                  "42px",
+                fontWeight:
+                  "900",
+                marginBottom:
+                  "10px",
+              }}
+            >
+              Admin Dashboard
+            </h1>
+
+            <p
+              style={{
+                color:
+                  "#94a3b8",
+              }}
+            >
+              Live Telecom
+              Management
+              System
+            </p>
+          </div>
+
+          <button
+            onClick={
+              loadOrders
+            }
+            style={{
+              background:
+                "#2563eb",
+              border:
+                "none",
+              color:
+                "white",
+              padding:
+                "14px 20px",
+              borderRadius:
+                "14px",
+              fontWeight:
+                "700",
+              cursor:
+                "pointer",
+            }}
+          >
+            Refresh
+          </button>
+        </div>
+
+        {/* STATS */}
 
         <div
           style={{
             display: "grid",
-            gap: "20px",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(240px,1fr))",
+            gap: "22px",
+            marginBottom:
+              "40px",
           }}
         >
-          {orders.map((item) => (
-            <div
-              key={item.id}
+          <Card
+            title="Total Orders"
+            value={
+              orders.length
+            }
+            color="#3b82f6"
+          />
+
+          <Card
+            title="Delivered"
+            value={
+              deliveredOrders
+            }
+            color="#22c55e"
+          />
+
+          <Card
+            title="Processing"
+            value={
+              processingOrders
+            }
+            color="#facc15"
+          />
+
+          <Card
+            title="Failed"
+            value={
+              failedOrders
+            }
+            color="#ef4444"
+          />
+
+          <Card
+            title="Revenue"
+            value={`GH₵${totalRevenue}`}
+            color="#8b5cf6"
+          />
+        </div>
+
+        {/* ORDERS */}
+
+        <div
+          style={{
+            background:
+              "#0f172a",
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+            borderRadius:
+              "24px",
+            padding:
+              "24px",
+            overflowX:
+              "auto",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent:
+                "space-between",
+              alignItems:
+                "center",
+              marginBottom:
+                "24px",
+            }}
+          >
+            <h2
               style={{
-                background: "#111827",
-                padding: "24px",
-                borderRadius: "20px",
+                fontSize:
+                  "30px",
+                fontWeight:
+                  "800",
               }}
             >
-              <h2>{item.reference}</h2>
+              Recent Orders
+            </h2>
 
-              <p>{item.network}</p>
-
-              <p>{item.phone}</p>
-
-              <p>{item.amount}</p>
-
-              <p>{item.status}</p>
+            <div
+              style={{
+                color:
+                  "#22c55e",
+                fontWeight:
+                  "700",
+              }}
+            >
+              LIVE
             </div>
-          ))}
+          </div>
+
+          {loading ? (
+            <div
+              style={{
+                padding:
+                  "40px",
+                textAlign:
+                  "center",
+                color:
+                  "#94a3b8",
+              }}
+            >
+              Loading orders...
+            </div>
+          ) : orders.length ===
+            0 ? (
+            <div
+              style={{
+                padding:
+                  "40px",
+                textAlign:
+                  "center",
+                color:
+                  "#94a3b8",
+              }}
+            >
+              No orders found
+            </div>
+          ) : (
+            <table
+              style={{
+                width:
+                  "100%",
+                borderCollapse:
+                  "collapse",
+                minWidth:
+                  "900px",
+              }}
+            >
+              <thead>
+                <tr>
+                  {[
+                    "Reference",
+                    "Network",
+                    "Package",
+                    "Phone",
+                    "Amount",
+                    "Status",
+                    "Date",
+                  ].map(
+                    (
+                      item
+                    ) => (
+                      <th
+                        key={
+                          item
+                        }
+                        style={{
+                          textAlign:
+                            "left",
+                          padding:
+                            "18px",
+                          color:
+                            "#94a3b8",
+                          borderBottom:
+                            "1px solid rgba(255,255,255,0.08)",
+                        }}
+                      >
+                        {
+                          item
+                        }
+                      </th>
+                    )
+                  )}
+                </tr>
+              </thead>
+
+              <tbody>
+                {orders.map(
+                  (
+                    item
+                  ) => (
+                    <tr
+                      key={
+                        item.id
+                      }
+                    >
+                      <td
+                        style={
+                          tdStyle
+                        }
+                      >
+                        {
+                          item.reference
+                        }
+                      </td>
+
+                      <td
+                        style={
+                          tdStyle
+                        }
+                      >
+                        {
+                          item.network
+                        }
+                      </td>
+
+                      <td
+                        style={
+                          tdStyle
+                        }
+                      >
+                        {
+                          item.package
+                        }
+                      </td>
+
+                      <td
+                        style={
+                          tdStyle
+                        }
+                      >
+                        {
+                          item.phone
+                        }
+                      </td>
+
+                      <td
+                        style={
+                          tdStyle
+                        }
+                      >
+                        GH₵
+                        {
+                          item.amount
+                        }
+                      </td>
+
+                      <td
+                        style={{
+                          ...tdStyle,
+                          color:
+                            statusColor(
+                              item.status
+                            ),
+                          fontWeight:
+                            "800",
+                        }}
+                      >
+                        {
+                          item.status
+                        }
+                      </td>
+
+                      <td
+                        style={
+                          tdStyle
+                        }
+                      >
+                        {new Date(
+                          item.created_at
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </AdminLayout>
-  );
-}
-      <aside className="w-72 glass p-6 border-r border-slate-800">
-        <h2 className="text-2xl font-bold mb-10">
-          Reseller Admin
-        </h2>
-
-        <nav className="space-y-4">
-          <div className="p-4 rounded-xl bg-violet-600">
-            Dashboard
-          </div>
-
-          <div className="p-4 rounded-xl hover:bg-slate-800 cursor-pointer">
-            Orders
-          </div>
-
-          <div className="p-4 rounded-xl hover:bg-slate-800 cursor-pointer">
-            Resellers
-          </div>
-
-          <div className="p-4 rounded-xl hover:bg-slate-800 cursor-pointer">
-            Withdrawals
-          </div>
-        </nav>
-      </aside>
-
-      <main className="flex-1 p-8">
-        <div className="gradient rounded-3xl p-8 mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            Welcome Back 👋
-          </h1>
-
-          <p className="text-white/80">
-            Monitor orders, profits and resellers.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card
-            title="Wallet Balance"
-            value="₦2,450,000"
-            icon={<Wallet />}
-          />
-
-          <Card
-            title="Total Customers"
-            value="1,280"
-            icon={<Users />}
-          />
-
-          <Card
-            title="Orders"
-            value="15,420"
-            icon={<ShoppingCart />}
-          />
-
-          <Card
-            title="Profit"
-            value="₦480,000"
-            icon={<TrendingUp />}
-          />
-        </div>
-
-        <div className="glass rounded-3xl p-6">
-          <h2 className="text-2xl font-semibold mb-6">
-            Recent Orders
-          </h2>
-
-          <div className="space-y-4">
-            {[1,2,3,4].map((item) => (
-              <div
-                key={item}
-                className="flex justify-between items-center bg-[#0f172a] p-4 rounded-2xl"
-              >
-                <div>
-                  <p className="font-semibold">
-                    MTN 10GB
-                  </p>
-
-                  <p className="text-sm text-gray-400">
-                    Customer Purchase
-                  </p>
-                </div>
-
-                <div className="text-green-400 font-bold">
-                  Successful
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </main>
-    </div>
   );
 }
 
 function Card({
   title,
   value,
-  icon
+  color,
 }: {
   title: string;
-  value: string;
-  icon: React.ReactNode;
+  value: any;
+  color: string;
 }) {
   return (
-    <div className="glass rounded-3xl p-6">
-      <div className="flex justify-between items-center mb-6">
-        <div className="bg-violet-600 p-3 rounded-xl">
-          {icon}
-        </div>
-      </div>
+    <div
+      style={{
+        background:
+          "linear-gradient(180deg,#0f172a,#111827)",
+        border:
+          "1px solid rgba(255,255,255,0.08)",
+        borderRadius:
+          "24px",
+        padding:
+          "24px",
+      }}
+    >
+      <div
+        style={{
+          width: "60px",
+          height: "60px",
+          borderRadius:
+            "18px",
+          background:
+            color,
+          opacity: 0.15,
+          marginBottom:
+            "18px",
+        }}
+      />
 
-      <p className="text-gray-400 mb-2">{title}</p>
+      <p
+        style={{
+          color:
+            "#94a3b8",
+          marginBottom:
+            "12px",
+        }}
+      >
+        {title}
+      </p>
 
-      <h3 className="text-3xl font-bold">{value}</h3>
+      <h2
+        style={{
+          fontSize:
+            "34px",
+          fontWeight:
+            "900",
+          color:
+            color,
+        }}
+      >
+        {value}
+      </h2>
     </div>
   );
 }
+
+const tdStyle = {
+  padding: "18px",
+  borderBottom:
+    "1px solid rgba(255,255,255,0.08)",
+};
