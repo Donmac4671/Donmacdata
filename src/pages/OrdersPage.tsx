@@ -45,6 +45,26 @@ export default function OrdersPage() {
   const [amount, setAmount] =
     useState("");
 
+  const [search, setSearch] =
+    useState("");
+
+  const [statusFilter, setStatusFilter] =
+    useState("All");
+
+  const [networkFilter, setNetworkFilter] =
+    useState("All");
+
+  const [fromDate, setFromDate] =
+    useState("");
+
+  const [toDate, setToDate] =
+    useState("");
+
+  const [
+    autoDeliveryTime,
+    setAutoDeliveryTime,
+  ] = useState("0");
+
   async function loadOrders() {
     setLoading(true);
 
@@ -99,6 +119,23 @@ export default function OrdersPage() {
     };
   }, []);
 
+  async function autoDeliverOrder(
+    id: string,
+    minutes: number
+  ) {
+    if (!minutes) return;
+
+    setTimeout(async () => {
+      await supabase
+        .from("orders")
+        .update({
+          status:
+            "Delivered",
+        })
+        .eq("id", id);
+    }, minutes * 60 * 1000);
+  }
+
   async function createOrder() {
     if (
       !phone ||
@@ -118,18 +155,36 @@ export default function OrdersPage() {
           {
             reference:
               generateRef(),
+
             network,
+
             package:
               packageName,
+
             phone,
+
             amount:
               Number(
                 amount
               ),
+
             status:
               "Pending",
+
             auto_delivery:
-              false,
+              autoDeliveryTime !==
+              "0",
+
+            delivery_time:
+              Number(
+                autoDeliveryTime
+              ),
+
+            ordered_by:
+              "Admin",
+
+            source:
+              "Admin",
           },
         ]);
 
@@ -141,6 +196,35 @@ export default function OrdersPage() {
       );
 
       return;
+    }
+
+    if (
+      autoDeliveryTime !==
+      "0"
+    ) {
+      const latest =
+        await supabase
+          .from("orders")
+          .select("*")
+          .order(
+            "created_at",
+            {
+              ascending: false,
+            }
+          )
+          .limit(1)
+          .single();
+
+      if (
+        latest.data
+      ) {
+        autoDeliverOrder(
+          latest.data.id,
+          Number(
+            autoDeliveryTime
+          )
+        );
+      }
     }
 
     setPhone("");
@@ -222,6 +306,61 @@ export default function OrdersPage() {
     return "#94a3b8";
   }
 
+  const filteredOrders =
+    orders.filter(
+      (item) => {
+        const matchesSearch =
+          item.reference
+            ?.toLowerCase()
+            .includes(
+              search.toLowerCase()
+            ) ||
+          item.phone?.includes(
+            search
+          );
+
+        const matchesStatus =
+          statusFilter ===
+            "All" ||
+          item.status ===
+            statusFilter;
+
+        const matchesNetwork =
+          networkFilter ===
+            "All" ||
+          item.network ===
+            networkFilter;
+
+        const orderDate =
+          new Date(
+            item.created_at
+          );
+
+        const matchesFrom =
+          !fromDate ||
+          orderDate >=
+            new Date(
+              fromDate
+            );
+
+        const matchesTo =
+          !toDate ||
+          orderDate <=
+            new Date(
+              toDate +
+                "T23:59:59"
+            );
+
+        return (
+          matchesSearch &&
+          matchesStatus &&
+          matchesNetwork &&
+          matchesFrom &&
+          matchesTo
+        );
+      }
+    );
+
   return (
     <AdminLayout>
       <div>
@@ -255,6 +394,140 @@ export default function OrdersPage() {
             Live Telecom
             Order Management
           </p>
+        </div>
+
+        {/* FILTERS */}
+
+        <div
+          style={{
+            background:
+              "#0f172a",
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+            borderRadius:
+              "24px",
+            padding:
+              "24px",
+            marginBottom:
+              "30px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize:
+                "24px",
+              fontWeight:
+                "800",
+              marginBottom:
+                "24px",
+            }}
+          >
+            Filters
+          </h2>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit,minmax(200px,1fr))",
+              gap: "18px",
+            }}
+          >
+            <input
+              placeholder="Search Ref or Phone"
+              value={search}
+              onChange={(e) =>
+                setSearch(
+                  e.target.value
+                )
+              }
+              style={inputStyle}
+            />
+
+            <select
+              value={
+                statusFilter
+              }
+              onChange={(e) =>
+                setStatusFilter(
+                  e.target.value
+                )
+              }
+              style={inputStyle}
+            >
+              <option>
+                All
+              </option>
+
+              <option>
+                Pending
+              </option>
+
+              <option>
+                Processing
+              </option>
+
+              <option>
+                Delivered
+              </option>
+
+              <option>
+                Failed
+              </option>
+            </select>
+
+            <select
+              value={
+                networkFilter
+              }
+              onChange={(e) =>
+                setNetworkFilter(
+                  e.target.value
+                )
+              }
+              style={inputStyle}
+            >
+              <option>
+                All
+              </option>
+
+              <option>
+                MTN
+              </option>
+
+              <option>
+                Telecel
+              </option>
+
+              <option>
+                AirtelTigo
+              </option>
+            </select>
+
+            <input
+              type="date"
+              value={
+                fromDate
+              }
+              onChange={(e) =>
+                setFromDate(
+                  e.target.value
+                )
+              }
+              style={inputStyle}
+            />
+
+            <input
+              type="date"
+              value={toDate}
+              onChange={(e) =>
+                setToDate(
+                  e.target.value
+                )
+              }
+              style={inputStyle}
+            />
+          </div>
         </div>
 
         {/* CREATE ORDER */}
@@ -372,6 +645,67 @@ export default function OrdersPage() {
                 inputStyle
               }
             />
+
+            <select
+              value={
+                autoDeliveryTime
+              }
+              onChange={(
+                e
+              ) =>
+                setAutoDeliveryTime(
+                  e.target
+                    .value
+                )
+              }
+              style={
+                inputStyle
+              }
+            >
+              <option value="0">
+                Manual Delivery
+              </option>
+
+              <option value="5">
+                5 Minutes
+              </option>
+
+              <option value="10">
+                10 Minutes
+              </option>
+
+              <option value="15">
+                15 Minutes
+              </option>
+
+              <option value="20">
+                20 Minutes
+              </option>
+
+              <option value="25">
+                25 Minutes
+              </option>
+
+              <option value="30">
+                30 Minutes
+              </option>
+
+              <option value="45">
+                45 Minutes
+              </option>
+
+              <option value="60">
+                1 Hour
+              </option>
+
+              <option value="90">
+                1 Hour 30 Minutes
+              </option>
+
+              <option value="120">
+                2 Hours
+              </option>
+            </select>
           </div>
 
           <button
@@ -422,8 +756,29 @@ export default function OrdersPage() {
             >
               Loading...
             </div>
+          ) : filteredOrders
+              .length ===
+            0 ? (
+            <div
+              style={{
+                background:
+                  "#0f172a",
+                border:
+                  "1px solid rgba(255,255,255,0.08)",
+                borderRadius:
+                  "24px",
+                padding:
+                  "40px",
+                textAlign:
+                  "center",
+                color:
+                  "#94a3b8",
+              }}
+            >
+              No orders found
+            </div>
           ) : (
-            orders.map(
+            filteredOrders.map(
               (item) => (
                 <div
                   key={
@@ -529,6 +884,14 @@ export default function OrdersPage() {
                     <Info
                       title="Amount"
                       value={`GH₵${item.amount}`}
+                    />
+
+                    <Info
+                      title="Source"
+                      value={
+                        item.source ||
+                        "Admin"
+                      }
                     />
 
                     <Info
