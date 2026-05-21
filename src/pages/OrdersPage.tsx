@@ -1,30 +1,12 @@
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
 
 import { supabase } from "../lib/supabase";
-
-function generateRef() {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-  let result = "";
-
-  for (let i = 0; i < 7; i++) {
-    result +=
-      chars[
-        Math.floor(
-          Math.random() *
-            chars.length
-        )
-      ];
-  }
-
-  return result;
-}
 
 export default function OrdersPage() {
   const [orders, setOrders] =
@@ -33,37 +15,11 @@ export default function OrdersPage() {
   const [loading, setLoading] =
     useState(true);
 
-  const [network, setNetwork] =
-    useState("MTN");
-
-  const [packageName, setPackageName] =
-    useState("10GB");
-
-  const [phone, setPhone] =
-    useState("");
-
-  const [amount, setAmount] =
-    useState("");
-
   const [search, setSearch] =
     useState("");
 
   const [statusFilter, setStatusFilter] =
     useState("All");
-
-  const [networkFilter, setNetworkFilter] =
-    useState("All");
-
-  const [fromDate, setFromDate] =
-    useState("");
-
-  const [toDate, setToDate] =
-    useState("");
-
-  const [
-    autoDeliveryTime,
-    setAutoDeliveryTime,
-  ] = useState("0");
 
   async function loadOrders() {
     setLoading(true);
@@ -81,6 +37,7 @@ export default function OrdersPage() {
 
     if (error) {
       console.log(error);
+
       return;
     }
 
@@ -95,7 +52,7 @@ export default function OrdersPage() {
     const channel =
       supabase
         .channel(
-          "orders-realtime"
+          "orders-live"
         )
         .on(
           "postgres_changes",
@@ -118,122 +75,6 @@ export default function OrdersPage() {
       );
     };
   }, []);
-
-  async function autoDeliverOrder(
-    id: string,
-    minutes: number
-  ) {
-    if (!minutes) return;
-
-    setTimeout(async () => {
-      await supabase
-        .from("orders")
-        .update({
-          status:
-            "Delivered",
-        })
-        .eq("id", id);
-    }, minutes * 60 * 1000);
-  }
-
-  async function createOrder() {
-    if (
-      !phone ||
-      !amount
-    ) {
-      alert(
-        "Fill all fields"
-      );
-
-      return;
-    }
-
-    const { error } =
-      await supabase
-        .from("orders")
-        .insert([
-          {
-            reference:
-              generateRef(),
-
-            network,
-
-            package:
-              packageName,
-
-            phone,
-
-            amount:
-              Number(
-                amount
-              ),
-
-            status:
-              "Pending",
-
-            auto_delivery:
-              autoDeliveryTime !==
-              "0",
-
-            delivery_time:
-              Number(
-                autoDeliveryTime
-              ),
-
-            ordered_by:
-              "Admin",
-
-            source:
-              "Admin",
-          },
-        ]);
-
-    if (error) {
-      console.log(error);
-
-      alert(
-        "Failed to create order"
-      );
-
-      return;
-    }
-
-    if (
-      autoDeliveryTime !==
-      "0"
-    ) {
-      const latest =
-        await supabase
-          .from("orders")
-          .select("*")
-          .order(
-            "created_at",
-            {
-              ascending: false,
-            }
-          )
-          .limit(1)
-          .single();
-
-      if (
-        latest.data
-      ) {
-        autoDeliverOrder(
-          latest.data.id,
-          Number(
-            autoDeliveryTime
-          )
-        );
-      }
-    }
-
-    setPhone("");
-    setAmount("");
-
-    alert(
-      "Order created"
-    );
-  }
 
   async function updateStatus(
     id: string,
@@ -259,7 +100,7 @@ export default function OrdersPage() {
   ) {
     const confirmed =
       confirm(
-        "Delete this order?"
+        "Delete order?"
       );
 
     if (!confirmed)
@@ -276,89 +117,51 @@ export default function OrdersPage() {
     }
   }
 
-  function statusColor(
-    value: string
-  ) {
-    if (
-      value ===
-      "Delivered"
-    )
-      return "#22c55e";
-
-    if (
-      value ===
-      "Processing"
-    )
-      return "#3b82f6";
-
-    if (
-      value ===
-      "Pending"
-    )
-      return "#facc15";
-
-    if (
-      value ===
-      "Failed"
-    )
-      return "#ef4444";
-
-    return "#94a3b8";
-  }
-
   const filteredOrders =
-    orders.filter(
-      (item) => {
-        const matchesSearch =
-          item.reference
-            ?.toLowerCase()
-            .includes(
-              search.toLowerCase()
-            ) ||
-          item.phone?.includes(
-            search
+    useMemo(() => {
+      return orders.filter(
+        (item) => {
+          const matchesSearch =
+            item.phone
+              ?.toLowerCase()
+              .includes(
+                search.toLowerCase()
+              ) ||
+            item.reference
+              ?.toLowerCase()
+              .includes(
+                search.toLowerCase()
+              );
+
+          const matchesStatus =
+            statusFilter ===
+              "All" ||
+            item.status ===
+              statusFilter;
+
+          return (
+            matchesSearch &&
+            matchesStatus
           );
+        }
+      );
+    }, [
+      orders,
+      search,
+      statusFilter,
+    ]);
 
-        const matchesStatus =
-          statusFilter ===
-            "All" ||
-          item.status ===
-            statusFilter;
-
-        const matchesNetwork =
-          networkFilter ===
-            "All" ||
-          item.network ===
-            networkFilter;
-
-        const orderDate =
-          new Date(
-            item.created_at
-          );
-
-        const matchesFrom =
-          !fromDate ||
-          orderDate >=
-            new Date(
-              fromDate
-            );
-
-        const matchesTo =
-          !toDate ||
-          orderDate <=
-            new Date(
-              toDate +
-                "T23:59:59"
-            );
-
-        return (
-          matchesSearch &&
-          matchesStatus &&
-          matchesNetwork &&
-          matchesFrom &&
-          matchesTo
-        );
-      }
+  const totalRevenue =
+    orders.reduce(
+      (
+        total,
+        item
+      ) =>
+        total +
+        Number(
+          item.amount || 0
+        ),
+      0
     );
 
   return (
@@ -389,11 +192,91 @@ export default function OrdersPage() {
             style={{
               color:
                 "#94a3b8",
+              fontSize:
+                "18px",
             }}
           >
             Live Telecom
-            Order Management
+            Order Processing
+            Center
           </p>
+        </div>
+
+        {/* STATS */}
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
+            gap: "20px",
+            marginBottom:
+              "30px",
+          }}
+        >
+          <StatCard
+            title="Total Orders"
+            value={
+              orders.length
+            }
+          />
+
+          <StatCard
+            title="Pending"
+            value={
+              orders.filter(
+                (
+                  x
+                ) =>
+                  x.status ===
+                  "Pending"
+              ).length
+            }
+          />
+
+          <StatCard
+            title="Waiting"
+            value={
+              orders.filter(
+                (
+                  x
+                ) =>
+                  x.status ===
+                  "Waiting"
+              ).length
+            }
+          />
+
+          <StatCard
+            title="Processing"
+            value={
+              orders.filter(
+                (
+                  x
+                ) =>
+                  x.status ===
+                  "Processing"
+              ).length
+            }
+          />
+
+          <StatCard
+            title="Delivered"
+            value={
+              orders.filter(
+                (
+                  x
+                ) =>
+                  x.status ===
+                  "Delivered"
+              ).length
+            }
+          />
+
+          <StatCard
+            title="Revenue"
+            value={`GH₵${totalRevenue}`}
+          />
         </div>
 
         {/* FILTERS */}
@@ -401,384 +284,102 @@ export default function OrdersPage() {
         <div
           style={{
             background:
-              "#0f172a",
+              "#081028",
             border:
               "1px solid rgba(255,255,255,0.08)",
             borderRadius:
               "24px",
             padding:
-              "24px",
+              "20px",
             marginBottom:
               "30px",
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
+            gap: "16px",
           }}
         >
-          <h2
-            style={{
-              fontSize:
-                "24px",
-              fontWeight:
-                "800",
-              marginBottom:
-                "24px",
-            }}
-          >
-            Filters
-          </h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(200px,1fr))",
-              gap: "18px",
-            }}
-          >
-            <input
-              placeholder="Search Ref or Phone"
-              value={search}
-              onChange={(e) =>
-                setSearch(
-                  e.target.value
-                )
-              }
-              style={inputStyle}
-            />
-
-            <select
-              value={
-                statusFilter
-              }
-              onChange={(e) =>
-                setStatusFilter(
-                  e.target.value
-                )
-              }
-              style={inputStyle}
-            >
-              <option>
-                All
-              </option>
-
-              <option>
-                Pending
-              </option>
-
-              <option>
-                Processing
-              </option>
-
-              <option>
-                Delivered
-              </option>
-
-              <option>
-                Failed
-              </option>
-            </select>
-
-            <select
-              value={
-                networkFilter
-              }
-              onChange={(e) =>
-                setNetworkFilter(
-                  e.target.value
-                )
-              }
-              style={inputStyle}
-            >
-              <option>
-                All
-              </option>
-
-              <option>
-                MTN
-              </option>
-
-              <option>
-                Telecel
-              </option>
-
-              <option>
-                AirtelTigo
-              </option>
-            </select>
-
-            <input
-              type="date"
-              value={
-                fromDate
-              }
-              onChange={(e) =>
-                setFromDate(
-                  e.target.value
-                )
-              }
-              style={inputStyle}
-            />
-
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) =>
-                setToDate(
-                  e.target.value
-                )
-              }
-              style={inputStyle}
-            />
-          </div>
-        </div>
-
-        {/* CREATE ORDER */}
-
-        <div
-          style={{
-            background:
-              "#0f172a",
-            border:
-              "1px solid rgba(255,255,255,0.08)",
-            borderRadius:
-              "24px",
-            padding:
-              "24px",
-            marginBottom:
-              "30px",
-          }}
-        >
-          <h2
-            style={{
-              fontSize:
-                "26px",
-              fontWeight:
-                "800",
-              marginBottom:
-                "24px",
-            }}
-          >
-            Create Order
-          </h2>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(220px,1fr))",
-              gap: "18px",
-            }}
-          >
-            <select
-              value={
-                network
-              }
-              onChange={(
-                e
-              ) =>
-                setNetwork(
-                  e.target
-                    .value
-                )
-              }
-              style={
-                inputStyle
-              }
-            >
-              <option>
-                MTN
-              </option>
-
-              <option>
-                Telecel
-              </option>
-
-              <option>
-                AirtelTigo
-              </option>
-            </select>
-
-            <input
-              placeholder="Package"
-              value={
-                packageName
-              }
-              onChange={(
-                e
-              ) =>
-                setPackageName(
-                  e.target
-                    .value
-                )
-              }
-              style={
-                inputStyle
-              }
-            />
-
-            <input
-              placeholder="Phone Number"
-              value={phone}
-              onChange={(
-                e
-              ) =>
-                setPhone(
-                  e.target
-                    .value
-                )
-              }
-              style={
-                inputStyle
-              }
-            />
-
-            <input
-              placeholder="Amount"
-              value={amount}
-              onChange={(
-                e
-              ) =>
-                setAmount(
-                  e.target
-                    .value
-                )
-              }
-              style={
-                inputStyle
-              }
-            />
-
-            <select
-              value={
-                autoDeliveryTime
-              }
-              onChange={(
-                e
-              ) =>
-                setAutoDeliveryTime(
-                  e.target
-                    .value
-                )
-              }
-              style={
-                inputStyle
-              }
-            >
-              <option value="0">
-                Manual Delivery
-              </option>
-
-              <option value="5">
-                5 Minutes
-              </option>
-
-              <option value="10">
-                10 Minutes
-              </option>
-
-              <option value="15">
-                15 Minutes
-              </option>
-
-              <option value="20">
-                20 Minutes
-              </option>
-
-              <option value="25">
-                25 Minutes
-              </option>
-
-              <option value="30">
-                30 Minutes
-              </option>
-
-              <option value="45">
-                45 Minutes
-              </option>
-
-              <option value="60">
-                1 Hour
-              </option>
-
-              <option value="90">
-                1 Hour 30 Minutes
-              </option>
-
-              <option value="120">
-                2 Hours
-              </option>
-            </select>
-          </div>
-
-          <button
-            onClick={
-              createOrder
+          <input
+            placeholder="Search phone or reference"
+            value={search}
+            onChange={(
+              e
+            ) =>
+              setSearch(
+                e.target
+                  .value
+              )
             }
-            style={{
-              marginTop:
-                "24px",
-              background:
-                "#2563eb",
-              border:
-                "none",
-              color:
-                "white",
-              padding:
-                "14px 22px",
-              borderRadius:
-                "14px",
-              fontWeight:
-                "700",
-              cursor:
-                "pointer",
-            }}
+            style={
+              inputStyle
+            }
+          />
+
+          <select
+            value={
+              statusFilter
+            }
+            onChange={(
+              e
+            ) =>
+              setStatusFilter(
+                e.target
+                  .value
+              )
+            }
+            style={
+              inputStyle
+            }
           >
-            Create Order
-          </button>
+            <option>
+              All
+            </option>
+
+            <option>
+              Pending
+            </option>
+
+            <option>
+              Waiting
+            </option>
+
+            <option>
+              Processing
+            </option>
+
+            <option>
+              Delivered
+            </option>
+
+            <option>
+              Failed
+            </option>
+          </select>
         </div>
 
         {/* ORDERS */}
 
-        <div
-          style={{
-            display: "grid",
-            gap: "20px",
-          }}
-        >
-          {loading ? (
-            <div
-              style={{
-                textAlign:
-                  "center",
-                padding:
-                  "40px",
-                color:
-                  "#94a3b8",
-              }}
-            >
-              Loading...
-            </div>
-          ) : filteredOrders
-              .length ===
-            0 ? (
-            <div
-              style={{
-                background:
-                  "#0f172a",
-                border:
-                  "1px solid rgba(255,255,255,0.08)",
-                borderRadius:
-                  "24px",
-                padding:
-                  "40px",
-                textAlign:
-                  "center",
-                color:
-                  "#94a3b8",
-              }}
-            >
-              No orders found
-            </div>
-          ) : (
-            filteredOrders.map(
+        {loading ? (
+          <div
+            style={{
+              textAlign:
+                "center",
+              padding:
+                "50px",
+              color:
+                "#94a3b8",
+            }}
+          >
+            Loading orders...
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gap: "20px",
+            }}
+          >
+            {filteredOrders.map(
               (item) => (
                 <div
                   key={
@@ -786,15 +387,17 @@ export default function OrdersPage() {
                   }
                   style={{
                     background:
-                      "#0f172a",
+                      "#081028",
                     border:
                       "1px solid rgba(255,255,255,0.08)",
                     borderRadius:
-                      "24px",
+                      "28px",
                     padding:
                       "24px",
                   }}
                 >
+                  {/* TOP */}
+
                   <div
                     style={{
                       display:
@@ -816,9 +419,9 @@ export default function OrdersPage() {
                           fontSize:
                             "24px",
                           fontWeight:
-                            "800",
+                            "900",
                           marginBottom:
-                            "10px",
+                            "8px",
                         }}
                       >
                         {
@@ -838,23 +441,14 @@ export default function OrdersPage() {
                       </p>
                     </div>
 
-                    <div
-                      style={{
-                        color:
-                          statusColor(
-                            item.status
-                          ),
-                        fontWeight:
-                          "800",
-                        fontSize:
-                          "16px",
-                      }}
-                    >
-                      {
+                    <StatusBadge
+                      status={
                         item.status
                       }
-                    </div>
+                    />
                   </div>
+
+                  {/* DETAILS */}
 
                   <div
                     style={{
@@ -862,22 +456,22 @@ export default function OrdersPage() {
                         "grid",
                       gridTemplateColumns:
                         "repeat(auto-fit,minmax(180px,1fr))",
-                      gap: "18px",
+                      gap: "20px",
                       marginBottom:
                         "24px",
                     }}
                   >
                     <Info
-                      title="Network"
+                      title="Package"
                       value={
-                        item.network
+                        item.package
                       }
                     />
 
                     <Info
-                      title="Package"
+                      title="Network"
                       value={
-                        item.package
+                        item.network
                       }
                     />
 
@@ -890,7 +484,15 @@ export default function OrdersPage() {
                       title="Source"
                       value={
                         item.source ||
-                        "Admin"
+                        "Customer"
+                      }
+                    />
+
+                    <Info
+                      title="Validity"
+                      value={
+                        item.validity ||
+                        "N/A"
                       }
                     />
 
@@ -902,6 +504,8 @@ export default function OrdersPage() {
                     />
                   </div>
 
+                  {/* ACTIONS */}
+
                   <div
                     style={{
                       display:
@@ -911,69 +515,60 @@ export default function OrdersPage() {
                         "wrap",
                     }}
                   >
-                    <button
+                    <ActionButton
+                      title="Pending"
+                      color="#facc15"
                       onClick={() =>
                         updateStatus(
                           item.id,
                           "Pending"
                         )
                       }
-                      style={{
-                        ...statusButton,
-                        color:
-                          "#facc15",
-                      }}
-                    >
-                      Pending
-                    </button>
+                    />
 
-                    <button
+                    <ActionButton
+                      title="Waiting"
+                      color="#f97316"
+                      onClick={() =>
+                        updateStatus(
+                          item.id,
+                          "Waiting"
+                        )
+                      }
+                    />
+
+                    <ActionButton
+                      title="Processing"
+                      color="#3b82f6"
                       onClick={() =>
                         updateStatus(
                           item.id,
                           "Processing"
                         )
                       }
-                      style={{
-                        ...statusButton,
-                        color:
-                          "#3b82f6",
-                      }}
-                    >
-                      Processing
-                    </button>
+                    />
 
-                    <button
+                    <ActionButton
+                      title="Delivered"
+                      color="#22c55e"
                       onClick={() =>
                         updateStatus(
                           item.id,
                           "Delivered"
                         )
                       }
-                      style={{
-                        ...statusButton,
-                        color:
-                          "#22c55e",
-                      }}
-                    >
-                      Delivered
-                    </button>
+                    />
 
-                    <button
+                    <ActionButton
+                      title="Failed"
+                      color="#ef4444"
                       onClick={() =>
                         updateStatus(
                           item.id,
                           "Failed"
                         )
                       }
-                      style={{
-                        ...statusButton,
-                        color:
-                          "#ef4444",
-                      }}
-                    >
-                      Failed
-                    </button>
+                    />
 
                     <button
                       onClick={() =>
@@ -1003,21 +598,60 @@ export default function OrdersPage() {
                   </div>
                 </div>
               )
-            )
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
     </AdminLayout>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+}: any) {
+  return (
+    <div
+      style={{
+        background:
+          "#081028",
+        border:
+          "1px solid rgba(255,255,255,0.08)",
+        borderRadius:
+          "24px",
+        padding:
+          "24px",
+      }}
+    >
+      <p
+        style={{
+          color:
+            "#94a3b8",
+          marginBottom:
+            "10px",
+        }}
+      >
+        {title}
+      </p>
+
+      <h1
+        style={{
+          fontSize:
+            "34px",
+          fontWeight:
+            "900",
+        }}
+      >
+        {value}
+      </h1>
+    </div>
   );
 }
 
 function Info({
   title,
   value,
-}: {
-  title: string;
-  value: string;
-}) {
+}: any) {
   return (
     <div>
       <p
@@ -1035,15 +669,135 @@ function Info({
 
       <h3
         style={{
+          fontWeight:
+            "800",
           fontSize:
             "18px",
-          fontWeight:
-            "700",
         }}
       >
         {value}
       </h3>
     </div>
+  );
+}
+
+function StatusBadge({
+  status,
+}: any) {
+  function bg() {
+    if (
+      status ===
+      "Delivered"
+    )
+      return "#052e16";
+
+    if (
+      status ===
+      "Processing"
+    )
+      return "#172554";
+
+    if (
+      status ===
+      "Waiting"
+    )
+      return "#431407";
+
+    if (
+      status ===
+      "Pending"
+    )
+      return "#422006";
+
+    if (
+      status ===
+      "Failed"
+    )
+      return "#450a0a";
+
+    return "#111827";
+  }
+
+  function color() {
+    if (
+      status ===
+      "Delivered"
+    )
+      return "#22c55e";
+
+    if (
+      status ===
+      "Processing"
+    )
+      return "#60a5fa";
+
+    if (
+      status ===
+      "Waiting"
+    )
+      return "#fb923c";
+
+    if (
+      status ===
+      "Pending"
+    )
+      return "#facc15";
+
+    if (
+      status ===
+      "Failed"
+    )
+      return "#ef4444";
+
+    return "white";
+  }
+
+  return (
+    <div
+      style={{
+        background:
+          bg(),
+        color:
+          color(),
+        padding:
+          "10px 18px",
+        borderRadius:
+          "999px",
+        fontWeight:
+          "800",
+      }}
+    >
+      {status}
+    </div>
+  );
+}
+
+function ActionButton({
+  title,
+  color,
+  onClick,
+}: any) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        background:
+          "#111827",
+        border:
+          "1px solid rgba(255,255,255,0.08)",
+        color,
+        padding:
+          "12px 18px",
+        borderRadius:
+          "12px",
+        fontWeight:
+          "800",
+        cursor:
+          "pointer",
+      }}
+    >
+      {title}
+    </button>
   );
 }
 
@@ -1060,19 +814,4 @@ const inputStyle = {
   width: "100%",
   boxSizing:
     "border-box" as const,
-};
-
-const statusButton = {
-  background:
-    "#111827",
-  border:
-    "1px solid rgba(255,255,255,0.08)",
-  padding:
-    "12px 16px",
-  borderRadius:
-    "12px",
-  fontWeight:
-    "700",
-  cursor:
-    "pointer",
 };
