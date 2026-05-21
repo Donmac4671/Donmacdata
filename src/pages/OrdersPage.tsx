@@ -2,104 +2,148 @@ import { useState } from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
 
+function generateRef() {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+  let result = "";
+
+  for (let i = 0; i < 7; i++) {
+    result +=
+      chars[
+        Math.floor(
+          Math.random() *
+            chars.length
+        )
+      ];
+  }
+
+  return result;
+}
+
 export default function OrdersPage() {
+  const [search, setSearch] =
+    useState("");
+
   const [network, setNetwork] =
     useState("All");
+
+  const [status, setStatus] =
+    useState("All");
+
+  const [autoTime, setAutoTime] =
+    useState("15 Minutes");
 
   const [orders, setOrders] =
     useState([
       {
         id: 1,
-        ref: "DMX82AK",
+        ref: generateRef(),
         phone:
-          "0241234567",
+          "0551234567",
         network: "MTN",
         package:
-          "200GB",
+          "10GB",
         amount:
-          "GH₵ 350",
+          "GH₵43.00",
         status:
           "Delivered",
+        auto:
+          true,
         date:
-          "2026-05-20",
+          "2026-05-21",
       },
 
       {
         id: 2,
-        ref: "DMA91LP",
+        ref: generateRef(),
         phone:
-          "0559988776",
+          "0209876543",
         network:
           "Telecel",
         package:
           "Mashup",
         amount:
-          "GH₵ 120",
+          "GH₵10.00",
         status:
-          "Pending",
+          "Processing",
+        auto:
+          true,
         date:
-          "2026-05-20",
+          "2026-05-21",
       },
 
       {
         id: 3,
-        ref: "DMB55TR",
+        ref: generateRef(),
         phone:
-          "0274455661",
+          "0277777777",
         network:
           "AirtelTigo",
         package:
-          "Voice + SMS",
+          "50GB",
         amount:
-          "GH₵ 80",
+          "GH₵95.00",
         status:
-          "Processing",
+          "Pending",
+        auto:
+          false,
         date:
-          "2026-05-19",
+          "2026-05-20",
       },
     ]);
 
-  function statusColor(
-    status: string
-  ) {
-    switch (status) {
-      case "Failed":
-        return "#ef4444";
+  const filteredOrders =
+    orders.filter(
+      (item) => {
+        const matchesSearch =
+          item.phone.includes(
+            search
+          ) ||
+          item.ref
+            .toLowerCase()
+            .includes(
+              search.toLowerCase()
+            );
 
-      case "Waiting":
-        return "#9ca3af";
+        const matchesNetwork =
+          network ===
+            "All" ||
+          item.network ===
+            network;
 
-      case "Pending":
-        return "#facc15";
+        const matchesStatus =
+          status ===
+            "All" ||
+          item.status ===
+            status;
 
-      case "Processing":
-        return "#3b82f6";
-
-      case "Delivered":
-        return "#22c55e";
-
-      default:
-        return "white";
-    }
-  }
+        return (
+          matchesSearch &&
+          matchesNetwork &&
+          matchesStatus
+        );
+      }
+    );
 
   function updateStatus(
     id: number,
-    status: string
+    newStatus: string
   ) {
     const updated =
       orders.map(
-        (order) => {
+        (item) => {
           if (
-            order.id === id
+            item.id === id
           ) {
             return {
-              ...order,
-              status,
+              ...item,
+              status:
+                newStatus,
             };
           }
 
-          return order;
+          return item;
         }
       );
 
@@ -111,26 +155,63 @@ export default function OrdersPage() {
   ) {
     const updated =
       orders.filter(
-        (order) =>
-          order.id !== id
+        (item) =>
+          item.id !== id
       );
 
     setOrders(updated);
+  }
+
+  function statusColor(
+    value: string
+  ) {
+    if (
+      value ===
+      "Delivered"
+    )
+      return "#22c55e";
+
+    if (
+      value ===
+      "Failed"
+    )
+      return "#ef4444";
+
+    if (
+      value ===
+      "Processing"
+    )
+      return "#3b82f6";
+
+    if (
+      value ===
+      "Pending"
+    )
+      return "#facc15";
+
+    return "#9ca3af";
   }
 
   return (
     <AdminLayout>
       <div>
         {/* HEADER */}
+
         <div
           style={{
             display: "flex",
+
             justifyContent:
               "space-between",
+
             alignItems:
               "center",
-            flexWrap: "wrap",
+
+            flexWrap:
+              "wrap",
+
             gap: "20px",
+
             marginBottom:
               "30px",
           }}
@@ -139,9 +220,11 @@ export default function OrdersPage() {
             <h1
               style={{
                 fontSize:
-                  "40px",
+                  "38px",
+
                 fontWeight:
                   "900",
+
                 marginBottom:
                   "8px",
               }}
@@ -156,43 +239,148 @@ export default function OrdersPage() {
               }}
             >
               Manage all
-              customer
-              orders
+              customer orders
             </p>
+          </div>
+
+          <div
+            style={{
+              background:
+                "#0f172a",
+
+              padding:
+                "14px 18px",
+
+              borderRadius:
+                "16px",
+
+              border:
+                "1px solid rgba(255,255,255,0.08)",
+            }}
+          >
+            <p
+              style={{
+                color:
+                  "#94a3b8",
+
+                fontSize:
+                  "14px",
+
+                marginBottom:
+                  "6px",
+              }}
+            >
+              Auto Delivery
+            </p>
+
+            <select
+              value={
+                autoTime
+              }
+              onChange={(
+                e
+              ) =>
+                setAutoTime(
+                  e.target
+                    .value
+                )
+              }
+              style={{
+                background:
+                  "#111827",
+
+                color:
+                  "white",
+
+                border:
+                  "none",
+
+                padding:
+                  "10px",
+
+                borderRadius:
+                  "10px",
+
+                outline:
+                  "none",
+              }}
+            >
+              <option>
+                5 Minutes
+              </option>
+
+              <option>
+                10 Minutes
+              </option>
+
+              <option>
+                15 Minutes
+              </option>
+
+              <option>
+                20 Minutes
+              </option>
+
+              <option>
+                25 Minutes
+              </option>
+
+              <option>
+                30 Minutes
+              </option>
+
+              <option>
+                45 Minutes
+              </option>
+
+              <option>
+                1 Hour
+              </option>
+
+              <option>
+                1 Hour 30 Minutes
+              </option>
+
+              <option>
+                2 Hours
+              </option>
+            </select>
           </div>
         </div>
 
         {/* FILTERS */}
+
         <div
           style={{
-            background:
-              "#0f172a",
-            padding: "24px",
-            borderRadius:
-              "24px",
-            marginBottom:
-              "30px",
             display: "grid",
+
             gridTemplateColumns:
               "repeat(auto-fit,minmax(220px,1fr))",
+
             gap: "18px",
-            border:
-              "1px solid rgba(255,255,255,0.08)",
+
+            marginBottom:
+              "30px",
           }}
         >
           <input
             placeholder="Search phone or ref code"
-            style={inputStyle}
+            value={search}
+            onChange={(e) =>
+              setSearch(
+                e.target.value
+              )
+            }
+            style={
+              inputStyle
+            }
           />
 
           <select
             value={network}
-            onChange={(
-              e
-            ) =>
+            onChange={(e) =>
               setNetwork(
-                e.target
-                  .value
+                e.target.value
               )
             }
             style={
@@ -200,7 +388,7 @@ export default function OrdersPage() {
             }
           >
             <option>
-              All Networks
+              All
             </option>
 
             <option>
@@ -232,298 +420,521 @@ export default function OrdersPage() {
             </option>
           </select>
 
+          <select
+            value={status}
+            onChange={(e) =>
+              setStatus(
+                e.target.value
+              )
+            }
+            style={
+              inputStyle
+            }
+          >
+            <option>
+              All
+            </option>
+
+            <option>
+              Waiting
+            </option>
+
+            <option>
+              Pending
+            </option>
+
+            <option>
+              Processing
+            </option>
+
+            <option>
+              Delivered
+            </option>
+
+            <option>
+              Failed
+            </option>
+          </select>
+
           <input
             type="date"
-            style={inputStyle}
+            style={
+              inputStyle
+            }
           />
 
           <input
             type="date"
-            style={inputStyle}
+            style={
+              inputStyle
+            }
           />
         </div>
 
-        {/* TABLE */}
+        {/* STATS */}
+
         <div
           style={{
-            overflowX:
-              "auto",
-            background:
-              "#0f172a",
-            borderRadius:
-              "24px",
-            border:
-              "1px solid rgba(255,255,255,0.08)",
+            display: "grid",
+
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(220px,1fr))",
+
+            gap: "18px",
+
+            marginBottom:
+              "30px",
           }}
         >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse:
-                "collapse",
-              minWidth:
-                "1200px",
-            }}
+          <div
+            style={
+              statCard
+            }
           >
-            <thead>
-              <tr
+            <p
+              style={
+                statTitle
+              }
+            >
+              Total Orders
+            </p>
+
+            <h2
+              style={
+                statValue
+              }
+            >
+              {
+                filteredOrders.length
+              }
+            </h2>
+          </div>
+
+          <div
+            style={
+              statCard
+            }
+          >
+            <p
+              style={
+                statTitle
+              }
+            >
+              Delivered
+            </p>
+
+            <h2
+              style={{
+                ...statValue,
+                color:
+                  "#22c55e",
+              }}
+            >
+              {
+                filteredOrders.filter(
+                  (
+                    item
+                  ) =>
+                    item.status ===
+                    "Delivered"
+                ).length
+              }
+            </h2>
+          </div>
+
+          <div
+            style={
+              statCard
+            }
+          >
+            <p
+              style={
+                statTitle
+              }
+            >
+              Processing
+            </p>
+
+            <h2
+              style={{
+                ...statValue,
+                color:
+                  "#3b82f6",
+              }}
+            >
+              {
+                filteredOrders.filter(
+                  (
+                    item
+                  ) =>
+                    item.status ===
+                    "Processing"
+                ).length
+              }
+            </h2>
+          </div>
+
+          <div
+            style={
+              statCard
+            }
+          >
+            <p
+              style={
+                statTitle
+              }
+            >
+              Failed
+            </p>
+
+            <h2
+              style={{
+                ...statValue,
+                color:
+                  "#ef4444",
+              }}
+            >
+              {
+                filteredOrders.filter(
+                  (
+                    item
+                  ) =>
+                    item.status ===
+                    "Failed"
+                ).length
+              }
+            </h2>
+          </div>
+        </div>
+
+        {/* ORDERS */}
+
+        <div
+          style={{
+            display: "grid",
+
+            gap: "22px",
+          }}
+        >
+          {filteredOrders.map(
+            (item) => (
+              <div
+                key={
+                  item.id
+                }
                 style={{
                   background:
-                    "#111827",
+                    "linear-gradient(180deg,#0f172a,#111827)",
+
+                  border:
+                    "1px solid rgba(255,255,255,0.08)",
+
+                  borderRadius:
+                    "24px",
+
+                  padding:
+                    "24px",
                 }}
               >
-                <th
-                  style={
-                    thStyle
-                  }
+                {/* TOP */}
+
+                <div
+                  style={{
+                    display:
+                      "flex",
+
+                    justifyContent:
+                      "space-between",
+
+                    alignItems:
+                      "center",
+
+                    flexWrap:
+                      "wrap",
+
+                    gap: "18px",
+
+                    marginBottom:
+                      "20px",
+                  }}
                 >
-                  Ref Code
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Phone
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Network
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Package
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Amount
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Status
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Date
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {orders.map(
-                (order) => (
-                  <tr
-                    key={
-                      order.id
-                    }
-                    style={{
-                      borderBottom:
-                        "1px solid rgba(255,255,255,0.06)",
-                    }}
-                  >
-                    <td
-                      style={
-                        tdStyle
-                      }
-                    >
-                      {
-                        order.ref
-                      }
-                    </td>
-
-                    <td
-                      style={
-                        tdStyle
-                      }
-                    >
-                      {
-                        order.phone
-                      }
-                    </td>
-
-                    <td
-                      style={
-                        tdStyle
-                      }
-                    >
-                      {
-                        order.network
-                      }
-                    </td>
-
-                    <td
-                      style={
-                        tdStyle
-                      }
-                    >
-                      {
-                        order.package
-                      }
-                    </td>
-
-                    <td
+                  <div>
+                    <h2
                       style={{
-                        ...tdStyle,
-                        color:
-                          "#38bdf8",
+                        fontSize:
+                          "22px",
+
                         fontWeight:
-                          "700",
+                          "800",
+
+                        marginBottom:
+                          "10px",
                       }}
                     >
                       {
-                        order.amount
+                        item.ref
                       }
-                    </td>
+                    </h2>
 
-                    <td
+                    <p
                       style={{
-                        ...tdStyle,
+                        color:
+                          "#94a3b8",
+                      }}
+                    >
+                      {
+                        item.phone
+                      }
+                    </p>
+                  </div>
+
+                  <div>
+                    <span
+                      style={{
                         color:
                           statusColor(
-                            order.status
+                            item.status
                           ),
+
                         fontWeight:
-                          "700",
+                          "800",
+
+                        fontSize:
+                          "15px",
                       }}
                     >
                       {
-                        order.status
+                        item.status
                       }
-                    </td>
+                    </span>
+                  </div>
+                </div>
 
-                    <td
+                {/* DETAILS */}
+
+                <div
+                  style={{
+                    display:
+                      "grid",
+
+                    gridTemplateColumns:
+                      "repeat(auto-fit,minmax(180px,1fr))",
+
+                    gap: "18px",
+
+                    marginBottom:
+                      "24px",
+                  }}
+                >
+                  <div>
+                    <p
                       style={
-                        tdStyle
+                        detailTitle
+                      }
+                    >
+                      Network
+                    </p>
+
+                    <h3
+                      style={
+                        detailValue
                       }
                     >
                       {
-                        order.date
+                        item.network
                       }
-                    </td>
+                    </h3>
+                  </div>
 
-                    <td
+                  <div>
+                    <p
                       style={
-                        tdStyle
+                        detailTitle
                       }
                     >
-                      <div
-                        style={{
-                          display:
-                            "flex",
-                          gap: "10px",
-                          flexWrap:
-                            "wrap",
-                        }}
-                      >
-                        <select
-                          value={
-                            order.status
-                          }
-                          onChange={(
-                            e
-                          ) =>
-                            updateStatus(
-                              order.id,
-                              e
-                                .target
-                                .value
-                            )
-                          }
-                          style={{
-                            background:
-                              "#111827",
-                            border:
-                              "1px solid rgba(255,255,255,0.08)",
-                            color:
-                              "white",
-                            padding:
-                              "10px",
-                            borderRadius:
-                              "10px",
-                          }}
-                        >
-                          <option>
-                            Failed
-                          </option>
+                      Package
+                    </p>
 
-                          <option>
-                            Waiting
-                          </option>
+                    <h3
+                      style={
+                        detailValue
+                      }
+                    >
+                      {
+                        item.package
+                      }
+                    </h3>
+                  </div>
 
-                          <option>
-                            Pending
-                          </option>
+                  <div>
+                    <p
+                      style={
+                        detailTitle
+                      }
+                    >
+                      Amount
+                    </p>
 
-                          <option>
-                            Processing
-                          </option>
+                    <h3
+                      style={
+                        detailValue
+                      }
+                    >
+                      {
+                        item.amount
+                      }
+                    </h3>
+                  </div>
 
-                          <option>
-                            Delivered
-                          </option>
-                        </select>
+                  <div>
+                    <p
+                      style={
+                        detailTitle
+                      }
+                    >
+                      Date
+                    </p>
 
-                        <button
-                          onClick={() =>
-                            deleteOrder(
-                              order.id
-                            )
-                          }
-                          style={{
-                            background:
-                              "#dc2626",
-                            border:
-                              "none",
-                            color:
-                              "white",
-                            padding:
-                              "10px 14px",
-                            borderRadius:
-                              "10px",
-                            fontWeight:
-                              "700",
-                            cursor:
-                              "pointer",
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
+                    <h3
+                      style={
+                        detailValue
+                      }
+                    >
+                      {
+                        item.date
+                      }
+                    </h3>
+                  </div>
+                </div>
+
+                {/* ACTIONS */}
+
+                <div
+                  style={{
+                    display:
+                      "flex",
+
+                    flexWrap:
+                      "wrap",
+
+                    gap: "12px",
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        item.id,
+                        "Waiting"
+                      )
+                    }
+                    style={{
+                      ...statusButton,
+                      color:
+                        "#9ca3af",
+                    }}
+                  >
+                    Waiting
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        item.id,
+                        "Pending"
+                      )
+                    }
+                    style={{
+                      ...statusButton,
+                      color:
+                        "#facc15",
+                    }}
+                  >
+                    Pending
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        item.id,
+                        "Processing"
+                      )
+                    }
+                    style={{
+                      ...statusButton,
+                      color:
+                        "#3b82f6",
+                    }}
+                  >
+                    Processing
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        item.id,
+                        "Delivered"
+                      )
+                    }
+                    style={{
+                      ...statusButton,
+                      color:
+                        "#22c55e",
+                    }}
+                  >
+                    Delivered
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        item.id,
+                        "Failed"
+                      )
+                    }
+                    style={{
+                      ...statusButton,
+                      color:
+                        "#ef4444",
+                    }}
+                  >
+                    Failed
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      deleteOrder(
+                        item.id
+                      )
+                    }
+                    style={{
+                      background:
+                        "#dc2626",
+
+                      border:
+                        "none",
+
+                      color:
+                        "white",
+
+                      padding:
+                        "12px 18px",
+
+                      borderRadius:
+                        "12px",
+
+                      fontWeight:
+                        "700",
+
+                      cursor:
+                        "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
     </AdminLayout>
@@ -533,28 +944,86 @@ export default function OrdersPage() {
 const inputStyle = {
   background:
     "#111827",
+
   border:
     "1px solid rgba(255,255,255,0.08)",
+
   color: "white",
-  padding: "14px",
+
+  padding: "16px",
+
   borderRadius:
-    "14px",
+    "16px",
+
   outline: "none",
+
   width: "100%",
+
   boxSizing:
     "border-box" as const,
 };
 
-const thStyle = {
-  textAlign:
-    "left" as const,
-  padding: "20px",
+const statCard = {
+  background:
+    "#0f172a",
+
+  padding: "18px",
+
+  borderRadius:
+    "18px",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+};
+
+const statTitle = {
   color: "#94a3b8",
+
+  marginBottom:
+    "8px",
+
   fontSize: "14px",
 };
 
-const tdStyle = {
-  padding: "20px",
+const statValue = {
+  fontSize: "28px",
+
+  fontWeight:
+    "900",
+};
+
+const detailTitle = {
+  color: "#94a3b8",
+
+  marginBottom:
+    "8px",
+
   fontSize: "14px",
-  color: "white",
+};
+
+const detailValue = {
+  fontSize: "18px",
+
+  fontWeight:
+    "700",
+};
+
+const statusButton = {
+  background:
+    "#111827",
+
+  border:
+    "1px solid rgba(255,255,255,0.08)",
+
+  padding:
+    "12px 16px",
+
+  borderRadius:
+    "12px",
+
+  fontWeight:
+    "700",
+
+  cursor:
+    "pointer",
 };
