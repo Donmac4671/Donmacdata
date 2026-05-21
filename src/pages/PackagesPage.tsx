@@ -907,23 +907,53 @@ export default function PackagesPage() {
 },
     
     // =========================
-    // AIRTIME
-    // =========================
+// AIRTIME
+// =========================
 
-    {
-      id: 54,
-      category:
-        "Airtime",
-      name:
-        "Custom Airtime",
-      price:
-        "GH₵0.50 - GH₵50",
-      active: true,
-    },
+{
+  id: 96,
+  category: "Airtime",
+  name:
+    "MTN Airtime",
+  price:
+    "GH₵0.50 - GH₵50",
+  active: true,
+},
 
-    // =========================
-    // SPECIAL OFFERS
-    // =========================
+{
+  id: 97,
+  category: "Airtime",
+  name:
+    "Telecel Airtime",
+  price:
+    "GH₵0.50 - GH₵50",
+  active: true,
+},
+
+{
+  id: 98,
+  category: "Airtime",
+  name:
+    "AirtelTigo Airtime",
+  price:
+    "GH₵0.50 - GH₵50",
+  active: true,
+},
+
+// =========================
+// SPECIAL OFFERS
+// =========================
+
+{
+  id: 99,
+  category:
+    "Special Offers",
+  name:
+    "¢7 - 200 Minutes All Networks (7 Days)",
+  price:
+    "GH₵7",
+  active: true,
+},
 
     {
       id: 55,
