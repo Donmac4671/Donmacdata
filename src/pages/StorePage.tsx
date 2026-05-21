@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -32,7 +33,17 @@ function generateRef() {
 
 const packages = [
   {
-    name: "MTN 5GB",
+    category: "MTN",
+    name: "1GB",
+    network: "MTN",
+    price: 4.4,
+    validity:
+      "90 Days",
+  },
+
+  {
+    category: "MTN",
+    name: "5GB",
     network: "MTN",
     price: 22,
     validity:
@@ -40,8 +51,9 @@ const packages = [
   },
 
   {
-    name:
-      "Telecel 10GB",
+    category:
+      "Telecel",
+    name: "10GB",
     network:
       "Telecel",
     price: 42,
@@ -50,8 +62,9 @@ const packages = [
   },
 
   {
-    name:
-      "AT Big Time 100GB",
+    category:
+      "Big Time",
+    name: "100GB",
     network:
       "AirtelTigo Big Time",
     price: 177,
@@ -60,6 +73,8 @@ const packages = [
   },
 
   {
+    category:
+      "Mashup",
     name:
       "Mashup ¢10",
     network:
@@ -67,16 +82,6 @@ const packages = [
     price: 10,
     validity:
       "Non Expiry",
-  },
-
-  {
-    name:
-      "Special Offer",
-    network:
-      "Telecel",
-    price: 7,
-    validity:
-      "7 Days",
   },
 ];
 
@@ -106,23 +111,22 @@ export default function StorePage() {
     setWalletId,
   ] = useState("");
 
+  const [
+    activeTab,
+    setActiveTab,
+  ] = useState("All");
+
   useEffect(() => {
     loadWallet();
   }, []);
 
   async function loadWallet() {
-    const { data, error } =
+    const { data } =
       await supabase
         .from("wallets")
         .select("*")
         .limit(1)
         .single();
-
-    if (error) {
-      console.log(error);
-
-      return;
-    }
 
     if (data) {
       setWalletBalance(
@@ -136,6 +140,30 @@ export default function StorePage() {
       );
     }
   }
+
+  const tabs = [
+    "All",
+    "MTN",
+    "Telecel",
+    "Big Time",
+    "Mashup",
+  ];
+
+  const filteredPackages =
+    useMemo(() => {
+      if (
+        activeTab ===
+        "All"
+      ) {
+        return packages;
+      }
+
+      return packages.filter(
+        (item) =>
+          item.category ===
+          activeTab
+      );
+    }, [activeTab]);
 
   function addToCart(
     item: any,
@@ -153,13 +181,6 @@ export default function StorePage() {
   }
 
   async function checkout() {
-    if (
-      cart.length ===
-      0
-    ) {
-      return;
-    }
-
     const total =
       cart.reduce(
         (
@@ -188,104 +209,47 @@ export default function StorePage() {
       walletBalance -
       total;
 
-    const walletUpdate =
-      await supabase
-        .from("wallets")
-        .update({
-          balance:
-            newBalance,
-        })
-        .eq(
-          "id",
-          walletId
-        );
-
-    if (
-      walletUpdate.error
-    ) {
-      console.log(
-        walletUpdate.error
+    await supabase
+      .from("wallets")
+      .update({
+        balance:
+          newBalance,
+      })
+      .eq(
+        "id",
+        walletId
       );
-
-      alert(
-        "Wallet update failed"
-      );
-
-      return;
-    }
 
     for (const item of cart) {
-      const orderInsert =
-        await supabase
-          .from(
-            "orders"
-          )
-          .insert([
-            {
-              reference:
-                generateRef(),
+      await supabase
+        .from("orders")
+        .insert([
+          {
+            reference:
+              generateRef(),
 
-              network:
-                item.network,
+            network:
+              item.network,
 
-              package:
-                item.name,
+            package:
+              item.name,
 
-              phone:
-                item.phone,
+            phone:
+              item.phone,
 
-              amount:
-                item.price,
+            amount:
+              item.price,
 
-              validity:
-                item.validity,
+            validity:
+              item.validity,
 
-              source:
-                "Customer",
+            source:
+              "Customer",
 
-              status:
-                "Waiting",
-            },
-          ]);
-
-      if (
-        orderInsert.error
-      ) {
-        console.log(
-          orderInsert.error
-        );
-      }
-
-      const transactionInsert =
-        await supabase
-          .from(
-            "transactions"
-          )
-          .insert([
-            {
-              reference:
-                generateRef(),
-
-              type:
-                "Debit",
-
-              amount:
-                item.price,
-
-              status:
-                "Success",
-
-              description: `Purchase of ${item.name}`,
-            },
-          ]);
-
-      if (
-        transactionInsert.error
-      ) {
-        console.log(
-          transactionInsert.error
-        );
-      }
+            status:
+              "Waiting",
+          },
+        ]);
     }
 
     setWalletBalance(
@@ -297,23 +261,57 @@ export default function StorePage() {
     setCartOpen(false);
 
     alert(
-      "Checkout successful"
+      "Order placed successfully"
     );
   }
 
   return (
     <div
       style={{
-        background:
-          "#020617",
         minHeight:
           "100vh",
+        background:
+          "#0f172a",
         color: "white",
         padding:
-          "40px",
+          "24px",
       }}
     >
       {/* HEADER */}
+
+      <div
+        style={{
+          marginBottom:
+            "30px",
+        }}
+      >
+        <h1
+          style={{
+            fontSize:
+              "32px",
+            fontWeight:
+              "800",
+            marginBottom:
+              "8px",
+          }}
+        >
+          Telecom Store
+        </h1>
+
+        <p
+          style={{
+            color:
+              "#94a3b8",
+            fontSize:
+              "15px",
+          }}
+        >
+          Affordable data
+          bundles
+        </p>
+      </div>
+
+      {/* TOP BAR */}
 
       <div
         style={{
@@ -323,119 +321,139 @@ export default function StorePage() {
             "space-between",
           alignItems:
             "center",
+          gap: "16px",
           flexWrap:
             "wrap",
-          gap: "20px",
           marginBottom:
-            "40px",
+            "24px",
         }}
       >
-        <div>
-          <h1
-            style={{
-              fontSize:
-                "52px",
-              fontWeight:
-                "900",
-            }}
-          >
-            Telecom Store
-          </h1>
-
+        <div
+          style={{
+            background:
+              "#111827",
+            padding:
+              "14px 18px",
+            borderRadius:
+              "14px",
+            border:
+              "1px solid rgba(255,255,255,0.05)",
+          }}
+        >
           <p
             style={{
               color:
                 "#94a3b8",
-              marginTop:
-                "10px",
+              fontSize:
+                "13px",
             }}
           >
-            Buy affordable
-            telecom bundles
+            Wallet Balance
           </p>
+
+          <h2
+            style={{
+              fontSize:
+                "24px",
+              fontWeight:
+                "800",
+              marginTop:
+                "4px",
+            }}
+          >
+            GH₵
+            {
+              walletBalance
+            }
+          </h2>
         </div>
 
-        <div
+        <button
+          onClick={() =>
+            setCartOpen(
+              true
+            )
+          }
           style={{
-            display:
-              "flex",
-            gap: "16px",
-            flexWrap:
-              "wrap",
+            background:
+              "#2563eb",
+            border:
+              "none",
+            color:
+              "white",
+            padding:
+              "14px 18px",
+            borderRadius:
+              "14px",
+            fontWeight:
+              "700",
+            cursor:
+              "pointer",
           }}
         >
-          <div
-            style={{
-              background:
-                "#081028",
-              border:
-                "1px solid rgba(255,255,255,0.08)",
-              borderRadius:
-                "18px",
-              padding:
-                "16px 22px",
-            }}
-          >
-            <p
-              style={{
-                color:
-                  "#94a3b8",
-                marginBottom:
-                  "8px",
-                fontSize:
-                  "14px",
-              }}
-            >
-              Wallet
-            </p>
+          Cart (
+          {
+            cart.length
+          }
+          )
+        </button>
+      </div>
 
-            <h2
-              style={{
-                fontWeight:
-                  "900",
-                fontSize:
-                  "28px",
-              }}
-            >
-              GH₵
-              {
-                walletBalance
+      {/* TABS */}
+
+      <div
+        style={{
+          display:
+            "flex",
+          gap: "12px",
+          overflowX:
+            "auto",
+          marginBottom:
+            "24px",
+        }}
+      >
+        {tabs.map(
+          (tab) => (
+            <button
+              key={tab}
+              onClick={() =>
+                setActiveTab(
+                  tab
+                )
               }
-            </h2>
-          </div>
+              style={{
+                background:
+                  activeTab ===
+                  tab
+                    ? "#2563eb"
+                    : "#111827",
 
-          <button
-            onClick={() =>
-              setCartOpen(
-                true
-              )
-            }
-            style={{
-              background:
-                "linear-gradient(90deg,#2563eb,#7c3aed)",
-              border:
-                "none",
-              borderRadius:
-                "18px",
-              padding:
-                "18px 24px",
-              color:
-                "white",
-              fontWeight:
-                "900",
-              fontSize:
-                "18px",
-              cursor:
-                "pointer",
-            }}
-          >
-            Cart (
-            {
-              cart.length
-            }
-            )
-          </button>
-        </div>
+                border:
+                  "none",
+
+                color:
+                  "white",
+
+                padding:
+                  "12px 18px",
+
+                borderRadius:
+                  "12px",
+
+                cursor:
+                  "pointer",
+
+                fontWeight:
+                  "700",
+
+                whiteSpace:
+                  "nowrap",
+              }}
+            >
+              {tab}
+            </button>
+          )
+        )}
       </div>
 
       {/* PACKAGES */}
@@ -443,12 +461,14 @@ export default function StorePage() {
       <div
         style={{
           display: "grid",
+
           gridTemplateColumns:
-            "repeat(auto-fit,minmax(320px,1fr))",
-          gap: "24px",
+            "repeat(auto-fit,minmax(240px,1fr))",
+
+          gap: "18px",
         }}
       >
-        {packages.map(
+        {filteredPackages.map(
           (item) => (
             <PackageCard
               key={
@@ -465,7 +485,7 @@ export default function StorePage() {
         )}
       </div>
 
-      {/* PACKAGE MODAL */}
+      {/* MODAL */}
 
       <PackageModal
         open={
