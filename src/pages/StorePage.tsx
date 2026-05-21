@@ -772,51 +772,44 @@ export default function StorePage() {
         walletId
       );
 
-    for (const item of cart) {
-      await supabase
-        .from("orders")
-        .insert([
-          {
-            reference:
-              generateRef(),
+    const { error } =
+  await supabase
+    .from("orders")
+    .insert([
+      {
+        reference:
+          generateRef(),
 
-            network:
-              item.network,
+        network:
+          item.network,
 
-            package:
-              item.name,
+        package:
+          item.name,
 
-            phone:
-              item.phone,
+        phone:
+          item.phone,
 
-            amount:
-              item.price,
+        amount:
+          item.price,
 
-            validity:
-              item.validity,
+        validity:
+          item.validity,
 
-            source:
-              "Customer",
+        source:
+          "Customer",
 
-            status:
-              "Waiting",
-          },
-        ]);
-    }
+        status:
+          "Waiting",
+      },
+    ]);
 
-    setWalletBalance(
-      newBalance
-    );
+if (error) {
+  console.log(error);
 
-    setCart([]);
-
-    setCartOpen(false);
-
-    alert(
-      "Order placed successfully"
-    );
-  }
-
+  alert(
+    error.message
+  );
+}
   return (
     <div
       style={{
