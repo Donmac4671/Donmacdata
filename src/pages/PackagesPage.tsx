@@ -19,242 +19,505 @@ export default function PackagesPage() {
   ];
 
   const [packages, setPackages] =
-    useState([
-      // MTN
-      {
-        id: 1,
-        category: "MTN",
-        name: "1GB",
-        price: "GH₵4.40",
-        active: true,
-      },
+  useState([
+    // =========================
+    // MTN
+    // =========================
 
-      {
-        id: 2,
-        category: "MTN",
-        name: "2GB",
-        price: "GH₵8.80",
-        active: true,
-      },
+    {
+      id: 1,
+      category: "MTN",
+      name: "1GB",
+      price: "GH₵4.40",
+      active: true,
+    },
 
-      {
-        id: 3,
-        category: "MTN",
-        name: "5GB",
-        price: "GH₵22.00",
-        active: true,
-      },
+    {
+      id: 2,
+      category: "MTN",
+      name: "2GB",
+      price: "GH₵8.80",
+      active: true,
+    },
 
-      {
-        id: 4,
-        category: "MTN",
-        name: "10GB",
-        price: "GH₵43.00",
-        active: true,
-      },
+    {
+      id: 3,
+      category: "MTN",
+      name: "3GB",
+      price: "GH₵13.20",
+      active: true,
+    },
 
-      {
-        id: 5,
-        category: "MTN",
-        name: "50GB",
-        price: "GH₵202.00",
-        active: true,
-      },
+    {
+      id: 4,
+      category: "MTN",
+      name: "4GB",
+      price: "GH₵17.60",
+      active: true,
+    },
 
-      // TELECEL
-      {
-        id: 6,
-        category:
-          "Telecel",
-        name: "2GB",
-        price:
-          "GH₵10.20",
-        active: true,
-      },
+    {
+      id: 5,
+      category: "MTN",
+      name: "5GB",
+      price: "GH₵22.00",
+      active: true,
+    },
 
-      {
-        id: 7,
-        category:
-          "Telecel",
-        name: "10GB",
-        price:
-          "GH₵42.00",
-        active: true,
-      },
+    {
+      id: 6,
+      category: "MTN",
+      name: "6GB",
+      price: "GH₵26.40",
+      active: true,
+    },
 
-      {
-        id: 8,
-        category:
-          "Telecel",
-        name: "50GB",
-        price:
-          "GH₵189.00",
-        active: true,
-      },
+    {
+      id: 7,
+      category: "MTN",
+      name: "7GB",
+      price: "GH₵30.80",
+      active: true,
+    },
 
-      // AIRTELTIGO PREMIUM
-      {
-        id: 9,
-        category:
-          "AirtelTigo Premium",
-        name: "1GB",
-        price:
-          "GH₵4.30",
-        active: true,
-      },
+    {
+      id: 8,
+      category: "MTN",
+      name: "8GB",
+      price: "GH₵35.20",
+      active: true,
+    },
 
-      {
-        id: 10,
-        category:
-          "AirtelTigo Premium",
-        name: "20GB",
-        price:
-          "GH₵81.00",
-        active: true,
-      },
+    {
+      id: 9,
+      category: "MTN",
+      name: "10GB",
+      price: "GH₵43.00",
+      active: true,
+    },
 
-      {
-        id: 11,
-        category:
-          "AirtelTigo Premium",
-        name: "30GB",
-        price:
-          "GH₵122.00",
-        active: true,
-      },
+    {
+      id: 10,
+      category: "MTN",
+      name: "15GB",
+      price: "GH₵63.00",
+      active: true,
+    },
 
-      // BIG TIME
-      {
-        id: 12,
-        category:
-          "AirtelTigo Big Time",
-        name: "50GB",
-        price:
-          "GH₵95.00",
-        active: true,
-      },
+    {
+      id: 11,
+      category: "MTN",
+      name: "20GB",
+      price: "GH₵83.00",
+      active: true,
+    },
 
-      {
-        id: 13,
-        category:
-          "AirtelTigo Big Time",
-        name: "100GB",
-        price:
-          "GH₵177.00",
-        active: true,
-      },
+    {
+      id: 12,
+      category: "MTN",
+      name: "25GB",
+      price: "GH₵105.00",
+      active: true,
+    },
 
-      {
-        id: 14,
-        category:
-          "AirtelTigo Big Time",
-        name: "200GB",
-        price:
-          "GH₵370.00",
-        active: true,
-      },
+    {
+      id: 13,
+      category: "MTN",
+      name: "30GB",
+      price: "GH₵126.00",
+      active: true,
+    },
 
-      // MASHUP
-      {
-        id: 15,
-        category:
-          "Mashup",
-        name:
-          "¢1 - 15.27MB & 15.64 Minutes",
-        price: "GH₵1",
-        active: true,
-      },
+    {
+      id: 14,
+      category: "MTN",
+      name: "40GB",
+      price: "GH₵163.00",
+      active: true,
+    },
 
-      {
-        id: 16,
-        category:
-          "Mashup",
-        name:
-          "¢10 - 180.72MB & 173.39 Minutes",
-        price:
-          "GH₵10",
-        active: true,
-      },
+    {
+      id: 15,
+      category: "MTN",
+      name: "50GB",
+      price: "GH₵202.00",
+      active: true,
+    },
 
-      {
-        id: 17,
-        category:
-          "Mashup",
-        name:
-          "¢29.99 - 541.97MB & 520 Minutes",
-        price:
-          "GH₵29.99",
-        active: true,
-      },
+    // =========================
+    // TELECEL
+    // =========================
 
-      // VOICE + SMS
-      {
-        id: 18,
-        category:
-          "Voice + SMS",
-        name:
-          "¢1 - 21 Minutes + 5 SMS",
-        price: "GH₵1",
-        active: true,
-      },
+    {
+      id: 16,
+      category: "Telecel",
+      name: "2GB",
+      price: "GH₵10.20",
+      active: true,
+    },
 
-      {
-        id: 19,
-        category:
-          "Voice + SMS",
-        name:
-          "¢10 - 236 Minutes + 50 SMS",
-        price:
-          "GH₵10",
-        active: true,
-      },
+    {
+      id: 17,
+      category: "Telecel",
+      name: "3GB",
+      price: "GH₵15.40",
+      active: true,
+    },
 
-      // VOICE DATA SMS
-      {
-        id: 20,
-        category:
-          "Voice + Data + SMS",
-        name:
-          "¢1 - 16 Minutes + 17.83MB + 5 SMS",
-        price: "GH₵1",
-        active: true,
-      },
+    {
+      id: 18,
+      category: "Telecel",
+      name: "5GB",
+      price: "GH₵22.00",
+      active: true,
+    },
 
-      {
-        id: 21,
-        category:
-          "Voice + Data + SMS",
-        name:
-          "¢29.99 - 539 Minutes + 601.52MB + 50 SMS",
-        price:
-          "GH₵29.99",
-        active: true,
-      },
+    {
+      id: 19,
+      category: "Telecel",
+      name: "10GB",
+      price: "GH₵42.00",
+      active: true,
+    },
 
-      // AIRTIME
-      {
-        id: 22,
-        category:
-          "Airtime",
-        name:
-          "Custom Airtime Range",
-        price:
-          "GH₵0.50 - GH₵50",
-        active: true,
-      },
+    {
+      id: 20,
+      category: "Telecel",
+      name: "15GB",
+      price: "GH₵60.00",
+      active: true,
+    },
 
-      // SPECIAL OFFERS
-      {
-        id: 23,
-        category:
-          "Special Offers",
-        name:
-          "200 Minutes All Networks",
-        price:
-          "GH₵7",
-        active: true,
-      },
-    ]);
+    {
+      id: 21,
+      category: "Telecel",
+      name: "20GB",
+      price: "GH₵80.00",
+      active: true,
+    },
+
+    {
+      id: 22,
+      category: "Telecel",
+      name: "25GB",
+      price: "GH₵98.00",
+      active: true,
+    },
+
+    {
+      id: 23,
+      category: "Telecel",
+      name: "30GB",
+      price: "GH₵118.00",
+      active: true,
+    },
+
+    {
+      id: 24,
+      category: "Telecel",
+      name: "40GB",
+      price: "GH₵158.00",
+      active: true,
+    },
+
+    {
+      id: 25,
+      category: "Telecel",
+      name: "50GB",
+      price: "GH₵189.00",
+      active: true,
+    },
+
+    // =========================
+    // AIRTELTIGO PREMIUM
+    // =========================
+
+    {
+      id: 26,
+      category:
+        "AirtelTigo Premium",
+      name: "1GB",
+      price: "GH₵4.30",
+      active: true,
+    },
+
+    {
+      id: 27,
+      category:
+        "AirtelTigo Premium",
+      name: "2GB",
+      price: "GH₵8.60",
+      active: true,
+    },
+
+    {
+      id: 28,
+      category:
+        "AirtelTigo Premium",
+      name: "3GB",
+      price: "GH₵12.90",
+      active: true,
+    },
+
+    {
+      id: 29,
+      category:
+        "AirtelTigo Premium",
+      name: "4GB",
+      price: "GH₵17.20",
+      active: true,
+    },
+
+    {
+      id: 30,
+      category:
+        "AirtelTigo Premium",
+      name: "5GB",
+      price: "GH₵21.50",
+      active: true,
+    },
+
+    {
+      id: 31,
+      category:
+        "AirtelTigo Premium",
+      name: "6GB",
+      price: "GH₵25.80",
+      active: true,
+    },
+
+    {
+      id: 32,
+      category:
+        "AirtelTigo Premium",
+      name: "7GB",
+      price: "GH₵30.10",
+      active: true,
+    },
+
+    {
+      id: 33,
+      category:
+        "AirtelTigo Premium",
+      name: "8GB",
+      price: "GH₵34.40",
+      active: true,
+    },
+
+    {
+      id: 34,
+      category:
+        "AirtelTigo Premium",
+      name: "10GB",
+      price: "GH₵41.00",
+      active: true,
+    },
+
+    {
+      id: 35,
+      category:
+        "AirtelTigo Premium",
+      name: "12GB",
+      price: "GH₵49.00",
+      active: true,
+    },
+
+    {
+      id: 36,
+      category:
+        "AirtelTigo Premium",
+      name: "15GB",
+      price: "GH₵62.00",
+      active: true,
+    },
+
+    {
+      id: 37,
+      category:
+        "AirtelTigo Premium",
+      name: "20GB",
+      price: "GH₵81.00",
+      active: true,
+    },
+
+    {
+      id: 38,
+      category:
+        "AirtelTigo Premium",
+      name: "25GB",
+      price: "GH₵103.00",
+      active: true,
+    },
+
+    {
+      id: 39,
+      category:
+        "AirtelTigo Premium",
+      name: "30GB",
+      price: "GH₵122.00",
+      active: true,
+    },
+
+    // =========================
+    // BIG TIME
+    // =========================
+
+    {
+      id: 40,
+      category:
+        "AirtelTigo Big Time",
+      name: "15GB",
+      price: "GH₵58.00",
+      active: true,
+    },
+
+    {
+      id: 41,
+      category:
+        "AirtelTigo Big Time",
+      name: "20GB",
+      price: "GH₵65.00",
+      active: true,
+    },
+
+    {
+      id: 42,
+      category:
+        "AirtelTigo Big Time",
+      name: "30GB",
+      price: "GH₵75.00",
+      active: true,
+    },
+
+    {
+      id: 43,
+      category:
+        "AirtelTigo Big Time",
+      name: "40GB",
+      price: "GH₵86.00",
+      active: true,
+    },
+
+    {
+      id: 44,
+      category:
+        "AirtelTigo Big Time",
+      name: "50GB",
+      price: "GH₵95.00",
+      active: true,
+    },
+
+    {
+      id: 45,
+      category:
+        "AirtelTigo Big Time",
+      name: "60GB",
+      price: "GH₵106.00",
+      active: true,
+    },
+
+    {
+      id: 46,
+      category:
+        "AirtelTigo Big Time",
+      name: "70GB",
+      price: "GH₵138.00",
+      active: true,
+    },
+
+    {
+      id: 47,
+      category:
+        "AirtelTigo Big Time",
+      name: "80GB",
+      price: "GH₵152.00",
+      active: true,
+    },
+
+    {
+      id: 48,
+      category:
+        "AirtelTigo Big Time",
+      name: "90GB",
+      price: "GH₵163.00",
+      active: true,
+    },
+
+    {
+      id: 49,
+      category:
+        "AirtelTigo Big Time",
+      name: "100GB",
+      price: "GH₵177.00",
+      active: true,
+    },
+
+    {
+      id: 50,
+      category:
+        "AirtelTigo Big Time",
+      name: "130GB",
+      price: "GH₵222.00",
+      active: true,
+    },
+
+    {
+      id: 51,
+      category:
+        "AirtelTigo Big Time",
+      name: "140GB",
+      price: "GH₵248.00",
+      active: true,
+    },
+
+    {
+      id: 52,
+      category:
+        "AirtelTigo Big Time",
+      name: "150GB",
+      price: "GH₵275.00",
+      active: true,
+    },
+
+    {
+      id: 53,
+      category:
+        "AirtelTigo Big Time",
+      name: "200GB",
+      price: "GH₵370.00",
+      active: true,
+    },
+
+    // =========================
+    // AIRTIME
+    // =========================
+
+    {
+      id: 54,
+      category:
+        "Airtime",
+      name:
+        "Custom Airtime",
+      price:
+        "GH₵0.50 - GH₵50",
+      active: true,
+    },
+
+    // =========================
+    // SPECIAL OFFERS
+    // =========================
+
+    {
+      id: 55,
+      category:
+        "Special Offers",
+      name:
+        "200 Minutes All Networks",
+      price:
+        "GH₵6",
+      active: true,
+    },
+  ]);
 
   const filteredPackages =
     packages.filter(
