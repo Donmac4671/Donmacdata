@@ -12,107 +12,154 @@ export default function PackageCard({
     <div
       style={{
         background:
-          "#081028",
+          "#111827",
+
         border:
-          "1px solid rgba(255,255,255,0.08)",
+          "1px solid rgba(255,255,255,0.05)",
+
         borderRadius:
-          "30px",
+          "18px",
+
         padding:
-          "28px",
+          "20px",
+
+        transition:
+          "0.2s",
+
+        display:
+          "flex",
+
+        flexDirection:
+          "column",
+
+        justifyContent:
+          "space-between",
       }}
     >
-      <div
-        style={{
-          display:
-            "flex",
-          justifyContent:
-            "space-between",
-          marginBottom:
-            "30px",
-        }}
-      >
-        <h2
+      {/* TOP */}
+
+      <div>
+        <div
+          style={{
+            display:
+              "flex",
+
+            justifyContent:
+              "space-between",
+
+            alignItems:
+              "center",
+
+            marginBottom:
+              "18px",
+          }}
+        >
+          <div
+            style={{
+              background:
+                "#1e293b",
+
+              color:
+                "#38bdf8",
+
+              padding:
+                "6px 12px",
+
+              borderRadius:
+                "999px",
+
+              fontSize:
+                "12px",
+
+              fontWeight:
+                "700",
+            }}
+          >
+            {
+              item.network
+            }
+          </div>
+
+          <div
+            style={{
+              color:
+                "#94a3b8",
+
+              fontSize:
+                "13px",
+            }}
+          >
+            {
+              item.validity
+            }
+          </div>
+        </div>
+
+        <h1
           style={{
             fontSize:
-              "38px",
+              "34px",
+
             fontWeight:
               "900",
+
+            marginBottom:
+              "10px",
           }}
         >
           {item.name}
-        </h2>
+        </h1>
 
-        <div
+        <h2
           style={{
-            background:
-              "#052e16",
-            color:
-              "#22c55e",
-            padding:
-              "10px 18px",
-            borderRadius:
-              "999px",
+            fontSize:
+              "28px",
+
             fontWeight:
               "800",
+
+            color:
+              "#38bdf8",
+
+            marginBottom:
+              "18px",
           }}
         >
-          ACTIVE
-        </div>
+          GH₵
+          {item.price}
+        </h2>
       </div>
 
-      <h1
-        style={{
-          fontSize:
-            "48px",
-          color:
-            "#38bdf8",
-          marginBottom:
-            "30px",
-        }}
-      >
-        GH₵
-        {item.price}
-      </h1>
-
-      <div
-        style={{
-          display:
-            "inline-block",
-          background:
-            "#172554",
-          padding:
-            "12px 20px",
-          borderRadius:
-            "16px",
-          marginBottom:
-            "30px",
-          fontWeight:
-            "700",
-        }}
-      >
-        {item.network}
-      </div>
+      {/* BUTTON */}
 
       <button
         onClick={onBuy}
         style={{
           width: "100%",
-          padding:
-            "18px",
-          borderRadius:
-            "18px",
+
+          background:
+            "#2563eb",
+
           border:
             "none",
-          background:
-            "linear-gradient(90deg,#2563eb,#7c3aed)",
+
           color:
             "white",
+
+          padding:
+            "14px",
+
+          borderRadius:
+            "14px",
+
           fontWeight:
             "800",
-          fontSize:
-            "20px",
+
           cursor:
             "pointer",
+
+          fontSize:
+            "15px",
         }}
       >
         Buy Now
