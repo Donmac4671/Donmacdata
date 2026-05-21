@@ -3,7 +3,78 @@ import { Wallet, Users, ShoppingCart, TrendingUp } from "lucide-react";
 
 export default function DashboardPage() {
   return (
-    <div className="flex min-h-screen bg-[#050816] text-white">
+    <div className="flex min-h-screen bg-[#050816] text-white"import { useEffect, useState } from "react";
+
+import AdminLayout from "../layouts/AdminLayout";
+
+import { supabase } from "../lib/supabase";
+
+export default function DashboardPage() {
+  const [orders, setOrders] =
+    useState<any[]>([]);
+
+  async function loadOrders() {
+    const { data, error } =
+      await supabase
+        .from("orders")
+        .select("*");
+
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    setOrders(data || []);
+  }
+
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  return (
+    <AdminLayout>
+      <div>
+        <h1
+          style={{
+            fontSize: "40px",
+            fontWeight: "900",
+            marginBottom: "30px",
+          }}
+        >
+          Live Orders
+        </h1>
+
+        <div
+          style={{
+            display: "grid",
+            gap: "20px",
+          }}
+        >
+          {orders.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                background: "#111827",
+                padding: "24px",
+                borderRadius: "20px",
+              }}
+            >
+              <h2>{item.reference}</h2>
+
+              <p>{item.network}</p>
+
+              <p>{item.phone}</p>
+
+              <p>{item.amount}</p>
+
+              <p>{item.status}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </AdminLayout>
+  );
+}
       <aside className="w-72 glass p-6 border-r border-slate-800">
         <h2 className="text-2xl font-bold mb-10">
           Reseller Admin
