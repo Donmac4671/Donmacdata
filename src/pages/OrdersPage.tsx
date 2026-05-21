@@ -1,6 +1,11 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import AdminLayout from "../layouts/AdminLayout";
+
+import { supabase } from "../lib/supabase";
 
 function generateRef() {
   const chars =
@@ -22,144 +27,169 @@ function generateRef() {
 }
 
 export default function OrdersPage() {
-  const [search, setSearch] =
-    useState("");
+  const [orders, setOrders] =
+    useState<any[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
 
   const [network, setNetwork] =
-    useState("All");
+    useState("MTN");
 
-  const [status, setStatus] =
-    useState("All");
+  const [packageName, setPackageName] =
+    useState("10GB");
 
-  const [autoTime, setAutoTime] =
-    useState("15 Minutes");
+  const [phone, setPhone] =
+    useState("");
 
-  const [orders, setOrders] =
-    useState([
-      {
-        id: 1,
-        ref: generateRef(),
-        phone:
-          "0551234567",
-        network: "MTN",
-        package:
-          "10GB",
-        amount:
-          "GH₵43.00",
-        status:
-          "Delivered",
-        auto:
-          true,
-        date:
-          "2026-05-21",
-      },
+  const [amount, setAmount] =
+    useState("");
 
-      {
-        id: 2,
-        ref: generateRef(),
-        phone:
-          "0209876543",
-        network:
-          "Telecel",
-        package:
-          "Mashup",
-        amount:
-          "GH₵10.00",
-        status:
-          "Processing",
-        auto:
-          true,
-        date:
-          "2026-05-21",
-      },
+  async function loadOrders() {
+    setLoading(true);
 
-      {
-        id: 3,
-        ref: generateRef(),
-        phone:
-          "0277777777",
-        network:
-          "AirtelTigo",
-        package:
-          "50GB",
-        amount:
-          "GH₵95.00",
-        status:
-          "Pending",
-        auto:
-          false,
-        date:
-          "2026-05-20",
-      },
-    ]);
-
-  const filteredOrders =
-    orders.filter(
-      (item) => {
-        const matchesSearch =
-          item.phone.includes(
-            search
-          ) ||
-          item.ref
-            .toLowerCase()
-            .includes(
-              search.toLowerCase()
-            );
-
-        const matchesNetwork =
-          network ===
-            "All" ||
-          item.network ===
-            network;
-
-        const matchesStatus =
-          status ===
-            "All" ||
-          item.status ===
-            status;
-
-        return (
-          matchesSearch &&
-          matchesNetwork &&
-          matchesStatus
-        );
-      }
-    );
-
-  function updateStatus(
-    id: number,
-    newStatus: string
-  ) {
-    const updated =
-      orders.map(
-        (item) => {
-          if (
-            item.id === id
-          ) {
-            return {
-              ...item,
-              status:
-                newStatus,
-            };
+    const { data, error } =
+      await supabase
+        .from("orders")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending: false,
           }
+        );
 
-          return item;
-        }
-      );
+    if (error) {
+      console.log(error);
+      return;
+    }
 
-    setOrders(updated);
+    setOrders(data || []);
+
+    setLoading(false);
   }
 
-  function deleteOrder(
-    id: number
-  ) {
-    const updated =
-      orders.filter(
-        (item) =>
-          item.id !== id
+  useEffect(() => {
+    loadOrders();
+
+    const channel =
+      supabase
+        .channel(
+          "orders-realtime"
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema:
+              "public",
+            table:
+              "orders",
+          },
+          () => {
+            loadOrders();
+          }
+        )
+        .subscribe();
+
+    return () => {
+      supabase.removeChannel(
+        channel
+      );
+    };
+  }, []);
+
+  async function createOrder() {
+    if (
+      !phone ||
+      !amount
+    ) {
+      alert(
+        "Fill all fields"
       );
 
-    setOrders(updated);
+      return;
+    }
+
+    const { error } =
+      await supabase
+        .from("orders")
+        .insert([
+          {
+            reference:
+              generateRef(),
+            network,
+            package:
+              packageName,
+            phone,
+            amount:
+              Number(
+                amount
+              ),
+            status:
+              "Pending",
+            auto_delivery:
+              false,
+          },
+        ]);
+
+    if (error) {
+      console.log(error);
+
+      alert(
+        "Failed to create order"
+      );
+
+      return;
+    }
+
+    setPhone("");
+    setAmount("");
+
+    alert(
+      "Order created"
+    );
+  }
+
+  async function updateStatus(
+    id: string,
+    status: string
+  ) {
+    const { error } =
+      await supabase
+        .from("orders")
+        .update({
+          status,
+        })
+        .eq("id", id);
+
+    if (error) {
+      console.log(error);
+
+      return;
+    }
+  }
+
+  async function deleteOrder(
+    id: string
+  ) {
+    const confirmed =
+      confirm(
+        "Delete this order?"
+      );
+
+    if (!confirmed)
+      return;
+
+    const { error } =
+      await supabase
+        .from("orders")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+      console.log(error);
+    }
   }
 
   function statusColor(
@@ -173,12 +203,6 @@ export default function OrdersPage() {
 
     if (
       value ===
-      "Failed"
-    )
-      return "#ef4444";
-
-    if (
-      value ===
       "Processing"
     )
       return "#3b82f6";
@@ -189,7 +213,13 @@ export default function OrdersPage() {
     )
       return "#facc15";
 
-    return "#9ca3af";
+    if (
+      value ===
+      "Failed"
+    )
+      return "#ef4444";
+
+    return "#94a3b8";
   }
 
   return (
@@ -199,412 +229,176 @@ export default function OrdersPage() {
 
         <div
           style={{
-            display: "flex",
-
-            justifyContent:
-              "space-between",
-
-            alignItems:
-              "center",
-
-            flexWrap:
-              "wrap",
-
-            gap: "20px",
-
             marginBottom:
               "30px",
           }}
         >
-          <div>
-            <h1
-              style={{
-                fontSize:
-                  "38px",
+          <h1
+            style={{
+              fontSize:
+                "42px",
+              fontWeight:
+                "900",
+              marginBottom:
+                "10px",
+            }}
+          >
+            Orders
+          </h1>
 
-                fontWeight:
-                  "900",
+          <p
+            style={{
+              color:
+                "#94a3b8",
+            }}
+          >
+            Live Telecom
+            Order Management
+          </p>
+        </div>
 
-                marginBottom:
-                  "8px",
-              }}
-            >
-              Orders
-            </h1>
+        {/* CREATE ORDER */}
 
-            <p
-              style={{
-                color:
-                  "#94a3b8",
-              }}
-            >
-              Manage all
-              customer orders
-            </p>
-          </div>
+        <div
+          style={{
+            background:
+              "#0f172a",
+            border:
+              "1px solid rgba(255,255,255,0.08)",
+            borderRadius:
+              "24px",
+            padding:
+              "24px",
+            marginBottom:
+              "30px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize:
+                "26px",
+              fontWeight:
+                "800",
+              marginBottom:
+                "24px",
+            }}
+          >
+            Create Order
+          </h2>
 
           <div
             style={{
-              background:
-                "#0f172a",
-
-              padding:
-                "14px 18px",
-
-              borderRadius:
-                "16px",
-
-              border:
-                "1px solid rgba(255,255,255,0.08)",
+              display: "grid",
+              gridTemplateColumns:
+                "repeat(auto-fit,minmax(220px,1fr))",
+              gap: "18px",
             }}
           >
-            <p
-              style={{
-                color:
-                  "#94a3b8",
-
-                fontSize:
-                  "14px",
-
-                marginBottom:
-                  "6px",
-              }}
-            >
-              Auto Delivery
-            </p>
-
             <select
               value={
-                autoTime
+                network
               }
               onChange={(
                 e
               ) =>
-                setAutoTime(
+                setNetwork(
                   e.target
                     .value
                 )
               }
-              style={{
-                background:
-                  "#111827",
-
-                color:
-                  "white",
-
-                border:
-                  "none",
-
-                padding:
-                  "10px",
-
-                borderRadius:
-                  "10px",
-
-                outline:
-                  "none",
-              }}
+              style={
+                inputStyle
+              }
             >
               <option>
-                5 Minutes
+                MTN
               </option>
 
               <option>
-                10 Minutes
+                Telecel
               </option>
 
               <option>
-                15 Minutes
-              </option>
-
-              <option>
-                20 Minutes
-              </option>
-
-              <option>
-                25 Minutes
-              </option>
-
-              <option>
-                30 Minutes
-              </option>
-
-              <option>
-                45 Minutes
-              </option>
-
-              <option>
-                1 Hour
-              </option>
-
-              <option>
-                1 Hour 30 Minutes
-              </option>
-
-              <option>
-                2 Hours
+                AirtelTigo
               </option>
             </select>
-          </div>
-        </div>
 
-        {/* FILTERS */}
-
-        <div
-          style={{
-            display: "grid",
-
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(220px,1fr))",
-
-            gap: "18px",
-
-            marginBottom:
-              "30px",
-          }}
-        >
-          <input
-            placeholder="Search phone or ref code"
-            value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
-            style={
-              inputStyle
-            }
-          />
-
-          <select
-            value={network}
-            onChange={(e) =>
-              setNetwork(
-                e.target.value
-              )
-            }
-            style={
-              inputStyle
-            }
-          >
-            <option>
-              All
-            </option>
-
-            <option>
-              MTN
-            </option>
-
-            <option>
-              Telecel
-            </option>
-
-            <option>
-              AirtelTigo
-            </option>
-
-            <option>
-              Mashup
-            </option>
-
-            <option>
-              Airtime
-            </option>
-
-            <option>
-              Telecel Voice + SMS
-            </option>
-
-            <option>
-              Telecel Voice + Data + SMS
-            </option>
-          </select>
-
-          <select
-            value={status}
-            onChange={(e) =>
-              setStatus(
-                e.target.value
-              )
-            }
-            style={
-              inputStyle
-            }
-          >
-            <option>
-              All
-            </option>
-
-            <option>
-              Waiting
-            </option>
-
-            <option>
-              Pending
-            </option>
-
-            <option>
-              Processing
-            </option>
-
-            <option>
-              Delivered
-            </option>
-
-            <option>
-              Failed
-            </option>
-          </select>
-
-          <input
-            type="date"
-            style={
-              inputStyle
-            }
-          />
-
-          <input
-            type="date"
-            style={
-              inputStyle
-            }
-          />
-        </div>
-
-        {/* STATS */}
-
-        <div
-          style={{
-            display: "grid",
-
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(220px,1fr))",
-
-            gap: "18px",
-
-            marginBottom:
-              "30px",
-          }}
-        >
-          <div
-            style={
-              statCard
-            }
-          >
-            <p
+            <input
+              placeholder="Package"
+              value={
+                packageName
+              }
+              onChange={(
+                e
+              ) =>
+                setPackageName(
+                  e.target
+                    .value
+                )
+              }
               style={
-                statTitle
+                inputStyle
               }
-            >
-              Total Orders
-            </p>
+            />
 
-            <h2
+            <input
+              placeholder="Phone Number"
+              value={phone}
+              onChange={(
+                e
+              ) =>
+                setPhone(
+                  e.target
+                    .value
+                )
+              }
               style={
-                statValue
+                inputStyle
               }
-            >
-              {
-                filteredOrders.length
+            />
+
+            <input
+              placeholder="Amount"
+              value={amount}
+              onChange={(
+                e
+              ) =>
+                setAmount(
+                  e.target
+                    .value
+                )
               }
-            </h2>
+              style={
+                inputStyle
+              }
+            />
           </div>
 
-          <div
-            style={
-              statCard
+          <button
+            onClick={
+              createOrder
             }
+            style={{
+              marginTop:
+                "24px",
+              background:
+                "#2563eb",
+              border:
+                "none",
+              color:
+                "white",
+              padding:
+                "14px 22px",
+              borderRadius:
+                "14px",
+              fontWeight:
+                "700",
+              cursor:
+                "pointer",
+            }}
           >
-            <p
-              style={
-                statTitle
-              }
-            >
-              Delivered
-            </p>
-
-            <h2
-              style={{
-                ...statValue,
-                color:
-                  "#22c55e",
-              }}
-            >
-              {
-                filteredOrders.filter(
-                  (
-                    item
-                  ) =>
-                    item.status ===
-                    "Delivered"
-                ).length
-              }
-            </h2>
-          </div>
-
-          <div
-            style={
-              statCard
-            }
-          >
-            <p
-              style={
-                statTitle
-              }
-            >
-              Processing
-            </p>
-
-            <h2
-              style={{
-                ...statValue,
-                color:
-                  "#3b82f6",
-              }}
-            >
-              {
-                filteredOrders.filter(
-                  (
-                    item
-                  ) =>
-                    item.status ===
-                    "Processing"
-                ).length
-              }
-            </h2>
-          </div>
-
-          <div
-            style={
-              statCard
-            }
-          >
-            <p
-              style={
-                statTitle
-              }
-            >
-              Failed
-            </p>
-
-            <h2
-              style={{
-                ...statValue,
-                color:
-                  "#ef4444",
-              }}
-            >
-              {
-                filteredOrders.filter(
-                  (
-                    item
-                  ) =>
-                    item.status ===
-                    "Failed"
-                ).length
-              }
-            </h2>
-          </div>
+            Create Order
+          </button>
         </div>
 
         {/* ORDERS */}
@@ -612,327 +406,240 @@ export default function OrdersPage() {
         <div
           style={{
             display: "grid",
-
-            gap: "22px",
+            gap: "20px",
           }}
         >
-          {filteredOrders.map(
-            (item) => (
-              <div
-                key={
-                  item.id
-                }
-                style={{
-                  background:
-                    "linear-gradient(180deg,#0f172a,#111827)",
-
-                  border:
-                    "1px solid rgba(255,255,255,0.08)",
-
-                  borderRadius:
-                    "24px",
-
-                  padding:
-                    "24px",
-                }}
-              >
-                {/* TOP */}
-
+          {loading ? (
+            <div
+              style={{
+                textAlign:
+                  "center",
+                padding:
+                  "40px",
+                color:
+                  "#94a3b8",
+              }}
+            >
+              Loading...
+            </div>
+          ) : (
+            orders.map(
+              (item) => (
                 <div
+                  key={
+                    item.id
+                  }
                   style={{
-                    display:
-                      "flex",
-
-                    justifyContent:
-                      "space-between",
-
-                    alignItems:
-                      "center",
-
-                    flexWrap:
-                      "wrap",
-
-                    gap: "18px",
-
-                    marginBottom:
-                      "20px",
+                    background:
+                      "#0f172a",
+                    border:
+                      "1px solid rgba(255,255,255,0.08)",
+                    borderRadius:
+                      "24px",
+                    padding:
+                      "24px",
                   }}
                 >
-                  <div>
-                    <h2
-                      style={{
-                        fontSize:
-                          "22px",
+                  <div
+                    style={{
+                      display:
+                        "flex",
+                      justifyContent:
+                        "space-between",
+                      alignItems:
+                        "center",
+                      flexWrap:
+                        "wrap",
+                      gap: "20px",
+                      marginBottom:
+                        "20px",
+                    }}
+                  >
+                    <div>
+                      <h2
+                        style={{
+                          fontSize:
+                            "24px",
+                          fontWeight:
+                            "800",
+                          marginBottom:
+                            "10px",
+                        }}
+                      >
+                        {
+                          item.reference
+                        }
+                      </h2>
 
-                        fontWeight:
-                          "800",
+                      <p
+                        style={{
+                          color:
+                            "#94a3b8",
+                        }}
+                      >
+                        {
+                          item.phone
+                        }
+                      </p>
+                    </div>
 
-                        marginBottom:
-                          "10px",
-                      }}
-                    >
-                      {
-                        item.ref
-                      }
-                    </h2>
-
-                    <p
-                      style={{
-                        color:
-                          "#94a3b8",
-                      }}
-                    >
-                      {
-                        item.phone
-                      }
-                    </p>
-                  </div>
-
-                  <div>
-                    <span
+                    <div
                       style={{
                         color:
                           statusColor(
                             item.status
                           ),
-
                         fontWeight:
                           "800",
-
                         fontSize:
-                          "15px",
+                          "16px",
                       }}
                     >
                       {
                         item.status
                       }
-                    </span>
+                    </div>
                   </div>
-                </div>
 
-                {/* DETAILS */}
-
-                <div
-                  style={{
-                    display:
-                      "grid",
-
-                    gridTemplateColumns:
-                      "repeat(auto-fit,minmax(180px,1fr))",
-
-                    gap: "18px",
-
-                    marginBottom:
-                      "24px",
-                  }}
-                >
-                  <div>
-                    <p
-                      style={
-                        detailTitle
-                      }
-                    >
-                      Network
-                    </p>
-
-                    <h3
-                      style={
-                        detailValue
-                      }
-                    >
-                      {
+                  <div
+                    style={{
+                      display:
+                        "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit,minmax(180px,1fr))",
+                      gap: "18px",
+                      marginBottom:
+                        "24px",
+                    }}
+                  >
+                    <Info
+                      title="Network"
+                      value={
                         item.network
                       }
-                    </h3>
-                  </div>
+                    />
 
-                  <div>
-                    <p
-                      style={
-                        detailTitle
-                      }
-                    >
-                      Package
-                    </p>
-
-                    <h3
-                      style={
-                        detailValue
-                      }
-                    >
-                      {
+                    <Info
+                      title="Package"
+                      value={
                         item.package
                       }
-                    </h3>
+                    />
+
+                    <Info
+                      title="Amount"
+                      value={`GH₵${item.amount}`}
+                    />
+
+                    <Info
+                      title="Date"
+                      value={new Date(
+                        item.created_at
+                      ).toLocaleString()}
+                    />
                   </div>
 
-                  <div>
-                    <p
-                      style={
-                        detailTitle
+                  <div
+                    style={{
+                      display:
+                        "flex",
+                      gap: "12px",
+                      flexWrap:
+                        "wrap",
+                    }}
+                  >
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          item.id,
+                          "Pending"
+                        )
                       }
+                      style={{
+                        ...statusButton,
+                        color:
+                          "#facc15",
+                      }}
                     >
-                      Amount
-                    </p>
+                      Pending
+                    </button>
 
-                    <h3
-                      style={
-                        detailValue
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          item.id,
+                          "Processing"
+                        )
                       }
+                      style={{
+                        ...statusButton,
+                        color:
+                          "#3b82f6",
+                      }}
                     >
-                      {
-                        item.amount
-                      }
-                    </h3>
-                  </div>
+                      Processing
+                    </button>
 
-                  <div>
-                    <p
-                      style={
-                        detailTitle
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          item.id,
+                          "Delivered"
+                        )
                       }
+                      style={{
+                        ...statusButton,
+                        color:
+                          "#22c55e",
+                      }}
                     >
-                      Date
-                    </p>
+                      Delivered
+                    </button>
 
-                    <h3
-                      style={
-                        detailValue
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          item.id,
+                          "Failed"
+                        )
                       }
+                      style={{
+                        ...statusButton,
+                        color:
+                          "#ef4444",
+                      }}
                     >
-                      {
-                        item.date
+                      Failed
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        deleteOrder(
+                          item.id
+                        )
                       }
-                    </h3>
+                      style={{
+                        background:
+                          "#dc2626",
+                        border:
+                          "none",
+                        color:
+                          "white",
+                        padding:
+                          "12px 18px",
+                        borderRadius:
+                          "12px",
+                        fontWeight:
+                          "700",
+                        cursor:
+                          "pointer",
+                      }}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
-
-                {/* ACTIONS */}
-
-                <div
-                  style={{
-                    display:
-                      "flex",
-
-                    flexWrap:
-                      "wrap",
-
-                    gap: "12px",
-                  }}
-                >
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        item.id,
-                        "Waiting"
-                      )
-                    }
-                    style={{
-                      ...statusButton,
-                      color:
-                        "#9ca3af",
-                    }}
-                  >
-                    Waiting
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        item.id,
-                        "Pending"
-                      )
-                    }
-                    style={{
-                      ...statusButton,
-                      color:
-                        "#facc15",
-                    }}
-                  >
-                    Pending
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        item.id,
-                        "Processing"
-                      )
-                    }
-                    style={{
-                      ...statusButton,
-                      color:
-                        "#3b82f6",
-                    }}
-                  >
-                    Processing
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        item.id,
-                        "Delivered"
-                      )
-                    }
-                    style={{
-                      ...statusButton,
-                      color:
-                        "#22c55e",
-                    }}
-                  >
-                    Delivered
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      updateStatus(
-                        item.id,
-                        "Failed"
-                      )
-                    }
-                    style={{
-                      ...statusButton,
-                      color:
-                        "#ef4444",
-                    }}
-                  >
-                    Failed
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      deleteOrder(
-                        item.id
-                      )
-                    }
-                    style={{
-                      background:
-                        "#dc2626",
-
-                      border:
-                        "none",
-
-                      color:
-                        "white",
-
-                      padding:
-                        "12px 18px",
-
-                      borderRadius:
-                        "12px",
-
-                      fontWeight:
-                        "700",
-
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
+              )
             )
           )}
         </div>
@@ -941,89 +648,68 @@ export default function OrdersPage() {
   );
 }
 
+function Info({
+  title,
+  value,
+}: {
+  title: string;
+  value: string;
+}) {
+  return (
+    <div>
+      <p
+        style={{
+          color:
+            "#94a3b8",
+          marginBottom:
+            "8px",
+          fontSize:
+            "14px",
+        }}
+      >
+        {title}
+      </p>
+
+      <h3
+        style={{
+          fontSize:
+            "18px",
+          fontWeight:
+            "700",
+        }}
+      >
+        {value}
+      </h3>
+    </div>
+  );
+}
+
 const inputStyle = {
   background:
     "#111827",
-
   border:
     "1px solid rgba(255,255,255,0.08)",
-
   color: "white",
-
   padding: "16px",
-
   borderRadius:
     "16px",
-
   outline: "none",
-
   width: "100%",
-
   boxSizing:
     "border-box" as const,
-};
-
-const statCard = {
-  background:
-    "#0f172a",
-
-  padding: "18px",
-
-  borderRadius:
-    "18px",
-
-  border:
-    "1px solid rgba(255,255,255,0.08)",
-};
-
-const statTitle = {
-  color: "#94a3b8",
-
-  marginBottom:
-    "8px",
-
-  fontSize: "14px",
-};
-
-const statValue = {
-  fontSize: "28px",
-
-  fontWeight:
-    "900",
-};
-
-const detailTitle = {
-  color: "#94a3b8",
-
-  marginBottom:
-    "8px",
-
-  fontSize: "14px",
-};
-
-const detailValue = {
-  fontSize: "18px",
-
-  fontWeight:
-    "700",
 };
 
 const statusButton = {
   background:
     "#111827",
-
   border:
     "1px solid rgba(255,255,255,0.08)",
-
   padding:
     "12px 16px",
-
   borderRadius:
     "12px",
-
   fontWeight:
     "700",
-
   cursor:
     "pointer",
 };
