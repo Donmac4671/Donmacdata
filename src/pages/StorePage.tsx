@@ -32,37 +32,11 @@ function generateRef() {
 }
 
 const packages = [
-  /* ================= MTN ================= */
-
   {
     category: "MTN",
     name: "1GB",
     network: "MTN",
     price: 4.4,
-    validity: "90 Days",
-  },
-
-  {
-    category: "MTN",
-    name: "2GB",
-    network: "MTN",
-    price: 8.8,
-    validity: "90 Days",
-  },
-
-  {
-    category: "MTN",
-    name: "3GB",
-    network: "MTN",
-    price: 13.2,
-    validity: "90 Days",
-  },
-
-  {
-    category: "MTN",
-    name: "4GB",
-    network: "MTN",
-    price: 17.6,
     validity: "90 Days",
   },
 
@@ -83,101 +57,11 @@ const packages = [
   },
 
   {
-    category: "MTN",
-    name: "20GB",
-    network: "MTN",
-    price: 83,
-    validity: "90 Days",
-  },
-
-  {
-    category: "MTN",
-    name: "50GB",
-    network: "MTN",
-    price: 202,
-    validity: "90 Days",
-  },
-
-  /* ================= TELECEL ================= */
-
-  {
-    category: "Telecel",
-    name: "2GB",
-    network: "Telecel",
-    price: 10.2,
-    validity: "60 Days",
-  },
-
-  {
-    category: "Telecel",
-    name: "3GB",
-    network: "Telecel",
-    price: 15.4,
-    validity: "60 Days",
-  },
-
-  {
-    category: "Telecel",
-    name: "5GB",
-    network: "Telecel",
-    price: 22,
-    validity: "60 Days",
-  },
-
-  {
     category: "Telecel",
     name: "10GB",
     network: "Telecel",
     price: 42,
     validity: "60 Days",
-  },
-
-  {
-    category: "Telecel",
-    name: "20GB",
-    network: "Telecel",
-    price: 80,
-    validity: "60 Days",
-  },
-
-  {
-    category: "Telecel",
-    name: "50GB",
-    network: "Telecel",
-    price: 189,
-    validity: "60 Days",
-  },
-
-  /* ================= AIRTELTIGO PREMIUM ================= */
-
-  {
-    category:
-      "AT Premium",
-
-    name: "1GB",
-
-    network:
-      "AirtelTigo Premium",
-
-    price: 4.3,
-
-    validity:
-      "60 Days",
-  },
-
-  {
-    category:
-      "AT Premium",
-
-    name: "5GB",
-
-    network:
-      "AirtelTigo Premium",
-
-    price: 21.5,
-
-    validity:
-      "60 Days",
   },
 
   {
@@ -197,83 +81,6 @@ const packages = [
 
   {
     category:
-      "AT Premium",
-
-    name: "20GB",
-
-    network:
-      "AirtelTigo Premium",
-
-    price: 81,
-
-    validity:
-      "60 Days",
-  },
-
-  {
-    category:
-      "AT Premium",
-
-    name: "30GB",
-
-    network:
-      "AirtelTigo Premium",
-
-    price: 122,
-
-    validity:
-      "60 Days",
-  },
-
-  /* ================= BIG TIME ================= */
-
-  {
-    category:
-      "Big Time",
-
-    name: "15GB",
-
-    network:
-      "AirtelTigo Big Time",
-
-    price: 58,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Big Time",
-
-    name: "30GB",
-
-    network:
-      "AirtelTigo Big Time",
-
-    price: 75,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Big Time",
-
-    name: "50GB",
-
-    network:
-      "AirtelTigo Big Time",
-
-    price: 95,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
       "Big Time",
 
     name: "100GB",
@@ -282,55 +89,6 @@ const packages = [
       "AirtelTigo Big Time",
 
     price: 177,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Big Time",
-
-    name: "200GB",
-
-    network:
-      "AirtelTigo Big Time",
-
-    price: 370,
-
-    validity:
-      "Non Expiry",
-  },
-
-  /* ================= MASHUP ================= */
-
-  {
-    category:
-      "Mashup",
-
-    name:
-      "¢1 Mashup",
-
-    network:
-      "Mashup",
-
-    price: 1,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Mashup",
-
-    name:
-      "¢5 Mashup",
-
-    network:
-      "Mashup",
-
-    price: 5,
 
     validity:
       "Non Expiry",
@@ -354,72 +112,6 @@ const packages = [
 
   {
     category:
-      "Mashup",
-
-    name:
-      "¢20 Mashup",
-
-    network:
-      "Mashup",
-
-    price: 20,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Mashup",
-
-    name:
-      "¢29.99 Mashup",
-
-    network:
-      "Mashup",
-
-    price: 29.99,
-
-    validity:
-      "Non Expiry",
-  },
-
-  /* ================= TELECEL VOICE + SMS ================= */
-
-  {
-    category:
-      "Voice + SMS",
-
-    name:
-      "¢1 Voice + SMS",
-
-    network:
-      "Telecel Voice + SMS",
-
-    price: 1,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Voice + SMS",
-
-    name:
-      "¢5 Voice + SMS",
-
-    network:
-      "Telecel Voice + SMS",
-
-    price: 5,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
       "Voice + SMS",
 
     name:
@@ -429,56 +121,6 @@ const packages = [
       "Telecel Voice + SMS",
 
     price: 10,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Voice + SMS",
-
-    name:
-      "¢20 Voice + SMS",
-
-    network:
-      "Telecel Voice + SMS",
-
-    price: 20,
-
-    validity:
-      "Non Expiry",
-  },
-
-  /* ================= VOICE + DATA + SMS ================= */
-
-  {
-    category:
-      "Voice + Data",
-
-    name:
-      "¢1 Voice + Data",
-
-    network:
-      "Telecel Voice + Data + SMS",
-
-    price: 1,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Voice + Data",
-
-    name:
-      "¢5 Voice + Data",
-
-    network:
-      "Telecel Voice + Data + SMS",
-
-    price: 5,
 
     validity:
       "Non Expiry",
@@ -502,24 +144,6 @@ const packages = [
 
   {
     category:
-      "Voice + Data",
-
-    name:
-      "¢20 Voice + Data",
-
-    network:
-      "Telecel Voice + Data + SMS",
-
-    price: 20,
-
-    validity:
-      "Non Expiry",
-  },
-
-  /* ================= SPECIAL OFFER ================= */
-
-  {
-    category:
       "Special Offer",
 
     name:
@@ -532,56 +156,6 @@ const packages = [
 
     validity:
       "7 Days",
-  },
-
-  /* ================= AIRTIME ================= */
-
-  {
-    category:
-      "Airtime",
-
-    name:
-      "GH₵0.50 Airtime",
-
-    network:
-      "All Networks",
-
-    price: 0.5,
-
-    validity:
-      "Instant",
-  },
-
-  {
-    category:
-      "Airtime",
-
-    name:
-      "GH₵1 Airtime",
-
-    network:
-      "All Networks",
-
-    price: 1,
-
-    validity:
-      "Instant",
-  },
-
-  {
-    category:
-      "Airtime",
-
-    name:
-      "GH₵5 Airtime",
-
-    network:
-      "All Networks",
-
-    price: 5,
-
-    validity:
-      "Instant",
   },
 
   {
@@ -598,38 +172,6 @@ const packages = [
 
     validity:
       "Instant",
-  },
-
-  {
-    category:
-      "Airtime",
-
-    name:
-      "GH₵20 Airtime",
-
-    network:
-      "All Networks",
-
-    price: 20,
-
-    validity:
-      "Non Expiry",
-  },
-
-  {
-    category:
-      "Airtime",
-
-    name:
-      "GH₵50 Airtime",
-
-    network:
-      "All Networks",
-
-    price: 50,
-
-    validity:
-      "Non Expiry",
   },
 ];
 
@@ -693,12 +235,13 @@ export default function StorePage() {
     "All",
     "MTN",
     "Telecel",
+    "AT Premium",
     "Big Time",
     "Mashup",
+    "Voice + SMS",
+    "Voice + Data",
+    "Special Offer",
     "Airtime",
-    "Telecel Voice + Sms",
-    "Telecel Voice + Data + Sms",
-    "Telecel Special Offer"
   ];
 
   const filteredPackages =
@@ -761,7 +304,10 @@ export default function StorePage() {
       walletBalance -
       total;
 
-    await supabase
+    const {
+      error:
+        walletError,
+    } = await supabase
       .from("wallets")
       .update({
         balance:
@@ -772,52 +318,94 @@ export default function StorePage() {
         walletId
       );
 
-    const { error } =
-  await supabase
-    .from("orders")
-    .insert([
-      {
-        reference:
-          generateRef(),
+    if (walletError) {
+      console.log(
+        walletError
+      );
 
-        network:
-          item.network,
+      alert(
+        "Wallet update failed"
+      );
 
-        package:
-          item.name,
+      return;
+    }
 
-        phone:
-          item.phone,
+    const orders =
+      cart.map(
+        (item) => ({
+          reference:
+            generateRef(),
 
-        amount:
-          item.price,
+          network:
+            item.network,
 
-        validity:
-          item.validity,
+          package:
+            item.name,
 
-        source:
-          "Customer",
+          phone:
+            item.phone,
 
-        status:
-          "Waiting",
-      },
-    ]);
+          amount:
+            item.price,
 
-if (error) {
-  console.log(error);
+          validity:
+            item.validity,
 
-  alert(
-    error.message
-  );
-}
+          source:
+            "Customer",
+
+          status:
+            "Waiting",
+        })
+      );
+
+    const {
+      error:
+        orderError,
+    } = await supabase
+      .from("orders")
+      .insert(
+        orders
+      );
+
+    if (orderError) {
+      console.log(
+        orderError
+      );
+
+      alert(
+        orderError.message
+      );
+
+      return;
+    }
+
+    setWalletBalance(
+      newBalance
+    );
+
+    setCart([]);
+
+    setCartOpen(
+      false
+    );
+
+    alert(
+      "Order placed successfully"
+    );
+  }
+
   return (
     <div
       style={{
         minHeight:
           "100vh",
+
         background:
           "#0f172a",
+
         color: "white",
+
         padding:
           "24px",
       }}
@@ -834,8 +422,10 @@ if (error) {
           style={{
             fontSize:
               "32px",
+
             fontWeight:
               "800",
+
             marginBottom:
               "8px",
           }}
@@ -847,48 +437,51 @@ if (error) {
           style={{
             color:
               "#94a3b8",
-            fontSize:
-              "15px",
           }}
         >
-          Affordable data
-          bundles
+          Affordable telecom bundles
         </p>
       </div>
 
-      {/* TOP BAR */}
+      {/* TOP */}
 
       <div
         style={{
           display:
             "flex",
+
           justifyContent:
             "space-between",
+
           alignItems:
             "center",
-          gap: "16px",
-          flexWrap:
-            "wrap",
+
           marginBottom:
             "24px",
+
+          flexWrap:
+            "wrap",
+
+          gap: "14px",
         }}
       >
         <div
           style={{
             background:
               "#111827",
+
             padding:
               "14px 18px",
+
             borderRadius:
               "14px",
-            border:
-              "1px solid rgba(255,255,255,0.05)",
           }}
         >
           <p
             style={{
               color:
                 "#94a3b8",
+
               fontSize:
                 "13px",
             }}
@@ -900,10 +493,9 @@ if (error) {
             style={{
               fontSize:
                 "24px",
+
               fontWeight:
                 "800",
-              marginTop:
-                "4px",
             }}
           >
             GH₵
@@ -922,16 +514,22 @@ if (error) {
           style={{
             background:
               "#2563eb",
+
             border:
               "none",
+
             color:
               "white",
+
             padding:
               "14px 18px",
+
             borderRadius:
               "14px",
+
             fontWeight:
               "700",
+
             cursor:
               "pointer",
           }}
@@ -950,9 +548,12 @@ if (error) {
         style={{
           display:
             "flex",
-          gap: "12px",
+
+          gap: "10px",
+
           overflowX:
             "auto",
+
           marginBottom:
             "24px",
         }}
@@ -988,11 +589,11 @@ if (error) {
                 cursor:
                   "pointer",
 
-                fontWeight:
-                  "700",
-
                 whiteSpace:
                   "nowrap",
+
+                fontWeight:
+                  "700",
               }}
             >
               {tab}
@@ -1005,10 +606,11 @@ if (error) {
 
       <div
         style={{
-          display: "grid",
+          display:
+            "grid",
 
           gridTemplateColumns:
-            "repeat(auto-fit,minmax(240px,1fr))",
+            "repeat(auto-fit,minmax(230px,1fr))",
 
           gap: "18px",
         }}
