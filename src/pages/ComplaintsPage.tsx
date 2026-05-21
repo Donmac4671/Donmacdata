@@ -3,483 +3,195 @@ import { useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
 
 export default function ComplaintsPage() {
-  const [
-    complaints,
-    setComplaints,
-  ] = useState([
+  const [reply, setReply] =
+    useState("");
+
+  const complaints = [
     {
       id: 1,
-      user:
-        "Michael Mensah",
+      name: "Kwame",
       phone:
-        "0241234567",
+        "0551234567",
       message:
-        "MTN bundle delayed after payment.",
-
-      status: "Pending",
-
+        "My order delayed",
       date:
-        "2026-05-20",
-
-      reply: "",
+        "2026-05-21",
     },
 
     {
       id: 2,
-      user:
-        "Sarah Arthur",
+      name: "Ama",
       phone:
-        "0559988776",
+        "0201111111",
       message:
-        "Wallet deducted twice.",
-
-      status:
-        "Resolved",
-
+        "Topup not received",
       date:
-        "2026-05-19",
-
-      reply:
-        "Refund has been processed.",
+        "2026-05-20",
     },
-  ]);
-
-  const [replyBox, setReplyBox] =
-    useState("");
-
-  function statusColor(
-    status: string
-  ) {
-    switch (status) {
-      case "Pending":
-        return "#facc15";
-
-      case "Resolved":
-        return "#22c55e";
-
-      default:
-        return "white";
-    }
-  }
-
-  function replyComplaint(
-    id: number
-  ) {
-    const updated =
-      complaints.map(
-        (
-          complaint
-        ) => {
-          if (
-            complaint.id ===
-            id
-          ) {
-            return {
-              ...complaint,
-
-              reply:
-                replyBox,
-
-              status:
-                "Resolved",
-            };
-          }
-
-          return complaint;
-        }
-      );
-
-    setComplaints(
-      updated
-    );
-
-    setReplyBox("");
-  }
-
-  function deleteComplaint(
-    id: number
-  ) {
-    const updated =
-      complaints.filter(
-        (
-          complaint
-        ) =>
-          complaint.id !==
-          id
-      );
-
-    setComplaints(
-      updated
-    );
-  }
+  ];
 
   return (
     <AdminLayout>
       <div>
-        {/* HEADER */}
-        <div
+        <h1
           style={{
+            fontSize:
+              "38px",
+            fontWeight:
+              "900",
+            marginBottom:
+              "10px",
+          }}
+        >
+          Complaints
+        </h1>
+
+        <p
+          style={{
+            color:
+              "#94a3b8",
             marginBottom:
               "30px",
           }}
         >
-          <h1
-            style={{
-              fontSize:
-                "40px",
+          View and reply
+          to complaints
+        </p>
 
-              fontWeight:
-                "900",
-
-              marginBottom:
-                "8px",
-            }}
-          >
-            Complaints
-          </h1>
-
-          <p
-            style={{
-              color:
-                "#94a3b8",
-            }}
-          >
-            Manage reseller
-            and customer
-            complaints
-          </p>
-        </div>
-
-        {/* FILTERS */}
         <div
           style={{
-            background:
-              "#0f172a",
-
-            padding: "24px",
-
-            borderRadius:
-              "24px",
-
-            marginBottom:
-              "30px",
-
-            display: "grid",
-
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(220px,1fr))",
-
-            gap: "18px",
-
-            border:
-              "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <input
-            placeholder="Search phone or customer"
-            style={inputStyle}
-          />
-
-          <input
-            type="date"
-            style={inputStyle}
-          />
-
-          <input
-            type="date"
-            style={inputStyle}
-          />
-        </div>
-
-        {/* COMPLAINTS */}
-        <div
-          style={{
-            display: "grid",
-
+            display:
+              "grid",
             gap: "20px",
           }}
         >
           {complaints.map(
-            (
-              complaint
-            ) => (
+            (item) => (
               <div
                 key={
-                  complaint.id
+                  item.id
                 }
                 style={{
                   background:
                     "#0f172a",
-
-                  border:
-                    "1px solid rgba(255,255,255,0.08)",
-
-                  borderRadius:
-                    "24px",
-
                   padding:
                     "24px",
+                  borderRadius:
+                    "24px",
+                  border:
+                    "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                {/* TOP */}
                 <div
                   style={{
-                    display:
-                      "flex",
-
-                    justifyContent:
-                      "space-between",
-
-                    alignItems:
-                      "center",
-
-                    flexWrap:
-                      "wrap",
-
-                    gap: "16px",
-
                     marginBottom:
                       "20px",
                   }}
                 >
-                  <div>
-                    <h2
-                      style={{
-                        fontSize:
-                          "22px",
-
-                        fontWeight:
-                          "800",
-
-                        marginBottom:
-                          "8px",
-                      }}
-                    >
-                      {
-                        complaint.user
-                      }
-                    </h2>
-
-                    <p
-                      style={{
-                        color:
-                          "#94a3b8",
-                      }}
-                    >
-                      {
-                        complaint.phone
-                      }
-                    </p>
-                  </div>
-
-                  <div
+                  <h2
                     style={{
-                      color:
-                        statusColor(
-                          complaint.status
-                        ),
-
+                      fontSize:
+                        "24px",
                       fontWeight:
-                        "700",
+                        "800",
+                      marginBottom:
+                        "12px",
                     }}
                   >
                     {
-                      complaint.status
+                      item.name
                     }
-                  </div>
-                </div>
+                  </h2>
 
-                {/* MESSAGE */}
-                <div
-                  style={{
-                    marginBottom:
-                      "20px",
-                  }}
-                >
                   <p
                     style={{
                       color:
-                        "#e2e8f0",
-
-                      lineHeight:
-                        "1.8",
+                        "#94a3b8",
+                      marginBottom:
+                        "8px",
                     }}
                   >
                     {
-                      complaint.message
+                      item.phone
+                    }
+                  </p>
+
+                  <p
+                    style={{
+                      marginBottom:
+                        "8px",
+                    }}
+                  >
+                    {
+                      item.message
+                    }
+                  </p>
+
+                  <p
+                    style={{
+                      color:
+                        "#64748b",
+                    }}
+                  >
+                    {
+                      item.date
                     }
                   </p>
                 </div>
 
-                {/* DATE */}
-                <p
-                  style={{
-                    color:
-                      "#64748b",
-
-                    marginBottom:
-                      "20px",
-                  }}
-                >
-                  {
-                    complaint.date
-                  }
-                </p>
-
-                {/* REPLY */}
-                {complaint.reply && (
-                  <div
-                    style={{
-                      background:
-                        "#111827",
-
-                      padding:
-                        "18px",
-
-                      borderRadius:
-                        "16px",
-
-                      marginBottom:
-                        "20px",
-                    }}
-                  >
-                    <p
-                      style={{
-                        color:
-                          "#22c55e",
-
-                        fontWeight:
-                          "700",
-
-                        marginBottom:
-                          "10px",
-                      }}
-                    >
-                      Admin Reply
-                    </p>
-
-                    <p
-                      style={{
-                        color:
-                          "white",
-                      }}
-                    >
-                      {
-                        complaint.reply
-                      }
-                    </p>
-                  </div>
-                )}
-
-                {/* ACTIONS */}
                 <div
                   style={{
                     display:
-                      "flex",
-
-                    flexDirection:
-                      "column",
-
-                    gap: "16px",
+                      "grid",
+                    gap: "14px",
                   }}
                 >
                   <textarea
-                    placeholder="Reply to complaint..."
-                    value={
-                      replyBox
-                    }
-                    onChange={(
-                      e
-                    ) =>
-                      setReplyBox(
+                    placeholder="Reply complaint..."
+                    value={reply}
+                    onChange={(e) =>
+                      setReply(
                         e.target
                           .value
                       )
                     }
                     rows={4}
                     style={{
-                      ...inputStyle,
-
-                      resize:
+                      background:
+                        "#111827",
+                      border:
+                        "1px solid rgba(255,255,255,0.08)",
+                      color:
+                        "white",
+                      padding:
+                        "16px",
+                      borderRadius:
+                        "16px",
+                      outline:
                         "none",
                     }}
                   />
 
-                  <div
+                  <button
                     style={{
-                      display:
-                        "flex",
-
-                      gap: "14px",
-
-                      flexWrap:
-                        "wrap",
+                      background:
+                        "#2563eb",
+                      border:
+                        "none",
+                      color:
+                        "white",
+                      padding:
+                        "14px 18px",
+                      borderRadius:
+                        "14px",
+                      fontWeight:
+                        "700",
+                      cursor:
+                        "pointer",
                     }}
                   >
-                    <button
-                      onClick={() =>
-                        replyComplaint(
-                          complaint.id
-                        )
-                      }
-                      style={{
-                        background:
-                          "#2563eb",
-
-                        border:
-                          "none",
-
-                        color:
-                          "white",
-
-                        padding:
-                          "12px 18px",
-
-                        borderRadius:
-                          "12px",
-
-                        fontWeight:
-                          "700",
-
-                        cursor:
-                          "pointer",
-                      }}
-                    >
-                      Reply
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        deleteComplaint(
-                          complaint.id
-                        )
-                      }
-                      style={{
-                        background:
-                          "#dc2626",
-
-                        border:
-                          "none",
-
-                        color:
-                          "white",
-
-                        padding:
-                          "12px 18px",
-
-                        borderRadius:
-                          "12px",
-
-                        fontWeight:
-                          "700",
-
-                        cursor:
-                          "pointer",
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                    Send Reply
+                  </button>
                 </div>
               </div>
             )
@@ -489,25 +201,3 @@ export default function ComplaintsPage() {
     </AdminLayout>
   );
 }
-
-const inputStyle = {
-  background:
-    "#111827",
-
-  border:
-    "1px solid rgba(255,255,255,0.08)",
-
-  color: "white",
-
-  padding: "14px",
-
-  borderRadius:
-    "14px",
-
-  outline: "none",
-
-  width: "100%",
-
-  boxSizing:
-    "border-box" as const,
-};
