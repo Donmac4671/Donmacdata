@@ -32,13 +32,38 @@ function generateRef() {
 }
 
 const packages = [
+  /* ================= MTN ================= */
+
   {
     category: "MTN",
     name: "1GB",
     network: "MTN",
     price: 4.4,
-    validity:
-      "90 Days",
+    validity: "90 Days",
+  },
+
+  {
+    category: "MTN",
+    name: "2GB",
+    network: "MTN",
+    price: 8.8,
+    validity: "90 Days",
+  },
+
+  {
+    category: "MTN",
+    name: "3GB",
+    network: "MTN",
+    price: 13.2,
+    validity: "90 Days",
+  },
+
+  {
+    category: "MTN",
+    name: "4GB",
+    network: "MTN",
+    price: 17.6,
+    validity: "90 Days",
   },
 
   {
@@ -46,28 +71,251 @@ const packages = [
     name: "5GB",
     network: "MTN",
     price: 22,
-    validity:
-      "90 Days",
+    validity: "90 Days",
   },
 
   {
-    category:
-      "Telecel",
+    category: "MTN",
     name: "10GB",
-    network:
-      "Telecel",
+    network: "MTN",
+    price: 43,
+    validity: "90 Days",
+  },
+
+  {
+    category: "MTN",
+    name: "20GB",
+    network: "MTN",
+    price: 83,
+    validity: "90 Days",
+  },
+
+  {
+    category: "MTN",
+    name: "50GB",
+    network: "MTN",
+    price: 202,
+    validity: "90 Days",
+  },
+
+  /* ================= TELECEL ================= */
+
+  {
+    category: "Telecel",
+    name: "2GB",
+    network: "Telecel",
+    price: 10.2,
+    validity: "60 Days",
+  },
+
+  {
+    category: "Telecel",
+    name: "3GB",
+    network: "Telecel",
+    price: 15.4,
+    validity: "60 Days",
+  },
+
+  {
+    category: "Telecel",
+    name: "5GB",
+    network: "Telecel",
+    price: 22,
+    validity: "60 Days",
+  },
+
+  {
+    category: "Telecel",
+    name: "10GB",
+    network: "Telecel",
     price: 42,
+    validity: "60 Days",
+  },
+
+  {
+    category: "Telecel",
+    name: "20GB",
+    network: "Telecel",
+    price: 80,
+    validity: "60 Days",
+  },
+
+  {
+    category: "Telecel",
+    name: "50GB",
+    network: "Telecel",
+    price: 189,
+    validity: "60 Days",
+  },
+
+  /* ================= AIRTELTIGO PREMIUM ================= */
+
+  {
+    category:
+      "AT Premium",
+
+    name: "1GB",
+
+    network:
+      "AirtelTigo Premium",
+
+    price: 4.3,
+
     validity:
       "60 Days",
   },
 
   {
     category:
+      "AT Premium",
+
+    name: "5GB",
+
+    network:
+      "AirtelTigo Premium",
+
+    price: 21.5,
+
+    validity:
+      "60 Days",
+  },
+
+  {
+    category:
+      "AT Premium",
+
+    name: "10GB",
+
+    network:
+      "AirtelTigo Premium",
+
+    price: 41,
+
+    validity:
+      "60 Days",
+  },
+
+  {
+    category:
+      "AT Premium",
+
+    name: "20GB",
+
+    network:
+      "AirtelTigo Premium",
+
+    price: 81,
+
+    validity:
+      "60 Days",
+  },
+
+  {
+    category:
+      "AT Premium",
+
+    name: "30GB",
+
+    network:
+      "AirtelTigo Premium",
+
+    price: 122,
+
+    validity:
+      "60 Days",
+  },
+
+  /* ================= BIG TIME ================= */
+
+  {
+    category:
       "Big Time",
-    name: "100GB",
+
+    name: "15GB",
+
     network:
       "AirtelTigo Big Time",
+
+    price: 58,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Big Time",
+
+    name: "30GB",
+
+    network:
+      "AirtelTigo Big Time",
+
+    price: 75,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Big Time",
+
+    name: "50GB",
+
+    network:
+      "AirtelTigo Big Time",
+
+    price: 95,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Big Time",
+
+    name: "100GB",
+
+    network:
+      "AirtelTigo Big Time",
+
     price: 177,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Big Time",
+
+    name: "200GB",
+
+    network:
+      "AirtelTigo Big Time",
+
+    price: 370,
+
+    validity:
+      "Non Expiry",
+  },
+
+  /* ================= MASHUP ================= */
+
+  {
+    category:
+      "Mashup",
+
+    name:
+      "¢1 Mashup",
+
+    network:
+      "Mashup",
+
+    price: 1,
+
     validity:
       "Non Expiry",
   },
@@ -75,11 +323,311 @@ const packages = [
   {
     category:
       "Mashup",
+
     name:
-      "Mashup ¢10",
+      "¢5 Mashup",
+
     network:
       "Mashup",
+
+    price: 5,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Mashup",
+
+    name:
+      "¢10 Mashup",
+
+    network:
+      "Mashup",
+
     price: 10,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Mashup",
+
+    name:
+      "¢20 Mashup",
+
+    network:
+      "Mashup",
+
+    price: 20,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Mashup",
+
+    name:
+      "¢29.99 Mashup",
+
+    network:
+      "Mashup",
+
+    price: 29.99,
+
+    validity:
+      "Non Expiry",
+  },
+
+  /* ================= TELECEL VOICE + SMS ================= */
+
+  {
+    category:
+      "Voice + SMS",
+
+    name:
+      "¢1 Voice + SMS",
+
+    network:
+      "Telecel Voice + SMS",
+
+    price: 1,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Voice + SMS",
+
+    name:
+      "¢5 Voice + SMS",
+
+    network:
+      "Telecel Voice + SMS",
+
+    price: 5,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Voice + SMS",
+
+    name:
+      "¢10 Voice + SMS",
+
+    network:
+      "Telecel Voice + SMS",
+
+    price: 10,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Voice + SMS",
+
+    name:
+      "¢20 Voice + SMS",
+
+    network:
+      "Telecel Voice + SMS",
+
+    price: 20,
+
+    validity:
+      "Non Expiry",
+  },
+
+  /* ================= VOICE + DATA + SMS ================= */
+
+  {
+    category:
+      "Voice + Data",
+
+    name:
+      "¢1 Voice + Data",
+
+    network:
+      "Telecel Voice + Data + SMS",
+
+    price: 1,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Voice + Data",
+
+    name:
+      "¢5 Voice + Data",
+
+    network:
+      "Telecel Voice + Data + SMS",
+
+    price: 5,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Voice + Data",
+
+    name:
+      "¢10 Voice + Data",
+
+    network:
+      "Telecel Voice + Data + SMS",
+
+    price: 10,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Voice + Data",
+
+    name:
+      "¢20 Voice + Data",
+
+    network:
+      "Telecel Voice + Data + SMS",
+
+    price: 20,
+
+    validity:
+      "Non Expiry",
+  },
+
+  /* ================= SPECIAL OFFER ================= */
+
+  {
+    category:
+      "Special Offer",
+
+    name:
+      "200 Minutes",
+
+    network:
+      "Telecel Special Offer",
+
+    price: 7,
+
+    validity:
+      "7 Days",
+  },
+
+  /* ================= AIRTIME ================= */
+
+  {
+    category:
+      "Airtime",
+
+    name:
+      "GH₵0.50 Airtime",
+
+    network:
+      "All Networks",
+
+    price: 0.5,
+
+    validity:
+      "Instant",
+  },
+
+  {
+    category:
+      "Airtime",
+
+    name:
+      "GH₵1 Airtime",
+
+    network:
+      "All Networks",
+
+    price: 1,
+
+    validity:
+      "Instant",
+  },
+
+  {
+    category:
+      "Airtime",
+
+    name:
+      "GH₵5 Airtime",
+
+    network:
+      "All Networks",
+
+    price: 5,
+
+    validity:
+      "Instant",
+  },
+
+  {
+    category:
+      "Airtime",
+
+    name:
+      "GH₵10 Airtime",
+
+    network:
+      "All Networks",
+
+    price: 10,
+
+    validity:
+      "Instant",
+  },
+
+  {
+    category:
+      "Airtime",
+
+    name:
+      "GH₵20 Airtime",
+
+    network:
+      "All Networks",
+
+    price: 20,
+
+    validity:
+      "Non Expiry",
+  },
+
+  {
+    category:
+      "Airtime",
+
+    name:
+      "GH₵50 Airtime",
+
+    network:
+      "All Networks",
+
+    price: 50,
+
     validity:
       "Non Expiry",
   },
@@ -147,6 +695,10 @@ export default function StorePage() {
     "Telecel",
     "Big Time",
     "Mashup",
+    "Airtime",
+    "Telecel Voice + Sms",
+    "Telecel Voice + Data + Sms",
+    "Telecel Special Offer"
   ];
 
   const filteredPackages =
