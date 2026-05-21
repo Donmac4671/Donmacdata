@@ -1,9 +1,13 @@
+import {
+  useState,
+} from "react";
+
 type Props = {
   open: boolean;
 
-  onClose: () => void;
-
   packageItem: any;
+
+  onClose: () => void;
 
   onAddToCart: (
     item: any,
@@ -11,23 +15,16 @@ type Props = {
   ) => void;
 };
 
-import {
-  useState,
-} from "react";
-
 export default function PackageModal({
   open,
-  onClose,
   packageItem,
+  onClose,
   onAddToCart,
 }: Props) {
   const [phone, setPhone] =
     useState("");
 
-  if (
-    !open ||
-    !packageItem
-  )
+  if (!open)
     return null;
 
   return (
@@ -35,351 +32,292 @@ export default function PackageModal({
       style={{
         position:
           "fixed",
+
         inset: 0,
+
         background:
           "rgba(0,0,0,0.7)",
+
         display:
           "flex",
+
         alignItems:
           "center",
+
         justifyContent:
           "center",
+
         zIndex: 9999,
+
         padding:
           "20px",
       }}
     >
       <div
         style={{
-          width: "100%",
-          maxWidth:
-            "700px",
           background:
-            "white",
+            "#111827",
+
+          width: "100%",
+
+          maxWidth:
+            "420px",
+
           borderRadius:
-            "28px",
+            "24px",
+
           padding:
-            "32px",
-          position:
-            "relative",
+            "28px",
+
+          border:
+            "1px solid rgba(255,255,255,0.05)",
         }}
       >
-        {/* CLOSE */}
-
-        <button
-          onClick={
-            onClose
-          }
-          style={{
-            position:
-              "absolute",
-            top: "20px",
-            right: "20px",
-            background:
-              "transparent",
-            border:
-              "none",
-            fontSize:
-              "32px",
-            cursor:
-              "pointer",
-            color:
-              "#475569",
-          }}
-        >
-          ×
-        </button>
-
         {/* HEADER */}
 
         <div
           style={{
             display:
               "flex",
+
+            justifyContent:
+              "space-between",
+
             alignItems:
               "center",
-            gap: "16px",
+
             marginBottom:
-              "30px",
+              "24px",
           }}
         >
-          <div
+          <h1
             style={{
-              width: "60px",
-              height:
-                "60px",
-              borderRadius:
-                "50%",
-              background:
-                "#facc15",
-              display:
-                "flex",
-              alignItems:
-                "center",
-              justifyContent:
-                "center",
+              fontSize:
+                "28px",
+
               fontWeight:
-                "800",
+                "900",
             }}
           >
             {
-              packageItem.network
+              packageItem.name
             }
-          </div>
+          </h1>
 
-          <div>
-            <h1
-              style={{
-                fontSize:
-                  "36px",
-                fontWeight:
-                  "900",
-                color:
-                  "#0f172a",
-              }}
-            >
-              {
-                packageItem.name
-              }
-            </h1>
+          <button
+            onClick={
+              onClose
+            }
+            style={{
+              background:
+                "transparent",
 
-            <p
-              style={{
-                color:
-                  "#64748b",
-                fontSize:
-                  "22px",
-              }}
-            >
-              Add bundle to
-              cart
-            </p>
-          </div>
+              border:
+                "none",
+
+              color:
+                "white",
+
+              fontSize:
+                "28px",
+
+              cursor:
+                "pointer",
+            }}
+          >
+            ×
+          </button>
         </div>
 
-        {/* DETAILS */}
+        {/* INFO */}
 
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(220px,1fr))",
-            gap: "20px",
+            background:
+              "#0f172a",
+
+            borderRadius:
+              "18px",
+
+            padding:
+              "18px",
+
             marginBottom:
-              "30px",
+              "20px",
           }}
         >
-          <div
-            style={{
-              background:
-                "#f1f5f9",
-              borderRadius:
-                "20px",
-              padding:
-                "24px",
-            }}
-          >
-            <p
-              style={{
-                color:
-                  "#64748b",
-                marginBottom:
-                  "12px",
-                fontSize:
-                  "18px",
-              }}
-            >
-              Price
-            </p>
+          <Info
+            title="Network"
+            value={
+              packageItem.network
+            }
+          />
 
-            <h2
-              style={{
-                fontSize:
-                  "42px",
-                fontWeight:
-                  "900",
-                color:
-                  "#020617",
-              }}
-            >
-              GH₵
-              {
-                packageItem.price
-              }
-            </h2>
-          </div>
+          <Info
+            title="Validity"
+            value={
+              packageItem.validity
+            }
+          />
 
-          <div
-            style={{
-              background:
-                "#f1f5f9",
-              borderRadius:
-                "20px",
-              padding:
-                "24px",
-            }}
-          >
-            <p
-              style={{
-                color:
-                  "#64748b",
-                marginBottom:
-                  "12px",
-                fontSize:
-                  "18px",
-              }}
-            >
-              Validity
-            </p>
-
-            <h2
-              style={{
-                fontSize:
-                  "42px",
-                fontWeight:
-                  "900",
-                color:
-                  "#020617",
-              }}
-            >
-              {
-                packageItem.validity
-              }
-            </h2>
-          </div>
+          <Info
+            title="Price"
+            value={`GH₵${packageItem.price}`}
+          />
         </div>
 
-        {/* PHONE */}
+        {/* INPUT */}
 
         <div
           style={{
             marginBottom:
-              "30px",
+              "20px",
           }}
         >
           <label
             style={{
               display:
                 "block",
+
               marginBottom:
-                "14px",
-              fontWeight:
-                "700",
-              fontSize:
-                "20px",
+                "10px",
+
               color:
-                "#0f172a",
+                "#94a3b8",
+
+              fontSize:
+                "14px",
             }}
           >
-            Recipient Phone
-            Number
+            Phone Number
           </label>
 
           <input
-            placeholder="e.g. 0549358359"
             value={phone}
             onChange={(e) =>
               setPhone(
-                e.target.value
+                e.target
+                  .value
               )
             }
+            placeholder="024XXXXXXX"
             style={{
               width: "100%",
-              padding:
-                "20px",
-              borderRadius:
-                "18px",
+
+              background:
+                "#0f172a",
+
               border:
-                "1px solid #cbd5e1",
-              fontSize:
-                "20px",
+                "1px solid rgba(255,255,255,0.05)",
+
+              color:
+                "white",
+
+              padding:
+                "14px",
+
+              borderRadius:
+                "14px",
+
               outline:
                 "none",
+
               boxSizing:
                 "border-box",
             }}
           />
         </div>
 
-        {/* BUTTONS */}
+        {/* BUTTON */}
 
-        <div
-          style={{
-            display:
-              "flex",
-            gap: "20px",
-            flexWrap:
-              "wrap",
-          }}
-        >
-          <button
-            onClick={
-              onClose
-            }
-            style={{
-              flex: 1,
-              padding:
-                "18px",
-              borderRadius:
-                "18px",
-              border:
-                "1px solid #cbd5e1",
-              background:
-                "white",
-              fontSize:
-                "22px",
-              fontWeight:
-                "700",
-              cursor:
-                "pointer",
-            }}
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={() => {
-              if (
-                !phone
-              ) {
-                alert(
-                  "Enter phone number"
-                );
-
-                return;
-              }
-
-              onAddToCart(
-                packageItem,
-                phone
+        <button
+          onClick={() => {
+            if (!phone) {
+              alert(
+                "Enter phone number"
               );
 
-              onClose();
-            }}
-            style={{
-              flex: 1,
-              padding:
-                "18px",
-              borderRadius:
-                "18px",
-              border:
-                "none",
-              background:
-                "linear-gradient(90deg,#7c3aed,#ec4899)",
-              color:
-                "white",
-              fontSize:
-                "22px",
-              fontWeight:
-                "800",
-              cursor:
-                "pointer",
-            }}
-          >
-            Add To Cart
-          </button>
-        </div>
+              return;
+            }
+
+            onAddToCart(
+              packageItem,
+              phone
+            );
+
+            setPhone("");
+
+            onClose();
+          }}
+          style={{
+            width: "100%",
+
+            background:
+              "#2563eb",
+
+            border:
+              "none",
+
+            color:
+              "white",
+
+            padding:
+              "16px",
+
+            borderRadius:
+              "14px",
+
+            fontWeight:
+              "800",
+
+            fontSize:
+              "15px",
+
+            cursor:
+              "pointer",
+          }}
+        >
+          Add To Cart
+        </button>
       </div>
+    </div>
+  );
+}
+
+function Info({
+  title,
+  value,
+}: any) {
+  return (
+    <div
+      style={{
+        display:
+          "flex",
+
+        justifyContent:
+          "space-between",
+
+        marginBottom:
+          "12px",
+      }}
+    >
+      <p
+        style={{
+          color:
+            "#94a3b8",
+        }}
+      >
+        {title}
+      </p>
+
+      <h3
+        style={{
+          fontWeight:
+            "700",
+        }}
+      >
+        {value}
+      </h3>
     </div>
   );
 }
