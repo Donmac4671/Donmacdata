@@ -25,13 +25,27 @@ import PackagesPage from "./pages/PackagesPage";
 
 import RankingsPage from "./pages/RankingsPage";
 
+/* CUSTOMER */
+
+import StorePage from "./pages/StorePage";
+
+import WalletPage from "./pages/WalletPage";
+
+import TransactionsPage from "./pages/TransactionsPage";
+
 export default function App() {
   return (
     <Routes>
+      {/* LOGIN */}
+
       <Route
         path="/"
-        element={<LoginPage />}
+        element={
+          <LoginPage />
+        }
       />
+
+      {/* ADMIN */}
 
       <Route
         path="/admin"
@@ -111,6 +125,29 @@ export default function App() {
           <ProtectedRoute>
             <RankingsPage />
           </ProtectedRoute>
+        }
+      />
+
+      {/* CUSTOMER STORE */}
+
+      <Route
+        path="/store"
+        element={
+          <StorePage />
+        }
+      />
+
+      <Route
+        path="/wallet"
+        element={
+          <WalletPage />
+        }
+      />
+
+      <Route
+        path="/transactions"
+        element={
+          <TransactionsPage />
         }
       />
     </Routes>
