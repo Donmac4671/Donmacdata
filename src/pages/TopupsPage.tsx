@@ -3,456 +3,283 @@ import { useState } from "react";
 import AdminLayout from "../layouts/AdminLayout";
 
 export default function TopupsPage() {
-  const [status, setStatus] =
-    useState("All");
-
   const [topups, setTopups] =
     useState([
       {
-        id: "TPX82AK",
+        id: 1,
+        transaction:
+          "TXN29383",
         network: "MTN",
-        amount: "GH₵ 100",
-        status: "Claimed",
+        amount:
+          "GH₵50",
+        status:
+          "Claimed",
         claimedBy:
-          "Michael Mensah",
+          "Kwame",
         date:
-          "2026-05-20",
-        time: "10:30 AM",
+          "2026-05-21",
       },
 
       {
-        id: "TPZ22PL",
+        id: 2,
+        transaction:
+          "TXN77281",
         network:
           "Telecel",
-        amount: "GH₵ 50",
+        amount:
+          "GH₵20",
         status:
           "Unclaimed",
-        claimedBy: "-",
+        claimedBy:
+          "-",
         date:
           "2026-05-20",
-        time: "11:15 AM",
-      },
-
-      {
-        id: "TPQ91LK",
-        network:
-          "AirtelTigo",
-        amount: "GH₵ 200",
-        status: "Claimed",
-        claimedBy:
-          "Sarah Arthur",
-        date:
-          "2026-05-19",
-        time: "4:10 PM",
       },
     ]);
 
-  function statusColor(
-    value: string
+  function deleteTopup(
+    id: number
   ) {
-    switch (value) {
-      case "Claimed":
-        return "#22c55e";
-
-      case "Unclaimed":
-        return "#ef4444";
-
-      default:
-        return "white";
-    }
+    setTopups(
+      topups.filter(
+        (item) =>
+          item.id !== id
+      )
+    );
   }
 
   return (
     <AdminLayout>
       <div>
-        {/* HEADER */}
+        <h1
+          style={{
+            fontSize:
+              "38px",
+            fontWeight:
+              "900",
+            marginBottom:
+              "10px",
+          }}
+        >
+          Top Ups
+        </h1>
+
+        <p
+          style={{
+            color:
+              "#94a3b8",
+            marginBottom:
+              "30px",
+          }}
+        >
+          Manage reseller
+          topup claims
+        </p>
+
         <div
           style={{
-            display: "flex",
-            justifyContent:
-              "space-between",
-            alignItems:
-              "center",
-            flexWrap: "wrap",
+            display:
+              "grid",
             gap: "20px",
-            marginBottom:
-              "30px",
           }}
         >
-          <div>
-            <h1
-              style={{
-                fontSize:
-                  "40px",
-                fontWeight:
-                  "900",
-                marginBottom:
-                  "8px",
-              }}
-            >
-              Top Ups
-            </h1>
-
-            <p
-              style={{
-                color:
-                  "#94a3b8",
-              }}
-            >
-              Monitor all
-              top up
-              transactions
-            </p>
-          </div>
-
-          <button
-            style={{
-              background:
-                "linear-gradient(135deg,#2563eb,#7c3aed)",
-              border:
-                "none",
-              color:
-                "white",
-              padding:
-                "14px 24px",
-              borderRadius:
-                "14px",
-              fontWeight:
-                "700",
-              cursor:
-                "pointer",
-            }}
-          >
-            Export Top Ups
-          </button>
-        </div>
-
-        {/* FILTERS */}
-        <div
-          style={{
-            background:
-              "#0f172a",
-            padding: "24px",
-            borderRadius:
-              "24px",
-            marginBottom:
-              "30px",
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(220px,1fr))",
-            gap: "18px",
-            border:
-              "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <input
-            placeholder="Search transaction ID"
-            style={inputStyle}
-          />
-
-          <select
-            value={status}
-            onChange={(
-              e
-            ) =>
-              setStatus(
-                e.target
-                  .value
-              )
-            }
-            style={
-              inputStyle
-            }
-          >
-            <option>
-              All
-            </option>
-
-            <option>
-              Claimed
-            </option>
-
-            <option>
-              Unclaimed
-            </option>
-          </select>
-
-          <input
-            type="date"
-            style={inputStyle}
-          />
-
-          <input
-            type="date"
-            style={inputStyle}
-          />
-        </div>
-
-        {/* TABLE */}
-        <div
-          style={{
-            overflowX:
-              "auto",
-            background:
-              "#0f172a",
-            borderRadius:
-              "24px",
-            border:
-              "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse:
-                "collapse",
-              minWidth:
-                "1050px",
-            }}
-          >
-            <thead>
-              <tr
+          {topups.map(
+            (item) => (
+              <div
+                key={
+                  item.id
+                }
                 style={{
                   background:
-                    "#111827",
+                    "#0f172a",
+                  padding:
+                    "24px",
+                  borderRadius:
+                    "24px",
+                  border:
+                    "1px solid rgba(255,255,255,0.08)",
                 }}
               >
-                <th
-                  style={
-                    thStyle
-                  }
+                <div
+                  style={{
+                    display:
+                      "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fit,minmax(180px,1fr))",
+                    gap: "18px",
+                    marginBottom:
+                      "24px",
+                  }}
                 >
-                  Transaction ID
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Network
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Amount
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Status
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Claimed By
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Date
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Time
-                </th>
-
-                <th
-                  style={
-                    thStyle
-                  }
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {topups.map(
-                (
-                  topup,
-                  index
-                ) => (
-                  <tr
-                    key={index}
-                    style={{
-                      borderBottom:
-                        "1px solid rgba(255,255,255,0.06)",
-                    }}
-                  >
-                    <td
+                  <div>
+                    <p
                       style={
-                        tdStyle
+                        titleStyle
+                      }
+                    >
+                      Transaction
+                    </p>
+
+                    <h3
+                      style={
+                        valueStyle
                       }
                     >
                       {
-                        topup.id
+                        item.transaction
                       }
-                    </td>
+                    </h3>
+                  </div>
 
-                    <td
+                  <div>
+                    <p
                       style={
-                        tdStyle
+                        titleStyle
+                      }
+                    >
+                      Network
+                    </p>
+
+                    <h3
+                      style={
+                        valueStyle
                       }
                     >
                       {
-                        topup.network
+                        item.network
                       }
-                    </td>
+                    </h3>
+                  </div>
 
-                    <td
+                  <div>
+                    <p
+                      style={
+                        titleStyle
+                      }
+                    >
+                      Amount
+                    </p>
+
+                    <h3
+                      style={
+                        valueStyle
+                      }
+                    >
+                      {
+                        item.amount
+                      }
+                    </h3>
+                  </div>
+
+                  <div>
+                    <p
+                      style={
+                        titleStyle
+                      }
+                    >
+                      Status
+                    </p>
+
+                    <h3
                       style={{
-                        ...tdStyle,
+                        ...valueStyle,
                         color:
-                          "#38bdf8",
-                        fontWeight:
-                          "700",
+                          item.status ===
+                          "Claimed"
+                            ? "#22c55e"
+                            : "#ef4444",
                       }}
                     >
                       {
-                        topup.amount
+                        item.status
                       }
-                    </td>
+                    </h3>
+                  </div>
 
-                    <td
-                      style={{
-                        ...tdStyle,
-                        color:
-                          statusColor(
-                            topup.status
-                          ),
-                        fontWeight:
-                          "700",
-                      }}
-                    >
-                      {
-                        topup.status
-                      }
-                    </td>
-
-                    <td
+                  <div>
+                    <p
                       style={
-                        tdStyle
+                        titleStyle
+                      }
+                    >
+                      Claimed By
+                    </p>
+
+                    <h3
+                      style={
+                        valueStyle
                       }
                     >
                       {
-                        topup.claimedBy
+                        item.claimedBy
                       }
-                    </td>
+                    </h3>
+                  </div>
 
-                    <td
+                  <div>
+                    <p
                       style={
-                        tdStyle
+                        titleStyle
+                      }
+                    >
+                      Date
+                    </p>
+
+                    <h3
+                      style={
+                        valueStyle
                       }
                     >
                       {
-                        topup.date
+                        item.date
                       }
-                    </td>
+                    </h3>
+                  </div>
+                </div>
 
-                    <td
-                      style={
-                        tdStyle
-                      }
-                    >
-                      {
-                        topup.time
-                      }
-                    </td>
-
-                    <td
-                      style={
-                        tdStyle
-                      }
-                    >
-                      <button
-                        onClick={() => {
-                          const updated =
-                            topups.filter(
-                              (
-                                _,
-                                i
-                              ) =>
-                                i !==
-                                index
-                            );
-
-                          setTopups(
-                            updated
-                          );
-                        }}
-                        style={{
-                          background:
-                            "#dc2626",
-                          border:
-                            "none",
-                          color:
-                            "white",
-                          padding:
-                            "10px 14px",
-                          borderRadius:
-                            "12px",
-                          cursor:
-                            "pointer",
-                          fontWeight:
-                            "700",
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
+                <button
+                  onClick={() =>
+                    deleteTopup(
+                      item.id
+                    )
+                  }
+                  style={{
+                    background:
+                      "#dc2626",
+                    border:
+                      "none",
+                    color:
+                      "white",
+                    padding:
+                      "12px 18px",
+                    borderRadius:
+                      "12px",
+                    fontWeight:
+                      "700",
+                    cursor:
+                      "pointer",
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            )
+          )}
         </div>
       </div>
     </AdminLayout>
   );
 }
 
-const inputStyle = {
-  background:
-    "#111827",
-  border:
-    "1px solid rgba(255,255,255,0.08)",
-  color: "white",
-  padding: "14px",
-  borderRadius:
-    "14px",
-  outline: "none",
-  width: "100%",
-  boxSizing:
-    "border-box" as const,
-};
-
-const thStyle = {
-  textAlign:
-    "left" as const,
-  padding: "20px",
+const titleStyle = {
   color: "#94a3b8",
+  marginBottom:
+    "8px",
   fontSize: "14px",
 };
 
-const tdStyle = {
-  padding: "20px",
-  fontSize: "14px",
-  color: "white",
+const valueStyle = {
+  fontSize: "18px",
+  fontWeight:
+    "700",
 };
