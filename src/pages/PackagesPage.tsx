@@ -949,9 +949,9 @@ export default function PackagesPage() {
   category:
     "Special Offers",
   name:
-    "¢7 - 200 Minutes All Networks (7 Days)",
+    "¢6 - 200 Minutes All Networks (7 Days)",
   price:
-    "GH₵7",
+    "GH₵6",
   active: true,
 },
 
@@ -1131,249 +1131,469 @@ export default function PackagesPage() {
           )}
         </div>
 
-        {/* SEARCH */}
+        {/* SEARCH + STATS */}
+<div
+  style={{
+    display: "grid",
+
+    gridTemplateColumns:
+      "repeat(auto-fit,minmax(220px,1fr))",
+
+    gap: "18px",
+
+    marginBottom:
+      "30px",
+  }}
+>
+  <input
+    placeholder="Search package..."
+    style={{
+      background:
+        "#111827",
+
+      border:
+        "1px solid rgba(255,255,255,0.08)",
+
+      color:
+        "white",
+
+      padding:
+        "16px",
+
+      borderRadius:
+        "16px",
+
+      outline:
+        "none",
+
+      width:
+        "100%",
+
+      boxSizing:
+        "border-box",
+    }}
+  />
+
+  <div
+    style={{
+      background:
+        "#0f172a",
+
+      padding:
+        "18px",
+
+      borderRadius:
+        "18px",
+
+      border:
+        "1px solid rgba(255,255,255,0.08)",
+    }}
+  >
+    <p
+      style={{
+        color:
+          "#94a3b8",
+
+        marginBottom:
+          "8px",
+
+        fontSize:
+          "14px",
+      }}
+    >
+      Total Packages
+    </p>
+
+    <h2
+      style={{
+        fontSize:
+          "28px",
+
+        fontWeight:
+          "900",
+      }}
+    >
+      {
+        filteredPackages.length
+      }
+    </h2>
+  </div>
+
+  <div
+    style={{
+      background:
+        "#0f172a",
+
+      padding:
+        "18px",
+
+      borderRadius:
+        "18px",
+
+      border:
+        "1px solid rgba(255,255,255,0.08)",
+    }}
+  >
+    <p
+      style={{
+        color:
+          "#94a3b8",
+
+        marginBottom:
+          "8px",
+
+        fontSize:
+          "14px",
+      }}
+    >
+      Active Packages
+    </p>
+
+    <h2
+      style={{
+        fontSize:
+          "28px",
+
+        fontWeight:
+          "900",
+
+        color:
+          "#22c55e",
+      }}
+    >
+      {
+        filteredPackages.filter(
+          (
+            item
+          ) =>
+            item.active
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div
+    style={{
+      background:
+        "#0f172a",
+
+      padding:
+        "18px",
+
+      borderRadius:
+        "18px",
+
+      border:
+        "1px solid rgba(255,255,255,0.08)",
+    }}
+  >
+    <p
+      style={{
+        color:
+          "#94a3b8",
+
+        marginBottom:
+          "8px",
+
+        fontSize:
+          "14px",
+      }}
+    >
+      Disabled Packages
+    </p>
+
+    <h2
+      style={{
+        fontSize:
+          "28px",
+
+        fontWeight:
+          "900",
+
+        color:
+          "#ef4444",
+      }}
+    >
+      {
+        filteredPackages.filter(
+          (
+            item
+          ) =>
+            !item.active
+        ).length
+      }
+    </h2>
+  </div>
+</div>
+
+        /* PACKAGE CARDS */
+
+<div
+  style={{
+    display: "grid",
+
+    gridTemplateColumns:
+      "repeat(auto-fit,minmax(320px,1fr))",
+
+    gap: "24px",
+  }}
+>
+  {filteredPackages.map(
+    (item) => (
+      <div
+        key={item.id}
+        style={{
+          background:
+            "linear-gradient(180deg,#0f172a,#111827)",
+
+          border:
+            "1px solid rgba(255,255,255,0.08)",
+
+          borderRadius:
+            "24px",
+
+          padding:
+            "24px",
+
+          position:
+            "relative",
+
+          overflow:
+            "hidden",
+        }}
+      >
+        {/* TOP */}
+        <div
+          style={{
+            display: "flex",
+
+            justifyContent:
+              "space-between",
+
+            alignItems:
+              "flex-start",
+
+            gap: "12px",
+
+            marginBottom:
+              "20px",
+          }}
+        >
+          <div>
+            <h2
+              style={{
+                fontSize:
+                  "22px",
+
+                fontWeight:
+                  "800",
+
+                lineHeight:
+                  "1.5",
+
+                marginBottom:
+                  "12px",
+              }}
+            >
+              {item.name}
+            </h2>
+
+            <p
+              style={{
+                color:
+                  "#38bdf8",
+
+                fontWeight:
+                  "800",
+
+                fontSize:
+                  "20px",
+              }}
+            >
+              {item.price}
+            </p>
+          </div>
+
+          <div
+            style={{
+              padding:
+                "8px 14px",
+
+              borderRadius:
+                "999px",
+
+              background:
+                item.active
+                  ? "rgba(34,197,94,0.15)"
+                  : "rgba(239,68,68,0.15)",
+
+              color:
+                item.active
+                  ? "#22c55e"
+                  : "#ef4444",
+
+              fontWeight:
+                "700",
+
+              fontSize:
+                "13px",
+            }}
+          >
+            {item.active
+              ? "ACTIVE"
+              : "OFF"}
+          </div>
+        </div>
+
+        {/* CATEGORY */}
         <div
           style={{
             marginBottom:
-              "24px",
+              "22px",
           }}
         >
-          <input
-            placeholder="Search package..."
+          <span
             style={{
               background:
-                "#111827",
+                "#1e293b",
+
+              color:
+                "#cbd5e1",
+
+              padding:
+                "8px 14px",
+
+              borderRadius:
+                "12px",
+
+              fontSize:
+                "13px",
+
+              fontWeight:
+                "600",
+            }}
+          >
+            {item.category}
+          </span>
+        </div>
+
+        {/* ACTIONS */}
+        <div
+          style={{
+            display: "flex",
+
+            gap: "12px",
+
+            flexWrap:
+              "wrap",
+          }}
+        >
+          <button
+            onClick={() =>
+              togglePackage(
+                item.id
+              )
+            }
+            style={{
+              background:
+                item.active
+                  ? "#f59e0b"
+                  : "#22c55e",
 
               border:
-                "1px solid rgba(255,255,255,0.08)",
+                "none",
 
               color:
                 "white",
 
               padding:
-                "14px",
+                "12px 16px",
 
               borderRadius:
-                "14px",
+                "12px",
 
-              outline:
+              fontWeight:
+                "700",
+
+              cursor:
+                "pointer",
+
+              flex: 1,
+            }}
+          >
+            {item.active
+              ? "Disable"
+              : "Enable"}
+          </button>
+
+          <button
+            style={{
+              background:
+                "#2563eb",
+
+              border:
                 "none",
+
+              color:
+                "white",
+
+              padding:
+                "12px 16px",
+
+              borderRadius:
+                "12px",
+
+              fontWeight:
+                "700",
+
+              cursor:
+                "pointer",
+
+              flex: 1,
+            }}
+          >
+            Edit
+          </button>
+
+          <button
+            onClick={() =>
+              deletePackage(
+                item.id
+              )
+            }
+            style={{
+              background:
+                "#dc2626",
+
+              border:
+                "none",
+
+              color:
+                "white",
+
+              padding:
+                "12px 16px",
+
+              borderRadius:
+                "12px",
+
+              fontWeight:
+                "700",
+
+              cursor:
+                "pointer",
 
               width:
                 "100%",
             }}
-          />
-        </div>
-
-        {/* CARDS */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(280px,1fr))",
-            gap: "20px",
-          }}
-        >
-          {filteredPackages.map(
-            (
-              item
-            ) => (
-              <div
-                key={
-                  item.id
-                }
-                style={{
-                  background:
-                    "#0f172a",
-
-                  border:
-                    "1px solid rgba(255,255,255,0.08)",
-
-                  borderRadius:
-                    "24px",
-
-                  padding:
-                    "24px",
-                }}
-              >
-                <div
-                  style={{
-                    marginBottom:
-                      "18px",
-                  }}
-                >
-                  <h2
-                    style={{
-                      fontSize:
-                        "22px",
-
-                      fontWeight:
-                        "800",
-
-                      marginBottom:
-                        "10px",
-
-                      lineHeight:
-                        "1.4",
-                    }}
-                  >
-                    {
-                      item.name
-                    }
-                  </h2>
-
-                  <p
-                    style={{
-                      color:
-                        "#38bdf8",
-
-                      fontWeight:
-                        "700",
-
-                      fontSize:
-                        "18px",
-                    }}
-                  >
-                    {
-                      item.price
-                    }
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    marginBottom:
-                      "20px",
-                  }}
-                >
-                  <span
-                    style={{
-                      color:
-                        item.active
-                          ? "#22c55e"
-                          : "#ef4444",
-
-                      fontWeight:
-                        "700",
-                    }}
-                  >
-                    {item.active
-                      ? "ACTIVE"
-                      : "OFF"}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display:
-                      "flex",
-
-                    gap: "12px",
-
-                    flexWrap:
-                      "wrap",
-                  }}
-                >
-                  <button
-                    onClick={() =>
-                      togglePackage(
-                        item.id
-                      )
-                    }
-                    style={{
-                      background:
-                        item.active
-                          ? "#f59e0b"
-                          : "#22c55e",
-
-                      border:
-                        "none",
-
-                      color:
-                        "white",
-
-                      padding:
-                        "12px 16px",
-
-                      borderRadius:
-                        "12px",
-
-                      fontWeight:
-                        "700",
-
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    {item.active
-                      ? "Turn OFF"
-                      : "Turn ON"}
-                  </button>
-
-                  <button
-                    style={{
-                      background:
-                        "#2563eb",
-
-                      border:
-                        "none",
-
-                      color:
-                        "white",
-
-                      padding:
-                        "12px 16px",
-
-                      borderRadius:
-                        "12px",
-
-                      fontWeight:
-                        "700",
-
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      deletePackage(
-                        item.id
-                      )
-                    }
-                    style={{
-                      background:
-                        "#dc2626",
-
-                      border:
-                        "none",
-
-                      color:
-                        "white",
-
-                      padding:
-                        "12px 16px",
-
-                      borderRadius:
-                        "12px",
-
-                      fontWeight:
-                        "700",
-
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            )
-          )}
+          >
+            Delete Package
+          </button>
         </div>
       </div>
+    )
+  )}
+</div>
     </AdminLayout>
   );
 }
